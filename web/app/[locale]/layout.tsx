@@ -31,7 +31,7 @@ export async function generateMetadata({
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "meta" });
   const url =
-    locale === "en" ? "https://cmux.com" : `https://cmux.com/${locale}`;
+    locale === "en" ? "https://phatmux.com" : `https://phatmux.com/${locale}`;
   return {
     title: t("title"),
     description: t("description"),
@@ -53,7 +53,7 @@ export async function generateMetadata({
       title: t("title"),
       description: t("ogDescription"),
       url,
-      siteName: "cmux",
+      siteName: "phatmux",
       type: "website",
     },
     twitter: {
@@ -61,7 +61,7 @@ export async function generateMetadata({
       title: t("title"),
       description: t("ogDescription"),
     },
-    metadataBase: new URL("https://cmux.com"),
+    metadataBase: new URL("https://phatmux.com"),
   };
 }
 
@@ -91,12 +91,12 @@ export default async function LocaleLayout({
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "SoftwareApplication",
-    name: "cmux",
+    name: "phatmux",
     operatingSystem: "macOS",
     applicationCategory: "DeveloperApplication",
-    url: "https://cmux.com",
+    url: "https://phatmux.com",
     downloadUrl:
-      "https://github.com/manaflow-ai/cmux/releases/latest/download/cmux-macos.dmg",
+      "https://github.com/amitpaz/phatmux/releases/latest/download/phatmux-macos.dmg",
     description:
       "Native macOS terminal built on Ghostty. Works with Claude Code, Codex, OpenCode, Gemini CLI, Kiro, Aider, and any CLI tool. Vertical tabs, notification rings, split panes, and a socket API.",
     keywords:

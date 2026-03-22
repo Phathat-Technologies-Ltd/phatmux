@@ -1,11 +1,11 @@
 > Cette traduction a été générée par Claude. Si vous avez des suggestions d'amélioration, ouvrez une PR.
 
-<h1 align="center">cmux</h1>
+<h1 align="center">phatmux</h1>
 <p align="center">Un terminal macOS basé sur Ghostty avec des onglets verticaux et des notifications pour les agents de programmation IA</p>
 
 <p align="center">
-  <a href="https://github.com/manaflow-ai/cmux/releases/latest/download/cmux-macos.dmg">
-    <img src="./docs/assets/macos-badge.png" alt="Télécharger cmux pour macOS" width="180" />
+  <a href="https://github.com/amitpaz/phatmux/releases/latest/download/phatmux-macos.dmg">
+    <img src="./docs/assets/macos-badge.png" alt="Télécharger phatmux pour macOS" width="180" />
   </a>
 </p>
 
@@ -19,11 +19,11 @@
 </p>
 
 <p align="center">
-  <img src="./docs/assets/main-first-image.png" alt="Capture d'écran de cmux" width="900" />
+  <img src="./docs/assets/main-first-image.png" alt="Capture d'écran de phatmux" width="900" />
 </p>
 
 <p align="center">
-  <a href="https://www.youtube.com/watch?v=i-WxO5YUTOs">▶ Vidéo de démonstration</a> · <a href="https://cmux.com/blog/zen-of-cmux">The Zen of cmux</a>
+  <a href="https://www.youtube.com/watch?v=i-WxO5YUTOs">▶ Vidéo de démonstration</a> · <a href="https://phatmux.com/blog/zen-of-phatmux">The Zen of phatmux</a>
 </p>
 
 ## Fonctionnalités
@@ -76,44 +76,44 @@ La barre latérale affiche la branche git, le statut/numéro de PR lié, le rép
 
 ### DMG (recommandé)
 
-<a href="https://github.com/manaflow-ai/cmux/releases/latest/download/cmux-macos.dmg">
-  <img src="./docs/assets/macos-badge.png" alt="Télécharger cmux pour macOS" width="180" />
+<a href="https://github.com/amitpaz/phatmux/releases/latest/download/phatmux-macos.dmg">
+  <img src="./docs/assets/macos-badge.png" alt="Télécharger phatmux pour macOS" width="180" />
 </a>
 
-Ouvrez le `.dmg` et glissez cmux dans votre dossier Applications. cmux se met à jour automatiquement via Sparkle, vous n'avez donc besoin de le télécharger qu'une seule fois.
+Ouvrez le `.dmg` et glissez phatmux dans votre dossier Applications. phatmux se met à jour automatiquement via Sparkle, vous n'avez donc besoin de le télécharger qu'une seule fois.
 
 ### Homebrew
 
 ```bash
-brew tap manaflow-ai/cmux
-brew install --cask cmux
+brew tap amitpaz/phatmux
+brew install --cask phatmux
 ```
 
 Pour mettre à jour plus tard :
 
 ```bash
-brew upgrade --cask cmux
+brew upgrade --cask phatmux
 ```
 
 Au premier lancement, macOS peut vous demander de confirmer l'ouverture d'une application provenant d'un développeur identifié. Cliquez sur **Ouvrir** pour continuer.
 
-## Pourquoi cmux ?
+## Pourquoi phatmux ?
 
 J'exécute beaucoup de sessions Claude Code et Codex en parallèle. J'utilisais Ghostty avec plein de panneaux divisés et je comptais sur les notifications natives de macOS pour savoir quand un agent avait besoin de moi. Mais le contenu des notifications de Claude Code est toujours juste « Claude is waiting for your input » sans aucun contexte, et avec suffisamment d'onglets ouverts, je ne pouvais même plus lire les titres.
 
-J'ai essayé quelques orchestrateurs de programmation, mais la plupart étaient des applications Electron/Tauri et les performances me dérangeaient. Je préfère aussi simplement le terminal, car les orchestrateurs à interface graphique vous enferment dans leur flux de travail. J'ai donc construit cmux comme une application macOS native en Swift/AppKit. Elle utilise libghostty pour le rendu du terminal et lit votre configuration Ghostty existante pour les thèmes, polices et couleurs.
+J'ai essayé quelques orchestrateurs de programmation, mais la plupart étaient des applications Electron/Tauri et les performances me dérangeaient. Je préfère aussi simplement le terminal, car les orchestrateurs à interface graphique vous enferment dans leur flux de travail. J'ai donc construit phatmux comme une application macOS native en Swift/AppKit. Elle utilise libghostty pour le rendu du terminal et lit votre configuration Ghostty existante pour les thèmes, polices et couleurs.
 
-Les principaux ajouts sont la barre latérale et le système de notifications. La barre latérale comporte des onglets verticaux qui affichent la branche git, le statut/numéro de PR lié, le répertoire de travail, les ports en écoute et le texte de la dernière notification pour chaque espace de travail. Le système de notifications capte les séquences de terminal (OSC 9/99/777) et dispose d'un CLI (`cmux notify`) que vous pouvez brancher aux hooks d'agents pour Claude Code, OpenCode, etc. Quand un agent est en attente, son panneau reçoit un anneau bleu et l'onglet s'illumine dans la barre latérale, pour que je puisse identifier lequel a besoin de moi parmi les divisions et les onglets. ⌘⇧U permet de sauter à la notification non lue la plus récente.
+Les principaux ajouts sont la barre latérale et le système de notifications. La barre latérale comporte des onglets verticaux qui affichent la branche git, le statut/numéro de PR lié, le répertoire de travail, les ports en écoute et le texte de la dernière notification pour chaque espace de travail. Le système de notifications capte les séquences de terminal (OSC 9/99/777) et dispose d'un CLI (`phatmux notify`) que vous pouvez brancher aux hooks d'agents pour Claude Code, OpenCode, etc. Quand un agent est en attente, son panneau reçoit un anneau bleu et l'onglet s'illumine dans la barre latérale, pour que je puisse identifier lequel a besoin de moi parmi les divisions et les onglets. ⌘⇧U permet de sauter à la notification non lue la plus récente.
 
 Le navigateur intégré dispose d'une API scriptable portée depuis [agent-browser](https://github.com/vercel-labs/agent-browser). Les agents peuvent capturer l'arbre d'accessibilité, obtenir des références d'éléments, cliquer, remplir des formulaires et exécuter du JS. Vous pouvez diviser un panneau navigateur à côté de votre terminal et laisser Claude Code interagir directement avec votre serveur de développement.
 
 Tout est scriptable via le CLI et l'API socket — créer des espaces de travail/onglets, diviser des panneaux, envoyer des frappes clavier, ouvrir des URL dans le navigateur.
 
-## The Zen of cmux
+## The Zen of phatmux
 
-cmux ne prescrit pas comment les développeurs utilisent leurs outils. C'est un terminal et un navigateur avec un CLI, le reste vous appartient.
+phatmux ne prescrit pas comment les développeurs utilisent leurs outils. C'est un terminal et un navigateur avec un CLI, le reste vous appartient.
 
-cmux est une primitive, pas une solution. Il vous donne un terminal, un navigateur, des notifications, des espaces de travail, des divisions, des onglets et un CLI pour tout contrôler. cmux ne vous impose pas une façon préconçue d'utiliser les agents de programmation. Ce que vous construisez avec ces primitives vous appartient.
+phatmux est une primitive, pas une solution. Il vous donne un terminal, un navigateur, des notifications, des espaces de travail, des divisions, des onglets et un CLI pour tout contrôler. phatmux ne vous impose pas une façon préconçue d'utiliser les agents de programmation. Ce que vous construisez avec ces primitives vous appartient.
 
 Les meilleurs développeurs ont toujours construit leurs propres outils. Personne n'a encore trouvé la meilleure façon de travailler avec les agents, et les équipes qui construisent des produits fermés ne l'ont pas trouvée non plus. Les développeurs les plus proches de leurs propres bases de code trouveront la solution en premier.
 
@@ -121,7 +121,7 @@ Donnez à un million de développeurs des primitives composables et ils trouvero
 
 ## Documentation
 
-Pour plus d'informations sur la configuration de cmux, [consultez notre documentation](https://cmux.com/docs/getting-started?utm_source=readme).
+Pour plus d'informations sur la configuration de phatmux, [consultez notre documentation](https://phatmux.com/docs/getting-started?utm_source=readme).
 
 ## Raccourcis clavier
 
@@ -211,27 +211,27 @@ Les raccourcis des outils de développement du navigateur suivent les valeurs pa
 
 ## Builds Nightly
 
-[Télécharger cmux NIGHTLY](https://github.com/manaflow-ai/cmux/releases/download/nightly/cmux-nightly-macos.dmg)
+[Télécharger phatmux NIGHTLY](https://github.com/amitpaz/phatmux/releases/download/nightly/phatmux-nightly-macos.dmg)
 
-cmux NIGHTLY est une application séparée avec son propre identifiant de bundle, elle fonctionne donc en parallèle de la version stable. Construite automatiquement à partir du dernier commit `main` et mise à jour automatiquement via son propre flux Sparkle.
+phatmux NIGHTLY est une application séparée avec son propre identifiant de bundle, elle fonctionne donc en parallèle de la version stable. Construite automatiquement à partir du dernier commit `main` et mise à jour automatiquement via son propre flux Sparkle.
 
 ## Restauration de session (comportement actuel)
 
-Au relancement, cmux restaure actuellement uniquement la disposition et les métadonnées de l'application :
+Au relancement, phatmux restaure actuellement uniquement la disposition et les métadonnées de l'application :
 - Disposition des fenêtres/espaces de travail/panneaux
 - Répertoires de travail
 - Historique de défilement du terminal (au mieux)
 - URL du navigateur et historique de navigation
 
-cmux ne restaure **pas** l'état des processus actifs dans les applications du terminal. Par exemple, les sessions actives de Claude Code/tmux/vim ne sont pas encore reprises après un redémarrage.
+phatmux ne restaure **pas** l'état des processus actifs dans les applications du terminal. Par exemple, les sessions actives de Claude Code/tmux/vim ne sont pas encore reprises après un redémarrage.
 
 ## Historique des étoiles
 
-<a href="https://star-history.com/#manaflow-ai/cmux&Date">
+<a href="https://star-history.com/#amitpaz/phatmux&Date">
  <picture>
-   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=manaflow-ai/cmux&type=Date&theme=dark" />
-   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=manaflow-ai/cmux&type=Date" />
-   <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=manaflow-ai/cmux&type=Date" width="600" />
+   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=amitpaz/phatmux&type=Date&theme=dark" />
+   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=amitpaz/phatmux&type=Date" />
+   <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=amitpaz/phatmux&type=Date" width="600" />
  </picture>
 </a>
 
@@ -241,26 +241,26 @@ Façons de s'impliquer :
 
 - Suivez-nous sur X pour les mises à jour [@manaflowai](https://x.com/manaflowai), [@lawrencecchen](https://x.com/lawrencecchen), et [@austinywang](https://x.com/austinywang)
 - Rejoignez la conversation sur [Discord](https://discord.gg/xsgFEVrWCZ)
-- Créez et participez aux [issues GitHub](https://github.com/manaflow-ai/cmux/issues) et aux [discussions](https://github.com/manaflow-ai/cmux/discussions)
-- Dites-nous ce que vous construisez avec cmux
+- Créez et participez aux [issues GitHub](https://github.com/amitpaz/phatmux/issues) et aux [discussions](https://github.com/amitpaz/phatmux/discussions)
+- Dites-nous ce que vous construisez avec phatmux
 
 ## Communauté
 
 - [Discord](https://discord.gg/xsgFEVrWCZ)
-- [GitHub](https://github.com/manaflow-ai/cmux)
+- [GitHub](https://github.com/amitpaz/phatmux)
 - [X / Twitter](https://twitter.com/manaflowai)
 - [YouTube](https://www.youtube.com/channel/UCAa89_j-TWkrXfk9A3CbASw)
 - [LinkedIn](https://www.linkedin.com/company/manaflow-ai/)
-- [Reddit](https://www.reddit.com/r/cmux/)
+- [Reddit](https://www.reddit.com/r/phatmux/)
 
 ## Édition Fondateur
 
-cmux est gratuit, open source, et le restera toujours. Si vous souhaitez soutenir le développement et obtenir un accès anticipé à ce qui arrive :
+phatmux est gratuit, open source, et le restera toujours. Si vous souhaitez soutenir le développement et obtenir un accès anticipé à ce qui arrive :
 
 **[Obtenir l'Édition Fondateur](https://buy.stripe.com/3cI00j2Ld0it5OU33r5EY0q)**
 
 - **Demandes de fonctionnalités et corrections de bugs prioritaires**
-- **Accès anticipé : cmux AI qui vous donne du contexte sur chaque espace de travail, onglet et panneau**
+- **Accès anticipé : phatmux AI qui vous donne du contexte sur chaque espace de travail, onglet et panneau**
 - **Accès anticipé : application iOS avec des terminaux synchronisés entre ordinateur et téléphone**
 - **Accès anticipé : VMs cloud**
 - **Accès anticipé : Mode vocal**

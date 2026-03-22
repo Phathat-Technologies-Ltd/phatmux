@@ -120,7 +120,7 @@ final class TitlebarControlsViewModel: ObservableObject {
 }
 
 extension Notification.Name {
-    static let cmuxNotificationsPopoverVisibilityDidChange = Notification.Name("cmux.notificationsPopoverVisibilityDidChange")
+    static let phatmuxNotificationsPopoverVisibilityDidChange = Notification.Name("phatmux.notificationsPopoverVisibilityDidChange")
 }
 
 private enum NotificationsPopoverVisibilityUserInfoKey {
@@ -129,7 +129,7 @@ private enum NotificationsPopoverVisibilityUserInfoKey {
 
 private func postNotificationsPopoverVisibilityDidChange(isShown: Bool) {
     NotificationCenter.default.post(
-        name: .cmuxNotificationsPopoverVisibilityDidChange,
+        name: .phatmuxNotificationsPopoverVisibilityDidChange,
         object: nil,
         userInfo: [NotificationsPopoverVisibilityUserInfoKey.isShown: isShown]
     )
@@ -333,7 +333,7 @@ struct TitlebarControlsView: View {
             .onAppear {
                 isNotificationsPopoverShown = AppDelegate.shared?.isNotificationsPopoverShown() ?? false
             }
-            .onReceive(NotificationCenter.default.publisher(for: .cmuxNotificationsPopoverVisibilityDidChange)) { notification in
+            .onReceive(NotificationCenter.default.publisher(for: .phatmuxNotificationsPopoverVisibilityDidChange)) { notification in
                 isNotificationsPopoverShown = (notification.userInfo?[NotificationsPopoverVisibilityUserInfoKey.isShown] as? Bool) ?? false
             }
             .onAppear {
@@ -384,7 +384,7 @@ struct TitlebarControlsView: View {
                             .foregroundColor(.white)
                             .frame(width: config.badgeSize, height: config.badgeSize)
                             .background(
-                                Circle().fill(cmuxAccentColor())
+                                Circle().fill(phatmuxAccentColor())
                             )
                             .offset(x: config.badgeOffset.width, y: config.badgeOffset.height)
                     }
@@ -1133,11 +1133,11 @@ private struct NotificationPopoverRow: View {
             Button(action: onOpen) {
                 HStack(alignment: .top, spacing: 10) {
                     Circle()
-                        .fill(notification.isRead ? Color.clear : cmuxAccentColor())
+                        .fill(notification.isRead ? Color.clear : phatmuxAccentColor())
                         .frame(width: 8, height: 8)
                         .overlay(
                             Circle()
-                                .stroke(cmuxAccentColor().opacity(notification.isRead ? 0.2 : 1), lineWidth: 1)
+                                .stroke(phatmuxAccentColor().opacity(notification.isRead ? 0.2 : 1), lineWidth: 1)
                         )
                         .padding(.top, 6)
 
@@ -1200,7 +1200,7 @@ final class UpdateTitlebarAccessoryController {
     private var observers: [NSObjectProtocol] = []
     private var pendingAttachRetries: [ObjectIdentifier: Int] = [:]
     private var startupScanWorkItems: [DispatchWorkItem] = []
-    private let controlsIdentifier = NSUserInterfaceItemIdentifier("cmux.titlebarControls")
+    private let controlsIdentifier = NSUserInterfaceItemIdentifier("phatmux.titlebarControls")
     private let controlsControllers = NSHashTable<TitlebarControlsAccessoryViewController>.weakObjects()
 
     init(viewModel: UpdateViewModel) {
@@ -1271,7 +1271,7 @@ final class UpdateTitlebarAccessoryController {
                 }
 #if DEBUG
                 let env = ProcessInfo.processInfo.environment
-                if env["CMUX_UI_TEST_MODE"] == "1" {
+                if env["PHATMUX_UI_TEST_MODE"] == "1" {
                     let ids = NSApp.windows.map { $0.identifier?.rawValue ?? "<nil>" }
                     let delayText = String(format: "%.2f", delay)
                     UpdateLogStore.shared.append("startup window scan (delay=\(delayText)) count=\(NSApp.windows.count) ids=\(ids.joined(separator: ","))")
@@ -1329,7 +1329,7 @@ final class UpdateTitlebarAccessoryController {
 
 #if DEBUG
         let env = ProcessInfo.processInfo.environment
-        if env["CMUX_UI_TEST_MODE"] == "1" {
+        if env["PHATMUX_UI_TEST_MODE"] == "1" {
             let ident = window.identifier?.rawValue ?? "<nil>"
             UpdateLogStore.shared.append("attached titlebar accessories to window id=\(ident)")
         }
@@ -1363,7 +1363,7 @@ final class UpdateTitlebarAccessoryController {
 
 #if DEBUG
         let env = ProcessInfo.processInfo.environment
-        if env["CMUX_UI_TEST_MODE"] == "1" {
+        if env["PHATMUX_UI_TEST_MODE"] == "1" {
             let ident = window.identifier?.rawValue ?? "<nil>"
             UpdateLogStore.shared.append("removed titlebar accessories from window id=\(ident)")
         }
@@ -1371,7 +1371,7 @@ final class UpdateTitlebarAccessoryController {
     }
 
     private func isSettingsWindow(_ window: NSWindow) -> Bool {
-        if window.identifier?.rawValue == "cmux.settings" {
+        if window.identifier?.rawValue == "phatmux.settings" {
             return true
         }
         return window.title == "Settings"
@@ -1379,7 +1379,7 @@ final class UpdateTitlebarAccessoryController {
 
     private func isMainTerminalWindow(_ window: NSWindow) -> Bool {
         guard let raw = window.identifier?.rawValue else { return false }
-        return raw == "cmux.main" || raw.hasPrefix("cmux.main.")
+        return raw == "phatmux.main" || raw.hasPrefix("phatmux.main.")
     }
 
     private func preferredNotificationsController(

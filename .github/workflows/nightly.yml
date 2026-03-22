@@ -202,7 +202,7 @@ jobs:
       - name: Build universal nightly app (Release)
         if: needs.decide.outputs.should_publish != 'true' || steps.current_head_prebuild.outputs.still_current == 'true'
         run: |
-          xcodebuild -scheme cmux -configuration Release -derivedDataPath build-universal \
+          xcodebuild -scheme phatmux -configuration Release -derivedDataPath build-universal \
             -destination 'generic/platform=macOS' \
             -clonedSourcePackagesDirPath .spm-cache \
             ARCHS="arm64 x86_64" \
@@ -213,9 +213,9 @@ jobs:
         if: needs.decide.outputs.should_publish != 'true' || steps.current_head_prebuild.outputs.still_current == 'true'
         run: |
           set -euo pipefail
-          APP_BINARY="build-universal/Build/Products/Release/cmux.app/Contents/MacOS/cmux"
-          CLI_BINARY="build-universal/Build/Products/Release/cmux.app/Contents/Resources/bin/cmux"
-          HELPER_BINARY="build-universal/Build/Products/Release/cmux.app/Contents/Resources/bin/ghostty"
+          APP_BINARY="build-universal/Build/Products/Release/phatmux.app/Contents/MacOS/phatmux"
+          CLI_BINARY="build-universal/Build/Products/Release/phatmux.app/Contents/Resources/bin/phatmux"
+          HELPER_BINARY="build-universal/Build/Products/Release/phatmux.app/Contents/Resources/bin/ghostty"
           APP_ARCHS="$(lipo -archs "$APP_BINARY")"
           CLI_ARCHS="$(lipo -archs "$CLI_BINARY")"
           HELPER_ARCHS="$(lipo -archs "$HELPER_BINARY")"
@@ -230,9 +230,9 @@ jobs:
         if: needs.decide.outputs.should_publish != 'true' || steps.current_head_prebuild.outputs.still_current == 'true'
         run: |
           set -euo pipefail
-          CLI_BINARY="build-universal/Build/Products/Release/cmux.app/Contents/Resources/bin/cmux"
-          [ -x "$CLI_BINARY" ] || { echo "cmux CLI binary not found at $CLI_BINARY" >&2; exit 1; }
-          CMUX_CLI_BIN="$CLI_BINARY" python3 tests/test_cli_version_memory_guard.py
+          CLI_BINARY="build-universal/Build/Products/Release/phatmux.app/Contents/Resources/bin/phatmux"
+          [ -x "$CLI_BINARY" ] || { echo "phatmux CLI binary not found at $CLI_BINARY" >&2; exit 1; }
+          PHATMUX_CLI_BIN="$CLI_BINARY" python3 tests/test_cli_version_memory_guard.py
 
       - name: Check whether build commit is still current main HEAD after build
         if: needs.decide.outputs.should_publish == 'true' && steps.current_head_prebuild.outputs.still_current == 'true'
@@ -262,7 +262,7 @@ jobs:
           SHORT_SHA="${{ needs.decide.outputs.short_sha }}"
           APP_DIR="build-universal/Build/Products/Release"
 
-          BASE_MARKETING=$(/usr/libexec/PlistBuddy -c "Print :CFBundleShortVersionString" "${APP_DIR}/cmux.app/Contents/Info.plist")
+          BASE_MARKETING=$(/usr/libexec/PlistBuddy -c "Print :CFBundleShortVersionString" "${APP_DIR}/phatmux.app/Contents/Info.plist")
           NIGHTLY_DATE=$(date -u +%Y%m%d)
 
           # Build number: unique/monotonic per workflow run attempt so same-day
@@ -278,17 +278,17 @@ jobs:
           echo "NIGHTLY_MARKETING_VERSION=${NIGHTLY_MARKETING_VERSION}" >> "$GITHUB_ENV"
           echo "NIGHTLY_REMOTE_DAEMON_VERSION=${NIGHTLY_MARKETING_VERSION}" >> "$GITHUB_ENV"
 
-          NIGHTLY_DMG_IMMUTABLE="cmux-nightly-macos-${NIGHTLY_BUILD}.dmg"
+          NIGHTLY_DMG_IMMUTABLE="phatmux-nightly-macos-${NIGHTLY_BUILD}.dmg"
           echo "NIGHTLY_DMG_IMMUTABLE=${NIGHTLY_DMG_IMMUTABLE}" >> "$GITHUB_ENV"
 
           prepare_variant() {
             local app_dir="$1"
             local bundle_id="$2"
             local feed_url="$3"
-            local app_plist="$app_dir/cmux.app/Contents/Info.plist"
+            local app_plist="$app_dir/phatmux.app/Contents/Info.plist"
 
-            /usr/libexec/PlistBuddy -c "Set :CFBundleName cmux NIGHTLY" "$app_plist"
-            /usr/libexec/PlistBuddy -c "Set :CFBundleDisplayName cmux NIGHTLY" "$app_plist"
+            /usr/libexec/PlistBuddy -c "Set :CFBundleName phatmux NIGHTLY" "$app_plist"
+            /usr/libexec/PlistBuddy -c "Set :CFBundleDisplayName phatmux NIGHTLY" "$app_plist"
             /usr/libexec/PlistBuddy -c "Set :CFBundleIdentifier ${bundle_id}" "$app_plist"
             /usr/libexec/PlistBuddy -c "Delete :SUPublicEDKey" "$app_plist" >/dev/null 2>&1 || true
             /usr/libexec/PlistBuddy -c "Delete :SUFeedURL" "$app_plist" >/dev/null 2>&1 || true
@@ -296,18 +296,18 @@ jobs:
             /usr/libexec/PlistBuddy -c "Add :SUFeedURL string ${feed_url}" "$app_plist"
             /usr/libexec/PlistBuddy -c "Set :CFBundleShortVersionString ${NIGHTLY_MARKETING_VERSION}" "$app_plist"
             /usr/libexec/PlistBuddy -c "Set :CFBundleVersion ${NIGHTLY_BUILD}" "$app_plist"
-            /usr/libexec/PlistBuddy -c "Delete :CMUXCommit" "$app_plist" >/dev/null 2>&1 || true
-            /usr/libexec/PlistBuddy -c "Add :CMUXCommit string ${SHORT_SHA}" "$app_plist"
-            mv "$app_dir/cmux.app" "$app_dir/cmux NIGHTLY.app"
+            /usr/libexec/PlistBuddy -c "Delete :PHATMUXCommit" "$app_plist" >/dev/null 2>&1 || true
+            /usr/libexec/PlistBuddy -c "Add :PHATMUXCommit string ${SHORT_SHA}" "$app_plist"
+            mv "$app_dir/phatmux.app" "$app_dir/phatmux NIGHTLY.app"
           }
 
           prepare_variant \
             "$APP_DIR" \
-            "com.cmuxterm.app.nightly" \
-            "https://github.com/manaflow-ai/cmux/releases/download/nightly/appcast.xml"
+            "com.phatmux.app.nightly" \
+            "https://github.com/amitpaz/phatmux/releases/download/nightly/appcast.xml"
 
-          echo "Nightly app name: cmux NIGHTLY"
-          echo "Nightly bundle ID: com.cmuxterm.app.nightly"
+          echo "Nightly app name: phatmux NIGHTLY"
+          echo "Nightly bundle ID: com.phatmux.app.nightly"
           echo "Nightly marketing version: ${NIGHTLY_MARKETING_VERSION}"
           echo "Nightly build number: ${NIGHTLY_BUILD}"
           echo "Nightly immutable DMG: ${NIGHTLY_DMG_IMMUTABLE}"
@@ -320,16 +320,16 @@ jobs:
           ./scripts/build_remote_daemon_release_assets.sh \
             --version "$NIGHTLY_REMOTE_DAEMON_VERSION" \
             --release-tag "nightly" \
-            --repo "manaflow-ai/cmux" \
+            --repo "amitpaz/phatmux" \
             --output-dir "remote-daemon-assets"
-          MANIFEST_JSON="$(python3 -c 'import json,sys; print(json.dumps(json.load(open(sys.argv[1], encoding="utf-8")), separators=(",",":")))' remote-daemon-assets/cmuxd-remote-manifest.json)"
-          APP_PLIST="build-universal/Build/Products/Release/cmux NIGHTLY.app/Contents/Info.plist"
+          MANIFEST_JSON="$(python3 -c 'import json,sys; print(json.dumps(json.load(open(sys.argv[1], encoding="utf-8")), separators=(",",":")))' remote-daemon-assets/phatmuxd-remote-manifest.json)"
+          APP_PLIST="build-universal/Build/Products/Release/phatmux NIGHTLY.app/Contents/Info.plist"
           if [ ! -f "$APP_PLIST" ]; then
             echo "Missing nightly app Info.plist at $APP_PLIST" >&2
             exit 1
           fi
-          plutil -remove CMUXRemoteDaemonManifestJSON "$APP_PLIST" >/dev/null 2>&1 || true
-          plutil -insert CMUXRemoteDaemonManifestJSON -string "$MANIFEST_JSON" "$APP_PLIST"
+          plutil -remove PHATMUXRemoteDaemonManifestJSON "$APP_PLIST" >/dev/null 2>&1 || true
+          plutil -insert PHATMUXRemoteDaemonManifestJSON -string "$MANIFEST_JSON" "$APP_PLIST"
 
       - name: Import signing cert
         if: needs.decide.outputs.should_publish != 'true' || (steps.current_head_prebuild.outputs.still_current == 'true' && steps.current_head_postbuild.outputs.still_current == 'true')
@@ -364,11 +364,11 @@ jobs:
             echo "Missing APPLE_SIGNING_IDENTITY secret" >&2
             exit 1
           fi
-          ENTITLEMENTS="cmux.entitlements"
+          ENTITLEMENTS="phatmux.entitlements"
           for APP_PATH in \
-            "build-universal/Build/Products/Release/cmux NIGHTLY.app"
+            "build-universal/Build/Products/Release/phatmux NIGHTLY.app"
           do
-            CLI_PATH="$APP_PATH/Contents/Resources/bin/cmux"
+            CLI_PATH="$APP_PATH/Contents/Resources/bin/phatmux"
             HELPER_PATH="$APP_PATH/Contents/Resources/bin/ghostty"
             if [ -f "$CLI_PATH" ]; then
               /usr/bin/codesign --force --options runtime --timestamp --sign "$APPLE_SIGNING_IDENTITY" --entitlements "$ENTITLEMENTS" "$CLI_PATH"
@@ -441,8 +441,8 @@ jobs:
           }
 
           notarize_and_package \
-            "build-universal/Build/Products/Release/cmux NIGHTLY.app" \
-            "cmux-nightly-macos.dmg" \
+            "build-universal/Build/Products/Release/phatmux NIGHTLY.app" \
+            "phatmux-nightly-macos.dmg" \
             "$NIGHTLY_DMG_IMMUTABLE"
 
       - name: Upload dSYMs to Sentry
@@ -450,7 +450,7 @@ jobs:
         env:
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
           SENTRY_ORG: manaflow
-          SENTRY_PROJECT: cmuxterm-macos
+          SENTRY_PROJECT: phatmux-macos
         run: |
           if [ -z "$SENTRY_AUTH_TOKEN" ]; then
             echo "SENTRY_AUTH_TOKEN not set, skipping dSYM upload"
@@ -479,27 +479,27 @@ jobs:
         uses: actions/attest-build-provenance@a2bbfa25375fe432b6a289bc6b6cd05ecd0c4c32 # v4.1.0
         with:
           subject-path: |
-            remote-daemon-assets/cmuxd-remote-darwin-arm64
-            remote-daemon-assets/cmuxd-remote-darwin-amd64
-            remote-daemon-assets/cmuxd-remote-linux-arm64
-            remote-daemon-assets/cmuxd-remote-linux-amd64
-            remote-daemon-assets/cmuxd-remote-checksums.txt
-            remote-daemon-assets/cmuxd-remote-manifest.json
+            remote-daemon-assets/phatmuxd-remote-darwin-arm64
+            remote-daemon-assets/phatmuxd-remote-darwin-amd64
+            remote-daemon-assets/phatmuxd-remote-linux-arm64
+            remote-daemon-assets/phatmuxd-remote-linux-amd64
+            remote-daemon-assets/phatmuxd-remote-checksums.txt
+            remote-daemon-assets/phatmuxd-remote-manifest.json
 
       - name: Upload branch nightly artifacts
         if: needs.decide.outputs.should_publish != 'true'
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
-          name: cmux-nightly-${{ needs.decide.outputs.short_sha }}
+          name: phatmux-nightly-${{ needs.decide.outputs.short_sha }}
           path: |
-            cmux-nightly-macos*.dmg
+            phatmux-nightly-macos*.dmg
             appcast.xml
-            remote-daemon-assets/cmuxd-remote-darwin-arm64
-            remote-daemon-assets/cmuxd-remote-darwin-amd64
-            remote-daemon-assets/cmuxd-remote-linux-arm64
-            remote-daemon-assets/cmuxd-remote-linux-amd64
-            remote-daemon-assets/cmuxd-remote-checksums.txt
-            remote-daemon-assets/cmuxd-remote-manifest.json
+            remote-daemon-assets/phatmuxd-remote-darwin-arm64
+            remote-daemon-assets/phatmuxd-remote-darwin-amd64
+            remote-daemon-assets/phatmuxd-remote-linux-arm64
+            remote-daemon-assets/phatmuxd-remote-linux-amd64
+            remote-daemon-assets/phatmuxd-remote-checksums.txt
+            remote-daemon-assets/phatmuxd-remote-manifest.json
             appcast-universal.xml
           if-no-files-found: error
 
@@ -523,22 +523,22 @@ jobs:
           body: |
             Automated nightly build for `${{ needs.decide.outputs.short_sha }}`.
 
-            **cmux NIGHTLY** is published as a universal app:
-            - bundle ID `com.cmuxterm.app.nightly`
+            **phatmux NIGHTLY** is published as a universal app:
+            - bundle ID `com.phatmux.app.nightly`
             - feed `appcast.xml`
             - compatibility feed `appcast-universal.xml` for older universal nightlies
 
-            [Download cmux-nightly-macos.dmg](https://github.com/manaflow-ai/cmux/releases/download/nightly/cmux-nightly-macos.dmg)
+            [Download phatmux-nightly-macos.dmg](https://github.com/amitpaz/phatmux/releases/download/nightly/phatmux-nightly-macos.dmg)
           files: |
-            cmux-nightly-macos-${{ github.run_id }}*.dmg
-            cmux-nightly-macos.dmg
+            phatmux-nightly-macos-${{ github.run_id }}*.dmg
+            phatmux-nightly-macos.dmg
             appcast.xml
-            remote-daemon-assets/cmuxd-remote-darwin-arm64
-            remote-daemon-assets/cmuxd-remote-darwin-amd64
-            remote-daemon-assets/cmuxd-remote-linux-arm64
-            remote-daemon-assets/cmuxd-remote-linux-amd64
-            remote-daemon-assets/cmuxd-remote-checksums.txt
-            remote-daemon-assets/cmuxd-remote-manifest.json
+            remote-daemon-assets/phatmuxd-remote-darwin-arm64
+            remote-daemon-assets/phatmuxd-remote-darwin-amd64
+            remote-daemon-assets/phatmuxd-remote-linux-arm64
+            remote-daemon-assets/phatmuxd-remote-linux-amd64
+            remote-daemon-assets/phatmuxd-remote-checksums.txt
+            remote-daemon-assets/phatmuxd-remote-manifest.json
             appcast-universal.xml
           overwrite_files: true
 

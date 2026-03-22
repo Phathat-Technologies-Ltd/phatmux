@@ -24,9 +24,9 @@ const blogSlugs = [
 
 const slugToPath: Record<string, string> = {
   cmdShiftU: "cmd-shift-u",
-  zenOfCmux: "zen-of-cmux",
+  zenOfCmux: "zen-of-phatmux",
   showHnLaunch: "show-hn-launch",
-  introducingCmux: "introducing-cmux",
+  introducingCmux: "introducing-phatmux",
 };
 
 export default function BlogPage() {

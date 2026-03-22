@@ -6,13 +6,13 @@ STATE_FILE="${2:-./auth-state.json}"
 DASHBOARD_URL="${3:-https://app.example.com/dashboard}"
 
 if [ -f "$STATE_FILE" ]; then
-  cmux browser "$SURFACE" state load "$STATE_FILE"
+  phatmux browser "$SURFACE" state load "$STATE_FILE"
 fi
 
-cmux browser "$SURFACE" goto "$DASHBOARD_URL"
-cmux browser "$SURFACE" get url
-cmux browser "$SURFACE" wait --load-state complete --timeout-ms 15000
-cmux browser "$SURFACE" snapshot --interactive
+phatmux browser "$SURFACE" goto "$DASHBOARD_URL"
+phatmux browser "$SURFACE" get url
+phatmux browser "$SURFACE" wait --load-state complete --timeout-ms 15000
+phatmux browser "$SURFACE" snapshot --interactive
 
 echo "If redirected to login, complete login flow then run:"
-echo "  cmux browser $SURFACE state save $STATE_FILE"
+echo "  phatmux browser $SURFACE state save $STATE_FILE"

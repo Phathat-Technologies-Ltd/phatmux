@@ -7,10 +7,10 @@ const intlMiddleware = createMiddleware(routing);
 export default function middleware(request: NextRequest) {
   const host = request.headers.get("host") ?? "";
 
-  // 301 redirect cmux.dev (and www.cmux.dev) to cmux.com, preserving path and query
-  if (host === "cmux.dev" || host === "www.cmux.dev") {
+  // 301 redirect phatmux.dev (and www.phatmux.dev) to phatmux.com, preserving path and query
+  if (host === "phatmux.dev" || host === "www.phatmux.dev") {
     const url = new URL(request.url);
-    url.host = "cmux.com";
+    url.host = "phatmux.com";
     url.protocol = "https:";
     return NextResponse.redirect(url.toString(), 301);
   }

@@ -10,40 +10,40 @@ from pathlib import Path
 from typing import Dict, List, Optional
 
 sys.path.insert(0, str(Path(__file__).parent))
-from cmux import cmux, cmuxError
+from phatmux import phatmux, phatmuxError
 
 
-SOCKET_PATH = os.environ.get("CMUX_SOCKET", "/tmp/cmux-debug.sock")
+SOCKET_PATH = os.environ.get("PHATMUX_SOCKET", "/tmp/phatmux-debug.sock")
 
 
 def _must(cond: bool, msg: str) -> None:
     if not cond:
-        raise cmuxError(msg)
+        raise phatmuxError(msg)
 
 
 def _find_cli_binary() -> str:
-    env_cli = os.environ.get("CMUXTERM_CLI")
+    env_cli = os.environ.get("PHATMUXTERM_CLI")
     if env_cli and os.path.isfile(env_cli) and os.access(env_cli, os.X_OK):
         return env_cli
 
-    fixed = os.path.expanduser("~/Library/Developer/Xcode/DerivedData/cmux-tests-v2/Build/Products/Debug/cmux")
+    fixed = os.path.expanduser("~/Library/Developer/Xcode/DerivedData/phatmux-tests-v2/Build/Products/Debug/phatmux")
     if os.path.isfile(fixed) and os.access(fixed, os.X_OK):
         return fixed
 
-    candidates = glob.glob(os.path.expanduser("~/Library/Developer/Xcode/DerivedData/**/Build/Products/Debug/cmux"), recursive=True)
-    candidates += glob.glob("/tmp/cmux-*/Build/Products/Debug/cmux")
+    candidates = glob.glob(os.path.expanduser("~/Library/Developer/Xcode/DerivedData/**/Build/Products/Debug/phatmux"), recursive=True)
+    candidates += glob.glob("/tmp/phatmux-*/Build/Products/Debug/phatmux")
     candidates = [p for p in candidates if os.path.isfile(p) and os.access(p, os.X_OK)]
     if not candidates:
-        raise cmuxError("Could not locate cmux CLI binary; set CMUXTERM_CLI")
+        raise phatmuxError("Could not locate phatmux CLI binary; set PHATMUXTERM_CLI")
     candidates.sort(key=lambda p: os.path.getmtime(p), reverse=True)
     return candidates[0]
 
 
 def _run_cli(cli: str, args: List[str], env: Optional[Dict[str, str]] = None) -> str:
     merged_env = dict(os.environ)
-    merged_env.pop("CMUX_WORKSPACE_ID", None)
-    merged_env.pop("CMUX_SURFACE_ID", None)
-    merged_env.pop("CMUX_TAB_ID", None)
+    merged_env.pop("PHATMUX_WORKSPACE_ID", None)
+    merged_env.pop("PHATMUX_SURFACE_ID", None)
+    merged_env.pop("PHATMUX_TAB_ID", None)
     if env:
         merged_env.update(env)
 
@@ -51,7 +51,7 @@ def _run_cli(cli: str, args: List[str], env: Optional[Dict[str, str]] = None) ->
     proc = subprocess.run(cmd, capture_output=True, text=True, check=False, env=merged_env)
     if proc.returncode != 0:
         merged = f"{proc.stdout}\n{proc.stderr}".strip()
-        raise cmuxError(f"CLI failed ({' '.join(cmd)}): {merged}")
+        raise phatmuxError(f"CLI failed ({' '.join(cmd)}): {merged}")
     return proc.stdout.strip()
 
 
@@ -59,7 +59,7 @@ def main() -> int:
     cli = _find_cli_binary()
     stamp = int(time.time() * 1000)
 
-    with cmux(SOCKET_PATH) as c:
+    with phatmux(SOCKET_PATH) as c:
         caps = c.capabilities() or {}
         methods = set(caps.get("methods") or [])
         _must("tab.action" in methods, f"Missing tab.action in capabilities: {sorted(methods)[:40]}")
@@ -100,13 +100,13 @@ def main() -> int:
             cli,
             ["rename-tab", env_title],
             env={
-                "CMUX_WORKSPACE_ID": ws_id,
-                "CMUX_TAB_ID": surface_id,
+                "PHATMUX_WORKSPACE_ID": ws_id,
+                "PHATMUX_TAB_ID": surface_id,
             },
         )
         _must(
             "action=rename" in env_out.lower() and "tab=" in env_out.lower(),
-            f"rename-tab via CMUX_TAB_ID should route to tab.action rename summary, got: {env_out!r}",
+            f"rename-tab via PHATMUX_TAB_ID should route to tab.action rename summary, got: {env_out!r}",
         )
 
         invalid = subprocess.run(
@@ -114,7 +114,7 @@ def main() -> int:
             capture_output=True,
             text=True,
             check=False,
-            env={k: v for k, v in os.environ.items() if k not in {"CMUX_WORKSPACE_ID", "CMUX_SURFACE_ID", "CMUX_TAB_ID"}},
+            env={k: v for k, v in os.environ.items() if k not in {"PHATMUX_WORKSPACE_ID", "PHATMUX_SURFACE_ID", "PHATMUX_TAB_ID"}},
         )
         invalid_output = f"{invalid.stdout}\n{invalid.stderr}"
         _must(invalid.returncode != 0, "Expected rename-tab without title to fail")

@@ -1,15 +1,15 @@
 ---
-name: cmux-debug-windows
-description: Manage cmux debug windows and related debug menu wiring for Sidebar Debug, Background Debug, and Menu Bar Extra Debug. Use this when the user asks to open/tune these debug controls, add or adjust Debug menu entries, or capture/copy a combined debug config snapshot.
+name: phatmux-debug-windows
+description: Manage phatmux debug windows and related debug menu wiring for Sidebar Debug, Background Debug, and Menu Bar Extra Debug. Use this when the user asks to open/tune these debug controls, add or adjust Debug menu entries, or capture/copy a combined debug config snapshot.
 ---
 
-# cmux Debug Windows
+# phatmux Debug Windows
 
 Keep this workflow focused on existing debug windows and menu entries. Do not add a new utility/debug control window unless the user asks explicitly.
 
 ## Workflow
 
-1. Verify debug menu wiring in `Sources/cmuxApp.swift` under `CommandMenu("Debug")`.
+1. Verify debug menu wiring in `Sources/phatmuxApp.swift` under `CommandMenu("Debug")`.
    - Menu path in app: `Debug` → `Debug Windows` → window entry.
    - The `Debug` menu only exists in DEBUG builds (`./scripts/reload.sh --tag ...`).
    - Release builds (`reloadp.sh`, `reloads.sh`) do not show this menu.
@@ -25,13 +25,13 @@ skills/cmux-debug-windows/scripts/debug_windows_snapshot.sh --copy
 ```
 5. After code edits, run build + tagged reload:
 ```bash
-xcodebuild -project GhosttyTabs.xcodeproj -scheme cmux -configuration Debug -destination 'platform=macOS' build
+xcodebuild -project GhosttyTabs.xcodeproj -scheme phatmux -configuration Debug -destination 'platform=macOS' build
 ./scripts/reload.sh --tag <tag>
 ```
 
 ## Key Files
 
-- `Sources/cmuxApp.swift`: Debug menu entries and debug window controllers/views.
+- `Sources/phatmuxApp.swift`: Debug menu entries and debug window controllers/views.
 - `Sources/AppDelegate.swift`: Menu bar extra debug settings payload and defaults keys.
 
 ## Script

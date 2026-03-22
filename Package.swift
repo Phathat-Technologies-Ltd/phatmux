@@ -2,19 +2,19 @@
 import PackageDescription
 
 let package = Package(
-    name: "cmux",
+    name: "phatmux",
     platforms: [
         .macOS(.v13)
     ],
     products: [
-        .executable(name: "cmux", targets: ["cmux"])
+        .executable(name: "phatmux", targets: ["phatmux"])
     ],
     dependencies: [
         .package(url: "https://github.com/migueldeicaza/SwiftTerm.git", from: "1.2.0")
     ],
     targets: [
         .executableTarget(
-            name: "cmux",
+            name: "phatmux",
             dependencies: ["SwiftTerm"],
             path: "Sources"
         )

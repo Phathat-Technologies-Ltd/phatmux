@@ -21,7 +21,7 @@ Classic flow:
 full DOM/HTML -> selector guessing -> action
 ```
 
-cmux flow:
+phatmux flow:
 
 ```text
 snapshot -> refs (e1/e2/...) -> direct action
@@ -30,18 +30,18 @@ snapshot -> refs (e1/e2/...) -> direct action
 ## The Snapshot Command
 
 ```bash
-cmux browser surface:7 snapshot
-cmux browser surface:7 snapshot --interactive
-cmux browser surface:7 snapshot --interactive --compact --max-depth 3
+phatmux browser surface:7 snapshot
+phatmux browser surface:7 snapshot --interactive
+phatmux browser surface:7 snapshot --interactive --compact --max-depth 3
 ```
 
 ## Using Refs
 
 ```bash
-cmux browser surface:7 click e6
-cmux browser surface:7 fill e10 "user@example.com"
-cmux browser surface:7 fill e11 "password123"
-cmux browser surface:7 click e12
+phatmux browser surface:7 click e6
+phatmux browser surface:7 fill e10 "user@example.com"
+phatmux browser surface:7 fill e11 "password123"
+phatmux browser surface:7 click e12
 ```
 
 ## Ref Lifecycle
@@ -49,13 +49,13 @@ cmux browser surface:7 click e12
 Refs are invalidated when page structure changes.
 
 ```bash
-cmux browser surface:7 snapshot --interactive
+phatmux browser surface:7 snapshot --interactive
 # e1 is "Next"
 
-cmux browser surface:7 click e1
+phatmux browser surface:7 click e1
 
 # page changed, take a fresh snapshot
-cmux browser surface:7 snapshot --interactive
+phatmux browser surface:7 snapshot --interactive
 ```
 
 ## Best Practices
@@ -70,19 +70,19 @@ cmux browser surface:7 snapshot --interactive
 ### not_found / stale ref
 
 ```bash
-cmux browser surface:7 snapshot --interactive
+phatmux browser surface:7 snapshot --interactive
 ```
 
 ### Element missing due visibility/timing
 
 ```bash
-cmux browser surface:7 wait --selector "#target" --timeout-ms 10000
-cmux browser surface:7 scroll --dy 400
-cmux browser surface:7 snapshot --interactive
+phatmux browser surface:7 wait --selector "#target" --timeout-ms 10000
+phatmux browser surface:7 scroll --dy 400
+phatmux browser surface:7 snapshot --interactive
 ```
 
 ### Too many elements
 
 ```bash
-cmux browser surface:7 snapshot --selector "form#checkout" --interactive
+phatmux browser surface:7 snapshot --selector "form#checkout" --interactive
 ```

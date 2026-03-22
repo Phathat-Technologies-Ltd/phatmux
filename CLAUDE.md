@@ -1,4 +1,4 @@
-# cmux agent notes
+# phatmux agent notes
 
 ## Initial setup
 
@@ -21,20 +21,20 @@ When reporting a tagged reload result in chat, use the format for your agent typ
 **Claude Code** (markdown link with correct derived-data path, cmd+clickable):
 ```markdown
 =======================================================
-[cmux DEV <tag-name>.app](file:///Users/lawrencechen/Library/Developer/Xcode/DerivedData/cmux-<tag-name>/Build/Products/Debug/cmux%20DEV%20<tag-name>.app)
+[phatmux DEV <tag-name>.app](file:///Users/lawrencechen/Library/Developer/Xcode/DerivedData/phatmux-<tag-name>/Build/Products/Debug/phatmux%20DEV%20<tag-name>.app)
 =======================================================
 ```
 
 **Codex** (plain text format):
 ```
 =======================================================
-[<tag-name>: file:///Users/lawrencechen/Library/Developer/Xcode/DerivedData/cmux-<tag-name>/Build/Products/Debug/cmux%20DEV%20<tag-name>.app](file:///Users/lawrencechen/Library/Developer/Xcode/DerivedData/cmux-<tag-name>/Build/Products/Debug/cmux%20DEV%20<tag-name>.app)
+[<tag-name>: file:///Users/lawrencechen/Library/Developer/Xcode/DerivedData/phatmux-<tag-name>/Build/Products/Debug/phatmux%20DEV%20<tag-name>.app](file:///Users/lawrencechen/Library/Developer/Xcode/DerivedData/phatmux-<tag-name>/Build/Products/Debug/phatmux%20DEV%20<tag-name>.app)
 =======================================================
 ```
 
-Never use `/tmp/cmux-<tag>/...` app links in chat output. If the expected DerivedData path is missing, resolve the real `.app` path and report that `file://` URL.
+Never use `/tmp/phatmux-<tag>/...` app links in chat output. If the expected DerivedData path is missing, resolve the real `.app` path and report that `file://` URL.
 
-After making code changes, always use `reload.sh --tag` to build and launch. **Never run bare `xcodebuild` or `open` an untagged `cmux DEV.app`.** Untagged builds share the default debug socket and bundle ID with other agents, causing conflicts and stealing focus.
+After making code changes, always use `reload.sh --tag` to build and launch. **Never run bare `xcodebuild` or `open` an untagged `phatmux DEV.app`.** Untagged builds share the default debug socket and bundle ID with other agents, causing conflicts and stealing focus.
 
 ```bash
 ./scripts/reload.sh --tag <your-branch-slug>
@@ -43,7 +43,7 @@ After making code changes, always use `reload.sh --tag` to build and launch. **N
 If you only need to verify the build compiles (no launch), use a tagged derivedDataPath:
 
 ```bash
-xcodebuild -project GhosttyTabs.xcodeproj -scheme cmux -configuration Debug -destination 'platform=macOS' -derivedDataPath /tmp/cmux-<your-tag> build
+xcodebuild -project GhosttyTabs.xcodeproj -scheme phatmux -configuration Debug -destination 'platform=macOS' -derivedDataPath /tmp/phatmux-<your-tag> build
 ```
 
 When rebuilding GhosttyKit.xcframework, always use Release optimizations:
@@ -52,10 +52,10 @@ When rebuilding GhosttyKit.xcframework, always use Release optimizations:
 cd ghostty && zig build -Demit-xcframework=true -Dxcframework-target=universal -Doptimize=ReleaseFast
 ```
 
-When rebuilding cmuxd for release/bundling, always use ReleaseFast:
+When rebuilding phatmuxd for release/bundling, always use ReleaseFast:
 
 ```bash
-cd cmuxd && zig build -Doptimize=ReleaseFast
+cd phatmuxd && zig build -Doptimize=ReleaseFast
 ```
 
 `reload` = kill and launch the Debug app only (tag required):
@@ -70,7 +70,7 @@ cd cmuxd && zig build -Doptimize=ReleaseFast
 ./scripts/reloadp.sh
 ```
 
-`reloads` = kill and launch the Release app as "cmux STAGING" (isolated from production cmux):
+`reloads` = kill and launch the Release app as "phatmux STAGING" (isolated from production phatmux):
 
 ```bash
 ./scripts/reloads.sh
@@ -97,14 +97,14 @@ Before launching a new tagged run, clean up any older tags you started in this s
 All debug events (keys, mouse, focus, splits, tabs) go to a unified log in DEBUG builds:
 
 ```bash
-tail -f "$(cat /tmp/cmux-last-debug-log-path 2>/dev/null || echo /tmp/cmux-debug.log)"
+tail -f "$(cat /tmp/phatmux-last-debug-log-path 2>/dev/null || echo /tmp/phatmux-debug.log)"
 ```
 
-- Untagged Debug app: `/tmp/cmux-debug.log`
-- Tagged Debug app (`./scripts/reload.sh --tag <tag>`): `/tmp/cmux-debug-<tag>.log`
-- `reload.sh` writes the current path to `/tmp/cmux-last-debug-log-path`
-- `reload.sh` writes the selected dev CLI path to `/tmp/cmux-last-cli-path`
-- `reload.sh` updates `/tmp/cmux-cli` and `$HOME/.local/bin/cmux-dev` to that CLI
+- Untagged Debug app: `/tmp/phatmux-debug.log`
+- Tagged Debug app (`./scripts/reload.sh --tag <tag>`): `/tmp/phatmux-debug-<tag>.log`
+- `reload.sh` writes the current path to `/tmp/phatmux-last-debug-log-path`
+- `reload.sh` writes the selected dev CLI path to `/tmp/phatmux-last-cli-path`
+- `reload.sh` updates `/tmp/phatmux-cli` and `$HOME/.local/bin/phatmux-dev` to that CLI
 
 - Implementation: `vendor/bonsplit/Sources/Bonsplit/Public/DebugEventLog.swift`
 - Free function `dlog("message")` — logs with timestamp and appends to file in real time
@@ -129,7 +129,7 @@ This makes it visible in the GitHub PR UI (Commits tab, check statuses) that the
 - **SwiftUI `LazyVStack` + `ForEach` stale data:** When an `@Published` array changes on an `ObservableObject`, `ForEach` inside `LazyVStack` may not re-render rows even though the data source updated. The workaround is adding `.id(discriminator)` on the `LazyVStack` tied to whatever triggers the data change (e.g., a search query string). This forces SwiftUI to destroy and recreate the stack. After recreation, scroll position resets to top — use `DispatchQueue.main.async` inside `onChange` to scroll back to the desired position.
 - **AppDelegate local event monitor vs. responder chain:** The `NSEvent.addLocalMonitorForEvents` monitor intercepts ALL key events before they reach any first responder. When building overlay UIs (like history search) that need keyboard input, do NOT try to make an `NSTextView` first responder — the Ghostty terminal surface holds first responder and won't resign. Instead, handle keystrokes directly in the monitor and route characters to the model layer (`BlockSessionManager`). Use a display-only `Text` view instead of an editable `NSTextView`/`NSTextField`.
 - **`activeBlockSessionManager` is focus-dependent:** The computed property `Workspace.activeBlockSessionManager` resolves via `focusedTerminalPanel`, which can change when views swap (e.g., history search replacing terminal content). When routing events to a specific panel's BSM, prefer scanning all panels for the one with the relevant state (e.g., `historySearchActiveSessionManager`) rather than relying on `activeBlockSessionManager`.
-- **Custom UTTypes** for drag-and-drop must be declared in `Resources/Info.plist` under `UTExportedTypeDeclarations` (e.g. `com.splittabbar.tabtransfer`, `com.cmux.sidebar-tab-reorder`).
+- **Custom UTTypes** for drag-and-drop must be declared in `Resources/Info.plist` under `UTExportedTypeDeclarations` (e.g. `com.splittabbar.tabtransfer`, `com.phatmux.sidebar-tab-reorder`).
 - Do not add an app-level display link or manual `ghostty_surface_draw` loop; rely on Ghostty wakeups/renderer to avoid typing lag.
 - **Typing-latency-sensitive paths** (read carefully before touching these areas):
   - `WindowTerminalHostView.hitTest()` in `TerminalWindowPortal.swift`: called on every event including keyboard. All divider/sidebar/drag routing is gated to pointer events only. Do not add work outside the `isPointerEvent` guard.
@@ -168,10 +168,10 @@ This makes it visible in the GitHub PR UI (Commits tab, check statuses) that the
 
 **Never run tests locally.** All tests (E2E, UI, python socket tests) run via GitHub Actions or on the VM.
 
-- **E2E / UI tests:** trigger via `gh workflow run test-e2e.yml` (see cmuxterm-hq CLAUDE.md for details)
-- **Unit tests:** `xcodebuild -scheme cmux-unit` is safe (no app launch), but prefer CI
-- **Python socket tests (tests_v2/):** these connect to a running cmux instance's socket. Never launch an untagged `cmux DEV.app` to run them. If you must test locally, use a tagged build's socket (`/tmp/cmux-debug-<tag>.sock`) with `CMUX_SOCKET=/tmp/cmux-debug-<tag>.sock`
-- **Never `open` an untagged `cmux DEV.app`** from DerivedData. It conflicts with the user's running debug instance.
+- **E2E / UI tests:** trigger via `gh workflow run test-e2e.yml` (see phatmux-hq CLAUDE.md for details)
+- **Unit tests:** `xcodebuild -scheme phatmux-unit` is safe (no app launch), but prefer CI
+- **Python socket tests (tests_v2/):** these connect to a running phatmux instance's socket. Never launch an untagged `phatmux DEV.app` to run them. If you must test locally, use a tagged build's socket (`/tmp/phatmux-debug-<tag>.sock`) with `PHATMUX_SOCKET=/tmp/phatmux-debug-<tag>.sock`
+- **Never `open` an untagged `phatmux DEV.app`** from DerivedData. It conflicts with the user's running debug instance.
 
 ## Ghostty submodule workflow
 
@@ -230,13 +230,13 @@ Manual release steps (if not using the command):
 ```bash
 git tag vX.Y.Z
 git push origin vX.Y.Z
-gh run watch --repo manaflow-ai/cmux
+gh run watch --repo amitpaz/phatmux
 ```
 
 Notes:
 - Requires GitHub secrets: `APPLE_CERTIFICATE_BASE64`, `APPLE_CERTIFICATE_PASSWORD`,
   `APPLE_SIGNING_IDENTITY`, `APPLE_ID`, `APPLE_APP_SPECIFIC_PASSWORD`, `APPLE_TEAM_ID`.
-- The release asset is `cmux-macos.dmg` attached to the tag.
-- README download button points to `releases/latest/download/cmux-macos.dmg`.
+- The release asset is `phatmux-macos.dmg` attached to the tag.
+- README download button points to `releases/latest/download/phatmux-macos.dmg`.
 - Versioning: bump the minor version for updates unless explicitly asked otherwise.
 - Changelog: update `CHANGELOG.md`; docs changelog is rendered from it.

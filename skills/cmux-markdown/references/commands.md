@@ -1,17 +1,17 @@
-# Command Reference (cmux Markdown)
+# Command Reference (phatmux Markdown)
 
 ## Opening a Markdown Panel
 
 ```bash
-cmux markdown open <path>
-cmux markdown <path>          # shorthand (implicit "open")
+phatmux markdown open <path>
+phatmux markdown <path>          # shorthand (implicit "open")
 ```
 
 ### Options
 
 | Flag | Description | Default |
 |------|-------------|---------|
-| `--workspace <id\|ref\|index>` | Target workspace | `$CMUX_WORKSPACE_ID` |
+| `--workspace <id\|ref\|index>` | Target workspace | `$PHATMUX_WORKSPACE_ID` |
 | `--surface <id\|ref\|index>` | Source surface to split from | Focused surface |
 | `--window <id\|ref>` | Target window | Current window |
 
@@ -41,9 +41,9 @@ With `--json`:
 
 ```bash
 # These are equivalent when run from /Users/me/project
-cmux markdown open plan.md
-cmux markdown open ./plan.md
-cmux markdown open /Users/me/project/plan.md
+phatmux markdown open plan.md
+phatmux markdown open ./plan.md
+phatmux markdown open /Users/me/project/plan.md
 ```
 
 ## Panel Behavior
@@ -61,8 +61,8 @@ Markdown panels are saved and restored across sessions. On restore, the panel re
 ## Help
 
 ```bash
-cmux markdown --help
-cmux markdown -h
+phatmux markdown --help
+phatmux markdown -h
 ```
 
 See also:

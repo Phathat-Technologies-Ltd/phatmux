@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Docker integration: prove cmux ssh applies Ghostty ssh-env/ssh-terminfo niceties."""
+"""Docker integration: prove phatmux ssh applies Ghostty ssh-env/ssh-terminfo niceties."""
 
 from __future__ import annotations
 
@@ -16,35 +16,35 @@ import time
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent))
-from cmux import cmux, cmuxError
+from phatmux import phatmux, phatmuxError
 
 
-SOCKET_PATH = os.environ.get("CMUX_SOCKET", "/tmp/cmux-debug.sock")
-DOCKER_SSH_HOST = os.environ.get("CMUX_SSH_TEST_DOCKER_HOST", "127.0.0.1")
-DOCKER_PUBLISH_ADDR = os.environ.get("CMUX_SSH_TEST_DOCKER_BIND_ADDR", "127.0.0.1")
+SOCKET_PATH = os.environ.get("PHATMUX_SOCKET", "/tmp/phatmux-debug.sock")
+DOCKER_SSH_HOST = os.environ.get("PHATMUX_SSH_TEST_DOCKER_HOST", "127.0.0.1")
+DOCKER_PUBLISH_ADDR = os.environ.get("PHATMUX_SSH_TEST_DOCKER_BIND_ADDR", "127.0.0.1")
 ANSI_ESCAPE_RE = re.compile(r"\x1b\[[0-?]*[ -/]*[@-~]")
 OSC_ESCAPE_RE = re.compile(r"\x1b\][^\x07\x1b]*(?:\x07|\x1b\\)")
 
 
 def _must(cond: bool, msg: str) -> None:
     if not cond:
-        raise cmuxError(msg)
+        raise phatmuxError(msg)
 
 
 def _find_cli_binary() -> str:
-    env_cli = os.environ.get("CMUXTERM_CLI")
+    env_cli = os.environ.get("PHATMUXTERM_CLI")
     if env_cli and os.path.isfile(env_cli) and os.access(env_cli, os.X_OK):
         return env_cli
 
-    fixed = os.path.expanduser("~/Library/Developer/Xcode/DerivedData/cmux-tests-v2/Build/Products/Debug/cmux")
+    fixed = os.path.expanduser("~/Library/Developer/Xcode/DerivedData/phatmux-tests-v2/Build/Products/Debug/phatmux")
     if os.path.isfile(fixed) and os.access(fixed, os.X_OK):
         return fixed
 
-    candidates = glob.glob(os.path.expanduser("~/Library/Developer/Xcode/DerivedData/**/Build/Products/Debug/cmux"), recursive=True)
-    candidates += glob.glob("/tmp/cmux-*/Build/Products/Debug/cmux")
+    candidates = glob.glob(os.path.expanduser("~/Library/Developer/Xcode/DerivedData/**/Build/Products/Debug/phatmux"), recursive=True)
+    candidates += glob.glob("/tmp/phatmux-*/Build/Products/Debug/phatmux")
     candidates = [p for p in candidates if os.path.isfile(p) and os.access(p, os.X_OK)]
     if not candidates:
-        raise cmuxError("Could not locate cmux CLI binary; set CMUXTERM_CLI")
+        raise phatmuxError("Could not locate phatmux CLI binary; set PHATMUXTERM_CLI")
     candidates.sort(key=lambda p: os.path.getmtime(p), reverse=True)
     return candidates[0]
 
@@ -53,21 +53,21 @@ def _run(cmd: list[str], *, env: dict[str, str] | None = None, check: bool = Tru
     proc = subprocess.run(cmd, capture_output=True, text=True, env=env, check=False)
     if check and proc.returncode != 0:
         merged = f"{proc.stdout}\n{proc.stderr}".strip()
-        raise cmuxError(f"Command failed ({' '.join(cmd)}): {merged}")
+        raise phatmuxError(f"Command failed ({' '.join(cmd)}): {merged}")
     return proc
 
 
 def _run_cli_json(cli: str, args: list[str]) -> dict:
     env = dict(os.environ)
-    env.pop("CMUX_WORKSPACE_ID", None)
-    env.pop("CMUX_SURFACE_ID", None)
-    env.pop("CMUX_TAB_ID", None)
+    env.pop("PHATMUX_WORKSPACE_ID", None)
+    env.pop("PHATMUX_SURFACE_ID", None)
+    env.pop("PHATMUX_TAB_ID", None)
 
     proc = _run([cli, "--socket", SOCKET_PATH, "--json", *args], env=env)
     try:
         return json.loads(proc.stdout or "{}")
     except Exception as exc:  # noqa: BLE001
-        raise cmuxError(f"Invalid JSON output for {' '.join(args)}: {proc.stdout!r} ({exc})")
+        raise phatmuxError(f"Invalid JSON output for {' '.join(args)}: {proc.stdout!r} ({exc})")
 
 
 def _docker_available() -> bool:
@@ -80,7 +80,7 @@ def _docker_available() -> bool:
 def _parse_host_port(docker_port_output: str) -> int:
     text = docker_port_output.strip()
     if not text:
-        raise cmuxError("docker port output was empty")
+        raise phatmuxError("docker port output was empty")
     return int(text.split(":")[-1])
 
 
@@ -116,10 +116,10 @@ def _wait_for_ssh(host: str, host_port: int, key_path: Path, timeout: float = 20
         if probe.returncode == 0 and "ready" in probe.stdout:
             return
         time.sleep(0.5)
-    raise cmuxError("Timed out waiting for SSH server in docker fixture to become ready")
+    raise phatmuxError("Timed out waiting for SSH server in docker fixture to become ready")
 
 
-def _wait_remote_connected(client: cmux, workspace_id: str, timeout: float) -> dict:
+def _wait_remote_connected(client: phatmux, workspace_id: str, timeout: float) -> dict:
     deadline = time.time() + timeout
     last_status = {}
     while time.time() < deadline:
@@ -129,15 +129,15 @@ def _wait_remote_connected(client: cmux, workspace_id: str, timeout: float) -> d
         if str(remote.get("state") or "") == "connected" and str(daemon.get("state") or "") == "ready":
             return last_status
         time.sleep(0.4)
-    raise cmuxError(f"Remote did not reach connected+ready state: {last_status}")
+    raise phatmuxError(f"Remote did not reach connected+ready state: {last_status}")
 
 
 def _is_terminal_surface_not_found(exc: Exception) -> bool:
     return "terminal surface not found" in str(exc).lower()
 
 
-def _read_probe_value(client: cmux, surface_id: str, command: str, timeout: float = 20.0) -> str:
-    token = f"__CMUX_PROBE_{secrets.token_hex(6)}__"
+def _read_probe_value(client: phatmux, surface_id: str, command: str, timeout: float = 20.0) -> str:
+    token = f"__PHATMUX_PROBE_{secrets.token_hex(6)}__"
     client.send_surface(surface_id, f"{command}; printf '{token}%s\\n' $?\\n")
 
     pattern = re.compile(re.escape(token) + r"([^\r\n]*)")
@@ -146,7 +146,7 @@ def _read_probe_value(client: cmux, surface_id: str, command: str, timeout: floa
     while time.time() < deadline:
         try:
             text = client.read_terminal_text(surface_id)
-        except cmuxError as exc:
+        except phatmuxError as exc:
             if _is_terminal_surface_not_found(exc):
                 saw_missing_surface = True
                 time.sleep(0.2)
@@ -160,12 +160,12 @@ def _read_probe_value(client: cmux, surface_id: str, command: str, timeout: floa
         time.sleep(0.2)
 
     if saw_missing_surface:
-        raise cmuxError("terminal surface not found")
-    raise cmuxError(f"Timed out waiting for probe token for command: {command}")
+        raise phatmuxError("terminal surface not found")
+    raise phatmuxError(f"Timed out waiting for probe token for command: {command}")
 
 
-def _read_probe_payload(client: cmux, surface_id: str, payload_command: str, timeout: float = 20.0) -> str:
-    token = f"__CMUX_PAYLOAD_{secrets.token_hex(6)}__"
+def _read_probe_payload(client: phatmux, surface_id: str, payload_command: str, timeout: float = 20.0) -> str:
+    token = f"__PHATMUX_PAYLOAD_{secrets.token_hex(6)}__"
     client.send_surface(surface_id, f"printf '{token}%s\\n' \"$({payload_command})\"\\n")
 
     pattern = re.compile(re.escape(token) + r"([^\r\n]*)")
@@ -174,7 +174,7 @@ def _read_probe_payload(client: cmux, surface_id: str, payload_command: str, tim
     while time.time() < deadline:
         try:
             text = client.read_terminal_text(surface_id)
-        except cmuxError as exc:
+        except phatmuxError as exc:
             if _is_terminal_surface_not_found(exc):
                 saw_missing_surface = True
                 time.sleep(0.2)
@@ -188,8 +188,8 @@ def _read_probe_payload(client: cmux, surface_id: str, payload_command: str, tim
         time.sleep(0.2)
 
     if saw_missing_surface:
-        raise cmuxError("terminal surface not found")
-    raise cmuxError(f"Timed out waiting for payload token for command: {payload_command}")
+        raise phatmuxError("terminal surface not found")
+    raise phatmuxError(f"Timed out waiting for payload token for command: {payload_command}")
 
 
 def _wait_for(pred, timeout_s: float = 5.0, step_s: float = 0.05) -> None:
@@ -198,10 +198,10 @@ def _wait_for(pred, timeout_s: float = 5.0, step_s: float = 0.05) -> None:
         if pred():
             return
         time.sleep(step_s)
-    raise cmuxError("Timed out waiting for condition")
+    raise phatmuxError("Timed out waiting for condition")
 
 
-def _wait_for_pane_count(client: cmux, minimum_count: int, timeout: float = 8.0) -> list[str]:
+def _wait_for_pane_count(client: phatmux, minimum_count: int, timeout: float = 8.0) -> list[str]:
     deadline = time.time() + timeout
     last: list[str] = []
     while time.time() < deadline:
@@ -209,10 +209,10 @@ def _wait_for_pane_count(client: cmux, minimum_count: int, timeout: float = 8.0)
         if len(last) >= minimum_count:
             return last
         time.sleep(0.1)
-    raise cmuxError(f"Timed out waiting for pane count >= {minimum_count}; saw {len(last)} panes: {last}")
+    raise phatmuxError(f"Timed out waiting for pane count >= {minimum_count}; saw {len(last)} panes: {last}")
 
 
-def _surface_text_scrollback(client: cmux, workspace_id: str, surface_id: str) -> str:
+def _surface_text_scrollback(client: phatmux, workspace_id: str, surface_id: str) -> str:
     payload = client._call(
         "surface.read_text",
         {"workspace_id": workspace_id, "surface_id": surface_id, "scrollback": True},
@@ -227,12 +227,12 @@ def _clean_line(raw: str) -> str:
     return line.strip()
 
 
-def _surface_text_scrollback_lines(client: cmux, workspace_id: str, surface_id: str) -> list[str]:
+def _surface_text_scrollback_lines(client: phatmux, workspace_id: str, surface_id: str) -> list[str]:
     return [_clean_line(raw) for raw in _surface_text_scrollback(client, workspace_id, surface_id).splitlines()]
 
 
 def _scrollback_has_all_lines(
-    client: cmux,
+    client: phatmux,
     workspace_id: str,
     surface_id: str,
     lines: list[str],
@@ -242,7 +242,7 @@ def _scrollback_has_all_lines(
 
 
 def _wait_surface_contains(
-    client: cmux,
+    client: phatmux,
     workspace_id: str,
     surface_id: str,
     token: str,
@@ -255,7 +255,7 @@ def _wait_surface_contains(
         try:
             if token in _surface_text_scrollback(client, workspace_id, surface_id):
                 return
-        except cmuxError as exc:
+        except phatmuxError as exc:
             if _is_terminal_surface_not_found(exc):
                 saw_missing_surface = True
                 time.sleep(0.2)
@@ -264,17 +264,17 @@ def _wait_surface_contains(
         time.sleep(0.2)
 
     if saw_missing_surface:
-        raise cmuxError("terminal surface not found")
-    raise cmuxError(f"Timed out waiting for terminal token: {token}")
+        raise phatmuxError("terminal surface not found")
+    raise phatmuxError(f"Timed out waiting for terminal token: {token}")
 
 
-def _layout_panes(client: cmux) -> list[dict]:
+def _layout_panes(client: phatmux) -> list[dict]:
     layout_payload = client.layout_debug() or {}
     layout = layout_payload.get("layout") or {}
     return list(layout.get("panes") or [])
 
 
-def _pane_extent(client: cmux, pane_id: str, axis: str) -> float:
+def _pane_extent(client: phatmux, pane_id: str, axis: str) -> float:
     panes = _layout_panes(client)
     for pane in panes:
         pid = str(pane.get("paneId") or pane.get("pane_id") or "")
@@ -282,27 +282,27 @@ def _pane_extent(client: cmux, pane_id: str, axis: str) -> float:
             continue
         frame = pane.get("frame") or {}
         return float(frame.get(axis) or 0.0)
-    raise cmuxError(f"Pane {pane_id} missing from debug layout panes: {panes}")
+    raise phatmuxError(f"Pane {pane_id} missing from debug layout panes: {panes}")
 
 
-def _pane_for_surface(client: cmux, surface_id: str) -> str:
+def _pane_for_surface(client: phatmux, surface_id: str) -> str:
     target_id = str(client._resolve_surface_id(surface_id))
     for _idx, pane_id, _count, _focused in client.list_panes():
         rows = client.list_pane_surfaces(pane_id)
         for _row_idx, sid, _title, _selected in rows:
             try:
                 candidate_id = str(client._resolve_surface_id(sid))
-            except cmuxError:
+            except phatmuxError:
                 continue
             if candidate_id == target_id:
                 return pane_id
-    raise cmuxError(f"Surface {surface_id} is not present in current workspace panes")
+    raise phatmuxError(f"Surface {surface_id} is not present in current workspace panes")
 
 
-def _pick_resize_direction_for_pane(client: cmux, pane_ids: list[str], target_pane: str) -> tuple[str, str]:
+def _pick_resize_direction_for_pane(client: phatmux, pane_ids: list[str], target_pane: str) -> tuple[str, str]:
     panes = [p for p in _layout_panes(client) if str(p.get("paneId") or p.get("pane_id") or "") in pane_ids]
     if len(panes) < 2:
-        raise cmuxError(f"Need >=2 panes for resize test, got {panes}")
+        raise phatmuxError(f"Need >=2 panes for resize test, got {panes}")
 
     def x_of(p: dict) -> float:
         return float((p.get("frame") or {}).get("x") or 0.0)
@@ -336,9 +336,9 @@ def main() -> int:
     fixture_dir = repo_root / "tests" / "fixtures" / "ssh-remote"
     _must(fixture_dir.is_dir(), f"Missing docker fixture directory: {fixture_dir}")
 
-    temp_dir = Path(tempfile.mkdtemp(prefix="cmux-ssh-shell-integration-"))
-    image_tag = f"cmux-ssh-test:{secrets.token_hex(4)}"
-    container_name = f"cmux-ssh-shell-{secrets.token_hex(4)}"
+    temp_dir = Path(tempfile.mkdtemp(prefix="phatmux-ssh-shell-integration-"))
+    image_tag = f"phatmux-ssh-test:{secrets.token_hex(4)}"
+    container_name = f"phatmux-ssh-shell-{secrets.token_hex(4)}"
     workspace_id = ""
 
     try:
@@ -372,7 +372,7 @@ def main() -> int:
         pre = _ssh_run(host, host_ssh_port, key_path, "if infocmp xterm-ghostty >/dev/null 2>&1; then echo present; else echo missing; fi")
         _must("missing" in pre.stdout, f"Fresh container should not have xterm-ghostty terminfo preinstalled: {pre.stdout!r}")
 
-        with cmux(SOCKET_PATH) as client:
+        with phatmux(SOCKET_PATH) as client:
             payload = _run_cli_json(
                 cli,
                 [
@@ -398,7 +398,7 @@ def main() -> int:
                     if str(row.get("ref") or "") == workspace_ref:
                         workspace_id = str(row.get("id") or "")
                         break
-            _must(bool(workspace_id), f"cmux ssh output missing workspace_id: {payload}")
+            _must(bool(workspace_id), f"phatmux ssh output missing workspace_id: {payload}")
 
             _wait_remote_connected(client, workspace_id, timeout=45.0)
 
@@ -418,7 +418,7 @@ def main() -> int:
             try:
                 term_value = _read_probe_payload(client, surface_id, "printf '%s' \"$TERM\"")
                 terminfo_state = _read_probe_value(client, surface_id, "infocmp xterm-ghostty >/dev/null 2>&1")
-            except cmuxError as exc:
+            except phatmuxError as exc:
                 if _is_terminal_surface_not_found(exc):
                     print("SKIP: terminal surface unavailable for shell integration probes")
                     return 0
@@ -451,9 +451,9 @@ def main() -> int:
             _must(bool(term_program_version), "ssh-env should propagate non-empty TERM_PROGRAM_VERSION")
 
             ls_stamp = secrets.token_hex(4)
-            ls_entries = [f"CMUX_RESIZE_LS_{ls_stamp}_{index:02d}" for index in range(1, 17)]
-            ls_start = f"CMUX_RESIZE_LS_START_{ls_stamp}"
-            ls_end = f"CMUX_RESIZE_LS_END_{ls_stamp}"
+            ls_entries = [f"PHATMUX_RESIZE_LS_{ls_stamp}_{index:02d}" for index in range(1, 17)]
+            ls_start = f"PHATMUX_RESIZE_LS_START_{ls_stamp}"
+            ls_end = f"PHATMUX_RESIZE_LS_END_{ls_stamp}"
             names = " ".join(ls_entries)
             ls_script = (
                 "tmpdir=$(mktemp -d); "
@@ -534,7 +534,7 @@ def main() -> int:
                 f"resize lost all pre-resize visible lines from viewport: {pre_visible_lines}",
             )
 
-            resize_post_token = f"CMUX_RESIZE_POST_{secrets.token_hex(6)}"
+            resize_post_token = f"PHATMUX_RESIZE_POST_{secrets.token_hex(6)}"
             client.send_surface(surface_id, f"echo {resize_post_token}\n")
             _wait_surface_contains(client, workspace_id, surface_id, resize_post_token)
 
@@ -555,7 +555,7 @@ def main() -> int:
                 pass
 
         print(
-            "PASS: cmux ssh enables Ghostty shell integration niceties and preserves pre-resize terminal content "
+            "PASS: phatmux ssh enables Ghostty shell integration niceties and preserves pre-resize terminal content "
             f"(TERM={term_value}, COLORTERM={colorterm_value}, TERM_PROGRAM={term_program})"
         )
         return 0
@@ -563,7 +563,7 @@ def main() -> int:
     finally:
         if workspace_id:
             try:
-                with cmux(SOCKET_PATH) as cleanup_client:
+                with phatmux(SOCKET_PATH) as cleanup_client:
                     cleanup_client.close_workspace(workspace_id)
             except Exception:
                 pass

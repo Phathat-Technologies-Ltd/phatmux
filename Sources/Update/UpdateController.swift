@@ -8,7 +8,7 @@ enum UpdateSettings {
     static let automaticallyUpdateKey = "SUAutomaticallyUpdate"
     static let scheduledCheckIntervalKey = "SUScheduledCheckInterval"
     static let sendProfileInfoKey = "SUSendProfileInfo"
-    static let migrationKey = "cmux.sparkle.automaticChecksMigration.v2"
+    static let migrationKey = "phatmux.sparkle.automaticChecksMigration.v2"
     static let previousDefaultScheduledCheckInterval: TimeInterval = 60 * 60 * 24
     static let scheduledCheckInterval: TimeInterval = 60 * 60
 
@@ -47,7 +47,7 @@ enum UpdateSettings {
     }
 }
 
-/// Controller for managing Sparkle updates in cmux.
+/// Controller for managing Sparkle updates in phatmux.
 class UpdateController {
     private(set) var updater: SPUUpdater
     private let userDriver: UpdateDriver
@@ -103,7 +103,7 @@ class UpdateController {
 #if DEBUG
         // Keep the permission-related defaults resettable for UI tests even though the
         // delegate now suppresses Sparkle's permission UI entirely.
-        if ProcessInfo.processInfo.environment["CMUX_UI_TEST_RESET_SPARKLE_PERMISSION"] == "1" {
+        if ProcessInfo.processInfo.environment["PHATMUX_UI_TEST_RESET_SPARKLE_PERMISSION"] == "1" {
             let defaults = UserDefaults.standard
             defaults.removeObject(forKey: UpdateSettings.automaticChecksKey)
             defaults.removeObject(forKey: UpdateSettings.automaticallyUpdateKey)
@@ -244,7 +244,7 @@ class UpdateController {
             if case .checking = viewModel.state {
                 viewModel.state = .error(.init(
                     error: NSError(
-                        domain: "cmux.update",
+                        domain: "phatmux.update",
                         code: 1,
                         userInfo: [NSLocalizedDescriptionKey: "Updater is still starting. Try again in a moment."]
                     ),
@@ -313,8 +313,8 @@ class UpdateController {
     private func recordUITestTimestamp(key: String) {
 #if DEBUG
         let env = ProcessInfo.processInfo.environment
-        guard env["CMUX_UI_TEST_MODE"] == "1" else { return }
-        guard let path = env["CMUX_UI_TEST_TIMING_PATH"] else { return }
+        guard env["PHATMUX_UI_TEST_MODE"] == "1" else { return }
+        guard let path = env["PHATMUX_UI_TEST_TIMING_PATH"] else { return }
 
         let url = URL(fileURLWithPath: path)
         var payload: [String: Double] = [:]

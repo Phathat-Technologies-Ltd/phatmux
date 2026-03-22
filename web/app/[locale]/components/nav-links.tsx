@@ -33,10 +33,10 @@ export function NavLinks() {
         {t("community")}
       </Link>
       <a
-        href="https://github.com/manaflow-ai/cmux"
+        href="https://github.com/amitpaz/phatmux"
         target="_blank"
         rel="noopener noreferrer"
-        onClick={() => posthog.capture("cmuxterm_github_clicked", { location: "navbar" })}
+        onClick={() => posthog.capture("phatmux_github_clicked", { location: "navbar" })}
         className="hover:text-foreground transition-colors"
       >
         {t("github")}

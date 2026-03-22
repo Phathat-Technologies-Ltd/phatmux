@@ -1,11 +1,11 @@
 > Denne oversættelse er genereret af Claude. Har du forslag til forbedringer, er du velkommen til at oprette en PR.
 
-<h1 align="center">cmux</h1>
+<h1 align="center">phatmux</h1>
 <p align="center">En Ghostty-baseret macOS-terminal med lodrette faner og notifikationer til AI-kodningsagenter</p>
 
 <p align="center">
-  <a href="https://github.com/manaflow-ai/cmux/releases/latest/download/cmux-macos.dmg">
-    <img src="./docs/assets/macos-badge.png" alt="Download cmux til macOS" width="180" />
+  <a href="https://github.com/amitpaz/phatmux/releases/latest/download/phatmux-macos.dmg">
+    <img src="./docs/assets/macos-badge.png" alt="Download phatmux til macOS" width="180" />
   </a>
 </p>
 
@@ -19,11 +19,11 @@
 </p>
 
 <p align="center">
-  <img src="./docs/assets/main-first-image.png" alt="cmux skærmbillede" width="900" />
+  <img src="./docs/assets/main-first-image.png" alt="phatmux skærmbillede" width="900" />
 </p>
 
 <p align="center">
-  <a href="https://www.youtube.com/watch?v=i-WxO5YUTOs">▶ Demovideo</a> · <a href="https://cmux.com/blog/zen-of-cmux">The Zen of cmux</a>
+  <a href="https://www.youtube.com/watch?v=i-WxO5YUTOs">▶ Demovideo</a> · <a href="https://phatmux.com/blog/zen-of-phatmux">The Zen of phatmux</a>
 </p>
 
 ## Funktioner
@@ -76,44 +76,44 @@ Sidebjælken viser git-branch, tilknyttet PR-status/nummer, arbejdsmappe, lytten
 
 ### DMG (anbefalet)
 
-<a href="https://github.com/manaflow-ai/cmux/releases/latest/download/cmux-macos.dmg">
-  <img src="./docs/assets/macos-badge.png" alt="Download cmux til macOS" width="180" />
+<a href="https://github.com/amitpaz/phatmux/releases/latest/download/phatmux-macos.dmg">
+  <img src="./docs/assets/macos-badge.png" alt="Download phatmux til macOS" width="180" />
 </a>
 
-Åbn `.dmg`-filen og træk cmux til din Programmer-mappe. cmux opdaterer sig selv automatisk via Sparkle, så du behøver kun at downloade én gang.
+Åbn `.dmg`-filen og træk phatmux til din Programmer-mappe. phatmux opdaterer sig selv automatisk via Sparkle, så du behøver kun at downloade én gang.
 
 ### Homebrew
 
 ```bash
-brew tap manaflow-ai/cmux
-brew install --cask cmux
+brew tap amitpaz/phatmux
+brew install --cask phatmux
 ```
 
 For at opdatere senere:
 
 ```bash
-brew upgrade --cask cmux
+brew upgrade --cask phatmux
 ```
 
 Ved første start kan macOS bede dig om at bekræfte åbning af en app fra en identificeret udvikler. Klik på **Åbn** for at fortsætte.
 
-## Hvorfor cmux?
+## Hvorfor phatmux?
 
 Jeg kører mange Claude Code- og Codex-sessioner parallelt. Jeg brugte Ghostty med en masse delte paneler og stolede på native macOS-notifikationer til at vide, hvornår en agent havde brug for mig. Men Claude Codes notifikationstekst er altid bare "Claude is waiting for your input" uden kontekst, og med nok åbne faner kunne jeg ikke engang læse titlerne længere.
 
-Jeg prøvede et par kodningsorkestratore, men de fleste var Electron/Tauri-apps, og ydelsen irriterede mig. Jeg foretrækker også bare terminalen, da GUI-orkestratore låser dig ind i deres arbejdsgang. Så jeg byggede cmux som en nativ macOS-app i Swift/AppKit. Den bruger libghostty til terminal-rendering og læser din eksisterende Ghostty-konfiguration til temaer, skrifttyper og farver.
+Jeg prøvede et par kodningsorkestratore, men de fleste var Electron/Tauri-apps, og ydelsen irriterede mig. Jeg foretrækker også bare terminalen, da GUI-orkestratore låser dig ind i deres arbejdsgang. Så jeg byggede phatmux som en nativ macOS-app i Swift/AppKit. Den bruger libghostty til terminal-rendering og læser din eksisterende Ghostty-konfiguration til temaer, skrifttyper og farver.
 
-De vigtigste tilføjelser er sidebjælken og notifikationssystemet. Sidebjælken har lodrette faner, der viser git-branch, tilknyttet PR-status/nummer, arbejdsmappe, lyttende porte og den seneste notifikationstekst for hvert workspace. Notifikationssystemet opfanger terminalsekvenser (OSC 9/99/777) og har en CLI (`cmux notify`), du kan koble til agent-hooks for Claude Code, OpenCode osv. Når en agent venter, får dens panel en blå ring, og fanen lyser op i sidebjælken, så jeg kan se, hvilken der har brug for mig på tværs af opdelinger og faner. Cmd+Shift+U hopper til den seneste ulæste.
+De vigtigste tilføjelser er sidebjælken og notifikationssystemet. Sidebjælken har lodrette faner, der viser git-branch, tilknyttet PR-status/nummer, arbejdsmappe, lyttende porte og den seneste notifikationstekst for hvert workspace. Notifikationssystemet opfanger terminalsekvenser (OSC 9/99/777) og har en CLI (`phatmux notify`), du kan koble til agent-hooks for Claude Code, OpenCode osv. Når en agent venter, får dens panel en blå ring, og fanen lyser op i sidebjælken, så jeg kan se, hvilken der har brug for mig på tværs af opdelinger og faner. Cmd+Shift+U hopper til den seneste ulæste.
 
 Den indbyggede browser har en scriptbar API porteret fra [agent-browser](https://github.com/vercel-labs/agent-browser). Agenter kan tage et snapshot af tilgængelighedstræet, få elementreferencer, klikke, udfylde formularer og evaluere JS. Du kan dele et browserpanel ved siden af din terminal og lade Claude Code interagere direkte med din udviklingsserver.
 
 Alt er scriptbart gennem CLI og socket API — opret workspaces/faner, del paneler, send tastetryk, åbn URL'er i browseren.
 
-## The Zen of cmux
+## The Zen of phatmux
 
-cmux foreskriver ikke, hvordan udviklere bruger deres værktøjer. Det er en terminal og browser med en CLI, resten er op til dig.
+phatmux foreskriver ikke, hvordan udviklere bruger deres værktøjer. Det er en terminal og browser med en CLI, resten er op til dig.
 
-cmux er en primitiv, ikke en løsning. Det giver dig en terminal, en browser, notifikationer, workspaces, opdelinger, faner og en CLI til at styre det hele. cmux tvinger dig ikke ind i en forudbestemt måde at bruge kodningsagenter på. Hvad du bygger med primitiverne, er dit eget.
+phatmux er en primitiv, ikke en løsning. Det giver dig en terminal, en browser, notifikationer, workspaces, opdelinger, faner og en CLI til at styre det hele. phatmux tvinger dig ikke ind i en forudbestemt måde at bruge kodningsagenter på. Hvad du bygger med primitiverne, er dit eget.
 
 De bedste udviklere har altid bygget deres egne værktøjer. Ingen har endnu fundet den bedste måde at arbejde med agenter på, og holdene bag lukkede produkter har heller ikke. De udviklere, der er tættest på deres egne kodebaser, vil finde ud af det først.
 
@@ -121,7 +121,7 @@ Giv en million udviklere komponerbare primitiver, og de vil kollektivt finde de 
 
 ## Dokumentation
 
-For mere information om konfiguration af cmux, [se vores dokumentation](https://cmux.com/docs/getting-started?utm_source=readme).
+For mere information om konfiguration af phatmux, [se vores dokumentation](https://phatmux.com/docs/getting-started?utm_source=readme).
 
 ## Tastaturgenveje
 
@@ -211,27 +211,27 @@ Browserens udviklerværktøjsgenveje følger Safaris standarder og kan tilpasses
 
 ## Nightly Builds
 
-[Download cmux NIGHTLY](https://github.com/manaflow-ai/cmux/releases/download/nightly/cmux-nightly-macos.dmg)
+[Download phatmux NIGHTLY](https://github.com/amitpaz/phatmux/releases/download/nightly/phatmux-nightly-macos.dmg)
 
-cmux NIGHTLY er en separat app med sit eget bundle-ID, så den kører side om side med den stabile version. Bygges automatisk fra det seneste `main`-commit og opdaterer sig selv automatisk via sit eget Sparkle-feed.
+phatmux NIGHTLY er en separat app med sit eget bundle-ID, så den kører side om side med den stabile version. Bygges automatisk fra det seneste `main`-commit og opdaterer sig selv automatisk via sit eget Sparkle-feed.
 
 ## Sessionsgenoprettelse (nuværende adfærd)
 
-Ved genstart genopretter cmux i øjeblikket kun app-layout og metadata:
+Ved genstart genopretter phatmux i øjeblikket kun app-layout og metadata:
 - Vindue/workspace/panel-layout
 - Arbejdsmapper
 - Terminal-scrollback (best effort)
 - Browser-URL og navigationshistorik
 
-cmux genopretter **ikke** aktive procestilstande i terminalapps. For eksempel genoptages aktive Claude Code/tmux/vim-sessioner endnu ikke efter genstart.
+phatmux genopretter **ikke** aktive procestilstande i terminalapps. For eksempel genoptages aktive Claude Code/tmux/vim-sessioner endnu ikke efter genstart.
 
 ## Stjernehistorik
 
-<a href="https://star-history.com/#manaflow-ai/cmux&Date">
+<a href="https://star-history.com/#amitpaz/phatmux&Date">
  <picture>
-   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=manaflow-ai/cmux&type=Date&theme=dark" />
-   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=manaflow-ai/cmux&type=Date" />
-   <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=manaflow-ai/cmux&type=Date" width="600" />
+   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=amitpaz/phatmux&type=Date&theme=dark" />
+   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=amitpaz/phatmux&type=Date" />
+   <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=amitpaz/phatmux&type=Date" width="600" />
  </picture>
 </a>
 
@@ -241,26 +241,26 @@ Måder at deltage:
 
 - Følg os på X for opdateringer [@manaflowai](https://x.com/manaflowai), [@lawrencecchen](https://x.com/lawrencecchen) og [@austinywang](https://x.com/austinywang)
 - Deltag i samtalen på [Discord](https://discord.gg/xsgFEVrWCZ)
-- Opret og deltag i [GitHub issues](https://github.com/manaflow-ai/cmux/issues) og [diskussioner](https://github.com/manaflow-ai/cmux/discussions)
-- Fortæl os, hvad du bygger med cmux
+- Opret og deltag i [GitHub issues](https://github.com/amitpaz/phatmux/issues) og [diskussioner](https://github.com/amitpaz/phatmux/discussions)
+- Fortæl os, hvad du bygger med phatmux
 
 ## Fællesskab
 
 - [Discord](https://discord.gg/xsgFEVrWCZ)
-- [GitHub](https://github.com/manaflow-ai/cmux)
+- [GitHub](https://github.com/amitpaz/phatmux)
 - [X / Twitter](https://twitter.com/manaflowai)
 - [YouTube](https://www.youtube.com/channel/UCAa89_j-TWkrXfk9A3CbASw)
 - [LinkedIn](https://www.linkedin.com/company/manaflow-ai/)
-- [Reddit](https://www.reddit.com/r/cmux/)
+- [Reddit](https://www.reddit.com/r/phatmux/)
 
 ## Founder's Edition
 
-cmux er gratis, open source og vil altid være det. Hvis du gerne vil støtte udviklingen og få tidlig adgang til det, der kommer:
+phatmux er gratis, open source og vil altid være det. Hvis du gerne vil støtte udviklingen og få tidlig adgang til det, der kommer:
 
 **[Få Founder's Edition](https://buy.stripe.com/3cI00j2Ld0it5OU33r5EY0q)**
 
 - **Prioriterede funktionsønsker og fejlrettelser**
-- **Tidlig adgang: cmux AI der giver dig kontekst om hvert workspace, fane og panel**
+- **Tidlig adgang: phatmux AI der giver dig kontekst om hvert workspace, fane og panel**
 - **Tidlig adgang: iOS-app med terminaler synkroniseret mellem desktop og telefon**
 - **Tidlig adgang: Cloud VM'er**
 - **Tidlig adgang: Stemmetilstand**

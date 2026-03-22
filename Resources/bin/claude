@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
-# cmux claude wrapper - injects hooks and session tracking
+# phatmux claude wrapper - injects hooks and session tracking
 #
-# When running inside a cmux terminal (CMUX_SURFACE_ID is set), this wrapper
+# When running inside a phatmux terminal (PHATMUX_SURFACE_ID is set), this wrapper
 # intercepts `claude` invocations to inject --session-id and --settings flags
-# so that Claude Code hooks fire back into cmux for notifications/status.
-# Outside cmux, it passes through to the real claude binary unchanged.
+# so that Claude Code hooks fire back into phatmux for notifications/status.
+# Outside phatmux, it passes through to the real claude binary unchanged.
 
 # Find the real claude binary, skipping our own directory.
 find_real_claude() {
@@ -18,32 +18,32 @@ find_real_claude() {
     return 1
 }
 
-# Return 0 only when CMUX_SOCKET_PATH points to a live cmux socket.
-cmux_socket_available() {
-    local socket="${CMUX_SOCKET_PATH:-}"
+# Return 0 only when PHATMUX_SOCKET_PATH points to a live phatmux socket.
+phatmux_socket_available() {
+    local socket="${PHATMUX_SOCKET_PATH:-}"
     [[ -n "$socket" && -S "$socket" ]] || return 1
 
-    local self_dir cmux_bin
+    local self_dir phatmux_bin
     self_dir="$(cd "$(dirname "$0")" && pwd)"
-    cmux_bin="$self_dir/cmux"
-    [[ -x "$cmux_bin" ]] || cmux_bin="$(command -v cmux || true)"
-    [[ -n "$cmux_bin" ]] || return 1
+    phatmux_bin="$self_dir/phatmux"
+    [[ -x "$phatmux_bin" ]] || phatmux_bin="$(command -v phatmux || true)"
+    [[ -n "$phatmux_bin" ]] || return 1
 
     # Keep stale/hung socket checks bounded so claude startup does not block
     # behind the CLI default timeout (15s).
-    CMUXTERM_CLI_RESPONSE_TIMEOUT_SEC=0.75 \
-        "$cmux_bin" --socket "$socket" ping >/dev/null 2>&1
+    PHATMUXTERM_CLI_RESPONSE_TIMEOUT_SEC=0.75 \
+        "$phatmux_bin" --socket "$socket" ping >/dev/null 2>&1
 }
 
-# Pass through if not in a cmux terminal, hooks are disabled, or the cmux
+# Pass through if not in a phatmux terminal, hooks are disabled, or the phatmux
 # socket is unavailable (stale env / app not running).
 IN_CMUX=0
-if [[ -n "$CMUX_SURFACE_ID" ]]; then
+if [[ -n "$PHATMUX_SURFACE_ID" ]]; then
     IN_CMUX=1
 fi
 
-if [[ "$IN_CMUX" == "0" || "$CMUX_CLAUDE_HOOKS_DISABLED" == "1" ]] || ! cmux_socket_available; then
-    # In cmux-launched shells, preserve old behavior and always clear nested
+if [[ "$IN_CMUX" == "0" || "$PHATMUX_CLAUDE_HOOKS_DISABLED" == "1" ]] || ! phatmux_socket_available; then
+    # In phatmux-launched shells, preserve old behavior and always clear nested
     # Claude session markers, even when we must pass through due to stale socket.
     if [[ "$IN_CMUX" == "1" ]]; then
         unset CLAUDECODE
@@ -60,7 +60,7 @@ case "${1:-}" in
     mcp|config|api-key|rc|remote-control) exec "$REAL_CLAUDE" "$@" ;;
 esac
 
-# Unset CLAUDECODE to avoid "nested session" detection — cmux terminals are
+# Unset CLAUDECODE to avoid "nested session" detection — phatmux terminals are
 # independent sessions even when the parent shell was launched from Claude Code.
 unset CLAUDECODE
 
@@ -78,7 +78,7 @@ done
 
 # Export the wrapper's PID. Because we exec claude below, this PID becomes
 # the actual claude process PID, which hooks use for stale-session detection.
-export CMUX_CLAUDE_PID=$$
+export PHATMUX_CLAUDE_PID=$$
 
 # Build hooks settings JSON.
 # Claude Code merges --settings additively with the user's own settings.json.
@@ -86,7 +86,7 @@ export CMUX_CLAUDE_PID=$$
 # - SessionEnd: cleanup when Claude exits (covers Ctrl+C where Stop doesn't fire)
 # - UserPromptSubmit: clears "Needs input" and sets "Running" on new prompt
 # - PreToolUse: clears "Needs input" when Claude resumes after permission grant (async to avoid latency)
-HOOKS_JSON='{"hooks":{"SessionStart":[{"matcher":"","hooks":[{"type":"command","command":"cmux claude-hook session-start","timeout":10}]}],"Stop":[{"matcher":"","hooks":[{"type":"command","command":"cmux claude-hook stop","timeout":10}]}],"SessionEnd":[{"matcher":"","hooks":[{"type":"command","command":"cmux claude-hook session-end","timeout":1}]}],"Notification":[{"matcher":"","hooks":[{"type":"command","command":"cmux claude-hook notification","timeout":10}]}],"UserPromptSubmit":[{"matcher":"","hooks":[{"type":"command","command":"cmux claude-hook prompt-submit","timeout":10}]}],"PreToolUse":[{"matcher":"","hooks":[{"type":"command","command":"cmux claude-hook pre-tool-use","timeout":5,"async":true}]}]}}'
+HOOKS_JSON='{"hooks":{"SessionStart":[{"matcher":"","hooks":[{"type":"command","command":"phatmux claude-hook session-start","timeout":10}]}],"Stop":[{"matcher":"","hooks":[{"type":"command","command":"phatmux claude-hook stop","timeout":10}]}],"SessionEnd":[{"matcher":"","hooks":[{"type":"command","command":"phatmux claude-hook session-end","timeout":1}]}],"Notification":[{"matcher":"","hooks":[{"type":"command","command":"phatmux claude-hook notification","timeout":10}]}],"UserPromptSubmit":[{"matcher":"","hooks":[{"type":"command","command":"phatmux claude-hook prompt-submit","timeout":10}]}],"PreToolUse":[{"matcher":"","hooks":[{"type":"command","command":"phatmux claude-hook pre-tool-use","timeout":5,"async":true}]}]}}'
 
 if [[ "$SKIP_SESSION_ID" == true ]]; then
     exec "$REAL_CLAUDE" --settings "$HOOKS_JSON" "$@"

@@ -1,9 +1,9 @@
 ---
-name: cmux-markdown
+name: phatmux-markdown
 description: Open markdown files in a formatted viewer panel with live reload. Use when you need to display plans, documentation, or notes alongside the terminal with rich rendering (headings, code blocks, tables, lists).
 ---
 
-# Markdown Viewer with cmux
+# Markdown Viewer with phatmux
 
 Use this skill to display markdown files in a dedicated panel with rich formatting and live file watching.
 
@@ -15,13 +15,13 @@ Use this skill to display markdown files in a dedicated panel with rich formatti
 
 ```bash
 # Open a markdown file as a split panel next to the current terminal
-cmux markdown open plan.md
+phatmux markdown open plan.md
 
 # Absolute path
-cmux markdown open /path/to/PLAN.md
+phatmux markdown open /path/to/PLAN.md
 
 # Target a specific workspace
-cmux markdown open design.md --workspace workspace:2
+phatmux markdown open design.md --workspace workspace:2
 ```
 
 ## When to Use
@@ -58,7 +58,7 @@ cat > plan.md << 'EOF'
 4. Verify the build
 EOF
 
-cmux markdown open plan.md
+phatmux markdown open plan.md
 ```
 
 ### Updating a plan in real-time
@@ -77,9 +77,9 @@ Add this to your project's `AGENTS.md` to instruct coding agents to use the mark
 ```markdown
 ## Plan Display
 
-When creating a plan or task list, write it to a `.md` file and open it in cmux:
+When creating a plan or task list, write it to a `.md` file and open it in phatmux:
 
-    cmux markdown open plan.md
+    phatmux markdown open plan.md
 
 The panel renders markdown with rich formatting and auto-updates when the file changes.
 ```
@@ -87,17 +87,17 @@ The panel renders markdown with rich formatting and auto-updates when the file c
 ## Routing
 
 ```bash
-# Open in the caller's workspace (default -- uses CMUX_WORKSPACE_ID)
-cmux markdown open plan.md
+# Open in the caller's workspace (default -- uses PHATMUX_WORKSPACE_ID)
+phatmux markdown open plan.md
 
 # Open in a specific workspace
-cmux markdown open plan.md --workspace workspace:2
+phatmux markdown open plan.md --workspace workspace:2
 
 # Open splitting from a specific surface
-cmux markdown open plan.md --surface surface:5
+phatmux markdown open plan.md --surface surface:5
 
 # Open in a specific window
-cmux markdown open plan.md --window window:1
+phatmux markdown open plan.md --window window:1
 ```
 
 ## Deep-Dive References

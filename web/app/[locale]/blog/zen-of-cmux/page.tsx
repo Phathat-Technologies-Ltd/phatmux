@@ -5,12 +5,12 @@ import { Link } from "../../../../i18n/navigation";
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "blog.zenOfCmux" });
-  const url = locale === "en" ? "/blog/zen-of-cmux" : `/${locale}/blog/zen-of-cmux`;
+  const url = locale === "en" ? "/blog/zen-of-phatmux" : `/${locale}/blog/zen-of-phatmux`;
   return {
     title: t("metaTitle"),
     description: t("metaDescription"),
     keywords: [
-      "cmux", "terminal", "macOS", "CLI", "composable",
+      "phatmux", "terminal", "macOS", "CLI", "composable",
       "developer tools", "AI coding agents", "workflow",
     ],
     openGraph: {

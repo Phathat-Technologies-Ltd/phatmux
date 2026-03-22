@@ -26,7 +26,7 @@ jobs:
       - name: Validate unit-test SwiftPM retry guard
         run: ./tests/test_ci_unit_test_spm_retry.sh
 
-      - name: Validate cmux scheme test configuration
+      - name: Validate phatmux scheme test configuration
         run: ./tests/test_ci_scheme_testaction_debug.sh
 
       - name: Validate GhosttyKit checksum verification
@@ -154,7 +154,7 @@ jobs:
           mkdir -p "$SOURCE_PACKAGES_DIR"
 
           for attempt in 1 2 3; do
-            if xcodebuild -project GhosttyTabs.xcodeproj -scheme cmux-unit -configuration Debug \
+            if xcodebuild -project GhosttyTabs.xcodeproj -scheme phatmux-unit -configuration Debug \
               -clonedSourcePackagesDirPath "$SOURCE_PACKAGES_DIR" \
               -resolvePackageDependencies; then
               exit 0
@@ -172,11 +172,11 @@ jobs:
           set -euo pipefail
           SOURCE_PACKAGES_DIR="$PWD/.ci-source-packages"
           run_unit_tests() {
-            xcodebuild -project GhosttyTabs.xcodeproj -scheme cmux-unit -configuration Debug \
+            xcodebuild -project GhosttyTabs.xcodeproj -scheme phatmux-unit -configuration Debug \
               -clonedSourcePackagesDirPath "$SOURCE_PACKAGES_DIR" \
               -disableAutomaticPackageResolution \
               -destination "platform=macOS" \
-              -skip-testing:cmuxTests/AppDelegateShortcutRoutingTests/testCmdWClosesWindowWhenClosingLastSurfaceInLastWorkspace \
+              -skip-testing:phatmuxTests/AppDelegateShortcutRoutingTests/testCmdWClosesWindowWhenClosingLastSurfaceInLastWorkspace \
               test 2>&1
           }
 
@@ -216,7 +216,7 @@ jobs:
       - name: Run bundled Ghostty theme picker helper regression
         run: |
           set -euo pipefail
-          CMUX_SOURCE_PACKAGES_DIR="$PWD/.ci-source-packages" \
+          PHATMUX_SOURCE_PACKAGES_DIR="$PWD/.ci-source-packages" \
             ./tests/test_bundled_ghostty_theme_picker_helper.sh
 
       - name: Run CLI version memory guard regression
@@ -224,20 +224,20 @@ jobs:
           set -euo pipefail
 
           CLI_BIN="$(
-            find "$HOME/Library/Developer/Xcode/DerivedData" -path "*/Build/Products/Debug/cmux" -exec stat -f '%m %N' {} \; \
+            find "$HOME/Library/Developer/Xcode/DerivedData" -path "*/Build/Products/Debug/phatmux" -exec stat -f '%m %N' {} \; \
               | sort -nr \
               | head -1 \
               | cut -d' ' -f2-
           )"
           if [ -z "${CLI_BIN:-}" ] || [ ! -x "$CLI_BIN" ]; then
-            echo "cmux CLI binary not found in DerivedData" >&2
+            echo "phatmux CLI binary not found in DerivedData" >&2
             exit 1
           fi
 
-          CMUX_CLI_BIN="$CLI_BIN" python3 tests/test_cli_version_memory_guard.py
+          PHATMUX_CLI_BIN="$CLI_BIN" python3 tests/test_cli_version_memory_guard.py
 
   tests-build-and-lag:
-    # Build the full cmux scheme and run the lag regression on WarpBuild.
+    # Build the full phatmux scheme and run the lag regression on WarpBuild.
     # Keep lag validation separate from UI regressions so functional UI failures
     # and performance regressions stay isolated. Broader interactive UI suites
     # still run via test-e2e.yml on GitHub-hosted runners.
@@ -319,7 +319,7 @@ jobs:
           mkdir -p "$SOURCE_PACKAGES_DIR"
 
           for attempt in 1 2 3; do
-            if xcodebuild -project GhosttyTabs.xcodeproj -scheme cmux -configuration Debug \
+            if xcodebuild -project GhosttyTabs.xcodeproj -scheme phatmux -configuration Debug \
               -clonedSourcePackagesDirPath "$SOURCE_PACKAGES_DIR" \
               -resolvePackageDependencies; then
               exit 0
@@ -336,7 +336,7 @@ jobs:
         run: |
           set -euo pipefail
           SOURCE_PACKAGES_DIR="$PWD/.ci-source-packages"
-          xcodebuild -project GhosttyTabs.xcodeproj -scheme cmux -configuration Debug \
+          xcodebuild -project GhosttyTabs.xcodeproj -scheme phatmux -configuration Debug \
             -clonedSourcePackagesDirPath "$SOURCE_PACKAGES_DIR" \
             -disableAutomaticPackageResolution \
             -destination "platform=macOS" build
@@ -356,24 +356,24 @@ jobs:
         run: |
           set -euo pipefail
 
-          APP="$(find "$HOME/Library/Developer/Xcode/DerivedData" -path "*/Build/Products/Debug/cmux DEV.app" -print -quit)"
+          APP="$(find "$HOME/Library/Developer/Xcode/DerivedData" -path "*/Build/Products/Debug/phatmux DEV.app" -print -quit)"
           if [ -z "${APP:-}" ] || [ ! -d "$APP" ]; then
-            echo "cmux DEV.app not found in DerivedData" >&2
+            echo "phatmux DEV.app not found in DerivedData" >&2
             exit 1
           fi
 
           TAG="ci-lag"
-          SOCK="/tmp/cmux-debug-${TAG}.sock"
+          SOCK="/tmp/phatmux-debug-${TAG}.sock"
           BUNDLE_ID="$(
             /usr/libexec/PlistBuddy -c 'Print :CFBundleIdentifier' "$APP/Contents/Info.plist" 2>/dev/null \
-              || echo 'com.cmuxterm.app.debug'
+              || echo 'com.phatmux.app.debug'
           )"
 
-          pkill -x "cmux DEV" || true
-          rm -f "$SOCK" "/tmp/cmux-${TAG}.sock" || true
+          pkill -x "phatmux DEV" || true
+          rm -f "$SOCK" "/tmp/phatmux-${TAG}.sock" || true
           defaults write "$BUNDLE_ID" socketControlMode -string full >/dev/null 2>&1 || true
 
-          CMUX_TAG="$TAG" CMUX_SOCKET_PATH="$SOCK" CMUX_UI_TEST_MODE=1 "$APP/Contents/MacOS/cmux DEV" >/tmp/cmux-ci-lag.log 2>&1 &
+          PHATMUX_TAG="$TAG" PHATMUX_SOCKET_PATH="$SOCK" PHATMUX_UI_TEST_MODE=1 "$APP/Contents/MacOS/phatmux DEV" >/tmp/phatmux-ci-lag.log 2>&1 &
           APP_PID=$!
           trap 'kill "$APP_PID" >/dev/null 2>&1 || true' EXIT
 
@@ -383,15 +383,15 @@ jobs:
           done
           [ -S "$SOCK" ] || { echo "Socket not ready at $SOCK" >&2; exit 1; }
 
-          CMUX_SOCKET_PATH="$SOCK" \
-          CMUX_LAG_MAX_P95_RATIO=1.70 \
-          CMUX_LAG_MAX_AVG_RATIO=1.70 \
-          CMUX_LAG_MIN_BASELINE_P95_MS_FOR_RATIO=6.0 \
-          CMUX_LAG_MIN_BASELINE_AVG_MS_FOR_RATIO=4.0 \
-          CMUX_LAG_MAX_P95_DELTA_MS=20.0 \
-          CMUX_LAG_MAX_AVG_DELTA_MS=12.0 \
-          CMUX_LAG_MAX_CHURN_P95_MS=35 \
-          CMUX_LAG_KEY_EVENTS=180 \
+          PHATMUX_SOCKET_PATH="$SOCK" \
+          PHATMUX_LAG_MAX_P95_RATIO=1.70 \
+          PHATMUX_LAG_MAX_AVG_RATIO=1.70 \
+          PHATMUX_LAG_MIN_BASELINE_P95_MS_FOR_RATIO=6.0 \
+          PHATMUX_LAG_MIN_BASELINE_AVG_MS_FOR_RATIO=4.0 \
+          PHATMUX_LAG_MAX_P95_DELTA_MS=20.0 \
+          PHATMUX_LAG_MAX_AVG_DELTA_MS=12.0 \
+          PHATMUX_LAG_MAX_CHURN_P95_MS=35 \
+          PHATMUX_LAG_KEY_EVENTS=180 \
           python3 tests/test_workspace_churn_up_arrow_lag.py
 
       - name: Cleanup virtual display
@@ -465,7 +465,7 @@ jobs:
           mkdir -p "$SOURCE_PACKAGES_DIR"
 
           for attempt in 1 2 3; do
-            if xcodebuild -project GhosttyTabs.xcodeproj -scheme cmux -configuration Debug \
+            if xcodebuild -project GhosttyTabs.xcodeproj -scheme phatmux -configuration Debug \
               -clonedSourcePackagesDirPath "$SOURCE_PACKAGES_DIR" \
               -resolvePackageDependencies; then
               exit 0
@@ -483,7 +483,7 @@ jobs:
           set -euo pipefail
           SOURCE_PACKAGES_DIR="$PWD/.ci-source-packages"
           HELPER_PATH="/tmp/create-virtual-display"
-          MANIFEST_PATH="/tmp/cmux-ui-test-display-harness.json"
+          MANIFEST_PATH="/tmp/phatmux-ui-test-display-harness.json"
 
           rm -f "$MANIFEST_PATH"
           trap 'rm -f "$MANIFEST_PATH"' EXIT
@@ -495,21 +495,21 @@ jobs:
           {"helperBinaryPath":"$HELPER_PATH"}
           EOF
 
-          xcodebuild -project GhosttyTabs.xcodeproj -scheme cmux -configuration Debug \
+          xcodebuild -project GhosttyTabs.xcodeproj -scheme phatmux -configuration Debug \
             -clonedSourcePackagesDirPath "$SOURCE_PACKAGES_DIR" \
             -disableAutomaticPackageResolution \
             -destination "platform=macOS" \
-            -only-testing:cmuxUITests/DisplayResolutionRegressionUITests \
+            -only-testing:phatmuxUITests/DisplayResolutionRegressionUITests \
             test
 
       - name: Run browser find focus UI regression
         run: |
           set -euo pipefail
           SOURCE_PACKAGES_DIR="$PWD/.ci-source-packages"
-          xcodebuild -project GhosttyTabs.xcodeproj -scheme cmux -configuration Debug \
+          xcodebuild -project GhosttyTabs.xcodeproj -scheme phatmux -configuration Debug \
             -clonedSourcePackagesDirPath "$SOURCE_PACKAGES_DIR" \
             -disableAutomaticPackageResolution \
             -destination "platform=macOS" \
             -maximum-test-execution-time-allowance 120 \
-            -only-testing:cmuxUITests/BrowserPaneNavigationKeybindUITests/testCmdFFocusesBrowserFindFieldAfterCmdDCmdLNavigation \
+            -only-testing:phatmuxUITests/BrowserPaneNavigationKeybindUITests/testCmdFFocusesBrowserFindFieldAfterCmdDCmdLNavigation \
             test

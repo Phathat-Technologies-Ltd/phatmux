@@ -8,7 +8,7 @@ import Darwin
 import Network
 import CoreText
 
-func cmuxSurfaceContextName(_ context: ghostty_surface_context_e) -> String {
+func phatmuxSurfaceContextName(_ context: ghostty_surface_context_e) -> String {
     switch context {
     case GHOSTTY_SURFACE_CONTEXT_WINDOW:
         return "window"
@@ -21,7 +21,7 @@ func cmuxSurfaceContextName(_ context: ghostty_surface_context_e) -> String {
     }
 }
 
-func cmuxCurrentSurfaceFontSizePoints(_ surface: ghostty_surface_t) -> Float? {
+func phatmuxCurrentSurfaceFontSizePoints(_ surface: ghostty_surface_t) -> Float? {
     guard let quicklookFont = ghostty_surface_quicklook_font(surface) else {
         return nil
     }
@@ -32,7 +32,7 @@ func cmuxCurrentSurfaceFontSizePoints(_ surface: ghostty_surface_t) -> Float? {
     return points
 }
 
-func cmuxInheritedSurfaceConfig(
+func phatmuxInheritedSurfaceConfig(
     sourceSurface: ghostty_surface_t,
     context: ghostty_surface_context_e
 ) -> ghostty_surface_config_s {
@@ -41,7 +41,7 @@ func cmuxInheritedSurfaceConfig(
 
     // Make runtime zoom inheritance explicit, even when Ghostty's
     // inherit-font-size config is disabled.
-    let runtimePoints = cmuxCurrentSurfaceFontSizePoints(sourceSurface)
+    let runtimePoints = phatmuxCurrentSurfaceFontSizePoints(sourceSurface)
     if let points = runtimePoints {
         config.font_size = points
     }
@@ -51,7 +51,7 @@ func cmuxInheritedSurfaceConfig(
     let runtimeText = runtimePoints.map { String(format: "%.2f", $0) } ?? "nil"
     let finalText = String(format: "%.2f", config.font_size)
     dlog(
-        "zoom.inherit context=\(cmuxSurfaceContextName(context)) " +
+        "zoom.inherit context=\(phatmuxSurfaceContextName(context)) " +
         "inherited=\(inheritedText) runtime=\(runtimeText) final=\(finalText)"
     )
 #endif
@@ -703,7 +703,7 @@ final class WorkspaceRemoteDaemonPendingCallRegistry {
         case timedOut
     }
 
-    private let queue = DispatchQueue(label: "com.cmux.remote-ssh.daemon-rpc.pending.\(UUID().uuidString)")
+    private let queue = DispatchQueue(label: "com.phatmux.remote-ssh.daemon-rpc.pending.\(UUID().uuidString)")
     private var nextRequestID = 1
     private var pendingCalls: [Int: PendingCall] = [:]
 
@@ -794,8 +794,8 @@ private final class WorkspaceRemoteDaemonRPCClient {
     private let configuration: WorkspaceRemoteConfiguration
     private let remotePath: String
     private let onUnexpectedTermination: (String) -> Void
-    private let writeQueue = DispatchQueue(label: "com.cmux.remote-ssh.daemon-rpc.write.\(UUID().uuidString)")
-    private let stateQueue = DispatchQueue(label: "com.cmux.remote-ssh.daemon-rpc.state.\(UUID().uuidString)")
+    private let writeQueue = DispatchQueue(label: "com.phatmux.remote-ssh.daemon-rpc.write.\(UUID().uuidString)")
+    private let stateQueue = DispatchQueue(label: "com.phatmux.remote-ssh.daemon-rpc.state.\(UUID().uuidString)")
     private let pendingCalls = WorkspaceRemoteDaemonPendingCallRegistry()
 
     private var process: Process?
@@ -852,7 +852,7 @@ private final class WorkspaceRemoteDaemonRPCClient {
         do {
             try process.run()
         } catch {
-            throw NSError(domain: "cmux.remote.daemon.rpc", code: 1, userInfo: [
+            throw NSError(domain: "phatmux.remote.daemon.rpc", code: 1, userInfo: [
                 NSLocalizedDescriptionKey: "Failed to launch SSH daemon transport: \(error.localizedDescription)",
             ])
         }
@@ -874,7 +874,7 @@ private final class WorkspaceRemoteDaemonRPCClient {
             let hello = try call(method: "hello", params: [:], timeout: 8.0)
             let capabilities = (hello["capabilities"] as? [String]) ?? []
             guard capabilities.contains(Self.requiredProxyStreamCapability) else {
-                throw NSError(domain: "cmux.remote.daemon.rpc", code: 2, userInfo: [
+                throw NSError(domain: "phatmux.remote.daemon.rpc", code: 2, userInfo: [
                     NSLocalizedDescriptionKey: "remote daemon missing required capability \(Self.requiredProxyStreamCapability)",
                 ])
             }
@@ -900,7 +900,7 @@ private final class WorkspaceRemoteDaemonRPCClient {
         )
         let streamID = (result["stream_id"] as? String)?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
         guard !streamID.isEmpty else {
-            throw NSError(domain: "cmux.remote.daemon.rpc", code: 3, userInfo: [
+            throw NSError(domain: "phatmux.remote.daemon.rpc", code: 3, userInfo: [
                 NSLocalizedDescriptionKey: "proxy.open missing stream_id",
             ])
         }
@@ -925,7 +925,7 @@ private final class WorkspaceRemoteDaemonRPCClient {
     ) throws {
         let trimmedStreamID = streamID.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmedStreamID.isEmpty else {
-            throw NSError(domain: "cmux.remote.daemon.rpc", code: 17, userInfo: [
+            throw NSError(domain: "phatmux.remote.daemon.rpc", code: 17, userInfo: [
                 NSLocalizedDescriptionKey: "proxy.stream.subscribe requires stream_id",
             ])
         }
@@ -976,7 +976,7 @@ private final class WorkspaceRemoteDaemonRPCClient {
             ])
         } catch {
             pendingCalls.remove(pendingCall)
-            throw NSError(domain: "cmux.remote.daemon.rpc", code: 10, userInfo: [
+            throw NSError(domain: "phatmux.remote.daemon.rpc", code: 10, userInfo: [
                 NSLocalizedDescriptionKey: "failed to encode daemon RPC request \(method): \(error.localizedDescription)",
             ])
         }
@@ -994,15 +994,15 @@ private final class WorkspaceRemoteDaemonRPCClient {
         switch pendingCalls.wait(for: pendingCall, timeout: timeout) {
         case .timedOut:
             stop(suppressTerminationCallback: false)
-            throw NSError(domain: "cmux.remote.daemon.rpc", code: 11, userInfo: [
+            throw NSError(domain: "phatmux.remote.daemon.rpc", code: 11, userInfo: [
                 NSLocalizedDescriptionKey: "daemon RPC timeout waiting for \(method) response",
             ])
         case .failure(let failure):
-            throw NSError(domain: "cmux.remote.daemon.rpc", code: 12, userInfo: [
+            throw NSError(domain: "phatmux.remote.daemon.rpc", code: 12, userInfo: [
                 NSLocalizedDescriptionKey: failure,
             ])
         case .missing:
-            throw NSError(domain: "cmux.remote.daemon.rpc", code: 13, userInfo: [
+            throw NSError(domain: "phatmux.remote.daemon.rpc", code: 13, userInfo: [
                 NSLocalizedDescriptionKey: "daemon RPC \(method) returned empty response",
             ])
         case .response(let pendingResponse):
@@ -1017,7 +1017,7 @@ private final class WorkspaceRemoteDaemonRPCClient {
         let errorObject = (response["error"] as? [String: Any]) ?? [:]
         let code = (errorObject["code"] as? String)?.trimmingCharacters(in: .whitespacesAndNewlines) ?? "rpc_error"
         let message = (errorObject["message"] as? String)?.trimmingCharacters(in: .whitespacesAndNewlines) ?? "daemon RPC call failed"
-        throw NSError(domain: "cmux.remote.daemon.rpc", code: 14, userInfo: [
+        throw NSError(domain: "phatmux.remote.daemon.rpc", code: 14, userInfo: [
             NSLocalizedDescriptionKey: "\(method) failed (\(code)): \(message)",
         ])
     }
@@ -1027,7 +1027,7 @@ private final class WorkspaceRemoteDaemonRPCClient {
             self.stdinHandle ?? FileHandle.nullDevice
         }
         if stdinHandle === FileHandle.nullDevice {
-            throw NSError(domain: "cmux.remote.daemon.rpc", code: 15, userInfo: [
+            throw NSError(domain: "phatmux.remote.daemon.rpc", code: 15, userInfo: [
                 NSLocalizedDescriptionKey: "daemon transport is not connected",
             ])
         }
@@ -1036,7 +1036,7 @@ private final class WorkspaceRemoteDaemonRPCClient {
             try stdinHandle.write(contentsOf: Data([0x0A]))
         } catch {
             stop(suppressTerminationCallback: false)
-            throw NSError(domain: "cmux.remote.daemon.rpc", code: 16, userInfo: [
+            throw NSError(domain: "phatmux.remote.daemon.rpc", code: 16, userInfo: [
                 NSLocalizedDescriptionKey: "failed writing daemon RPC request: \(error.localizedDescription)",
             ])
         }
@@ -1566,7 +1566,7 @@ enum RemoteLoopbackHTTPResponseRewriter {
 private final class WorkspaceRemoteDaemonProxyTunnel {
     private final class ProxySession {
         private static let maxHandshakeBytes = 64 * 1024
-        private static let remoteLoopbackProxyAliasHost = "cmux-loopback.localtest.me"
+        private static let remoteLoopbackProxyAliasHost = "phatmux-loopback.localtest.me"
 
         private enum HandshakeProtocol {
             case undecided
@@ -1748,7 +1748,7 @@ private final class WorkspaceRemoteDaemonProxyTunnel {
             let bytes = [UInt8](data)
             guard bytes.count >= 4 else { return nil }
             guard bytes[0] == 0x05 else {
-                throw NSError(domain: "cmux.remote.proxy", code: 1, userInfo: [NSLocalizedDescriptionKey: "invalid SOCKS version"])
+                throw NSError(domain: "phatmux.remote.proxy", code: 1, userInfo: [NSLocalizedDescriptionKey: "invalid SOCKS version"])
             }
 
             let command = bytes[1]
@@ -1788,18 +1788,18 @@ private final class WorkspaceRemoteDaemonProxyTunnel {
                 cursor += 16
 
             default:
-                throw NSError(domain: "cmux.remote.proxy", code: 2, userInfo: [NSLocalizedDescriptionKey: "invalid SOCKS address type"])
+                throw NSError(domain: "phatmux.remote.proxy", code: 2, userInfo: [NSLocalizedDescriptionKey: "invalid SOCKS address type"])
             }
 
             guard !host.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
-                throw NSError(domain: "cmux.remote.proxy", code: 3, userInfo: [NSLocalizedDescriptionKey: "empty SOCKS host"])
+                throw NSError(domain: "phatmux.remote.proxy", code: 3, userInfo: [NSLocalizedDescriptionKey: "empty SOCKS host"])
             }
             guard bytes.count >= cursor + 2 else { return nil }
             let port = Int(UInt16(bytes[cursor]) << 8 | UInt16(bytes[cursor + 1]))
             cursor += 2
 
             guard port > 0 && port <= 65535 else {
-                throw NSError(domain: "cmux.remote.proxy", code: 4, userInfo: [NSLocalizedDescriptionKey: "invalid SOCKS port"])
+                throw NSError(domain: "phatmux.remote.proxy", code: 4, userInfo: [NSLocalizedDescriptionKey: "invalid SOCKS port"])
             }
 
             return SocksRequest(host: host, port: port, command: command, consumedBytes: cursor)
@@ -2028,7 +2028,7 @@ private final class WorkspaceRemoteDaemonProxyTunnel {
         }
 
         private static func httpResponse(status: String, closeAfterResponse: Bool = true) -> Data {
-            var text = "HTTP/1.1 \(status)\r\nProxy-Agent: cmux\r\n"
+            var text = "HTTP/1.1 \(status)\r\nProxy-Agent: phatmux\r\n"
             if closeAfterResponse {
                 text += "Connection: close\r\n"
             }
@@ -2041,7 +2041,7 @@ private final class WorkspaceRemoteDaemonProxyTunnel {
     private let remotePath: String
     private let localPort: Int
     private let onFatalError: (String) -> Void
-    private let queue = DispatchQueue(label: "com.cmux.remote-ssh.daemon-tunnel.\(UUID().uuidString)", qos: .utility)
+    private let queue = DispatchQueue(label: "com.phatmux.remote-ssh.daemon-tunnel.\(UUID().uuidString)", qos: .utility)
 
     private var listener: NWListener?
     private var rpcClient: WorkspaceRemoteDaemonRPCClient?
@@ -2064,7 +2064,7 @@ private final class WorkspaceRemoteDaemonProxyTunnel {
         var capturedError: Error?
         queue.sync {
             guard !isStopped else {
-                capturedError = NSError(domain: "cmux.remote.proxy", code: 20, userInfo: [
+                capturedError = NSError(domain: "phatmux.remote.proxy", code: 20, userInfo: [
                     NSLocalizedDescriptionKey: "proxy tunnel already stopped",
                 ])
                 return
@@ -2171,7 +2171,7 @@ private final class WorkspaceRemoteDaemonProxyTunnel {
 
     private static func makeLoopbackListener(port: Int) throws -> NWListener {
         guard let localPort = NWEndpoint.Port(rawValue: UInt16(port)) else {
-            throw NSError(domain: "cmux.remote.proxy", code: 21, userInfo: [
+            throw NSError(domain: "phatmux.remote.proxy", code: 21, userInfo: [
                 NSLocalizedDescriptionKey: "invalid local proxy port \(port)",
             ])
         }
@@ -2230,7 +2230,7 @@ private final class WorkspaceRemoteProxyBroker {
 
     static let shared = WorkspaceRemoteProxyBroker()
 
-    private let queue = DispatchQueue(label: "com.cmux.remote-ssh.proxy-broker", qos: .utility)
+    private let queue = DispatchQueue(label: "com.phatmux.remote-ssh.proxy-broker", qos: .utility)
     private var entries: [String: Entry] = [:]
 
     func acquire(
@@ -2435,7 +2435,7 @@ private final class WorkspaceRemoteCLIRelayServer {
         private let relayToken: Data
         private let queue: DispatchQueue
         private let onClose: () -> Void
-        private let challengeProtocol = "cmux-relay-auth"
+        private let challengeProtocol = "phatmux-relay-auth"
         private let challengeVersion = 1
         private let minimumFailureDelay: TimeInterval = 0.05
         private let maximumFrameBytes = 16 * 1024
@@ -2672,7 +2672,7 @@ private final class WorkspaceRemoteCLIRelayServer {
         private static func roundTripUnixSocket(socketPath: String, request: Data) throws -> Data {
             let fd = socket(AF_UNIX, SOCK_STREAM, 0)
             guard fd >= 0 else {
-                throw NSError(domain: "cmux.remote.relay", code: 1, userInfo: [
+                throw NSError(domain: "phatmux.remote.relay", code: 1, userInfo: [
                     NSLocalizedDescriptionKey: "failed to create local relay socket",
                 ])
             }
@@ -2688,7 +2688,7 @@ private final class WorkspaceRemoteCLIRelayServer {
             address.sun_family = sa_family_t(AF_UNIX)
             let pathBytes = Array(socketPath.utf8CString)
             guard pathBytes.count <= MemoryLayout.size(ofValue: address.sun_path) else {
-                throw NSError(domain: "cmux.remote.relay", code: 2, userInfo: [
+                throw NSError(domain: "phatmux.remote.relay", code: 2, userInfo: [
                     NSLocalizedDescriptionKey: "local relay socket path is too long",
                 ])
             }
@@ -2707,8 +2707,8 @@ private final class WorkspaceRemoteCLIRelayServer {
                 }
             }
             guard connectResult == 0 else {
-                throw NSError(domain: "cmux.remote.relay", code: 3, userInfo: [
-                    NSLocalizedDescriptionKey: "failed to connect to local cmux socket",
+                throw NSError(domain: "phatmux.remote.relay", code: 3, userInfo: [
+                    NSLocalizedDescriptionKey: "failed to connect to local phatmux socket",
                 ])
             }
 
@@ -2719,7 +2719,7 @@ private final class WorkspaceRemoteCLIRelayServer {
                 while bytesRemaining > 0 {
                     let written = Darwin.write(fd, pointer, bytesRemaining)
                     if written <= 0 {
-                        throw NSError(domain: "cmux.remote.relay", code: 4, userInfo: [
+                        throw NSError(domain: "phatmux.remote.relay", code: 4, userInfo: [
                             NSLocalizedDescriptionKey: "failed to write relay request",
                         ])
                     }
@@ -2745,12 +2745,12 @@ private final class WorkspaceRemoteCLIRelayServer {
                     if !response.isEmpty {
                         break
                     }
-                    throw NSError(domain: "cmux.remote.relay", code: 5, userInfo: [
-                        NSLocalizedDescriptionKey: "timed out waiting for local cmux response",
+                    throw NSError(domain: "phatmux.remote.relay", code: 5, userInfo: [
+                        NSLocalizedDescriptionKey: "timed out waiting for local phatmux response",
                     ])
                 }
-                throw NSError(domain: "cmux.remote.relay", code: 6, userInfo: [
-                    NSLocalizedDescriptionKey: "failed to read local cmux response",
+                throw NSError(domain: "phatmux.remote.relay", code: 6, userInfo: [
+                    NSLocalizedDescriptionKey: "failed to read local phatmux response",
                 ])
             }
             return response
@@ -2760,7 +2760,7 @@ private final class WorkspaceRemoteCLIRelayServer {
     private let localSocketPath: String
     private let relayID: String
     private let relayToken: Data
-    private let queue = DispatchQueue(label: "com.cmux.remote-ssh.cli-relay.\(UUID().uuidString)", qos: .utility)
+    private let queue = DispatchQueue(label: "com.phatmux.remote-ssh.cli-relay.\(UUID().uuidString)", qos: .utility)
 
     private var listener: NWListener?
     private var sessions: [UUID: Session] = [:]
@@ -2769,7 +2769,7 @@ private final class WorkspaceRemoteCLIRelayServer {
 
     init(localSocketPath: String, relayID: String, relayTokenHex: String) throws {
         guard let relayToken = Session.hexData(from: relayTokenHex), !relayToken.isEmpty else {
-            throw NSError(domain: "cmux.remote.relay", code: 7, userInfo: [
+            throw NSError(domain: "phatmux.remote.relay", code: 7, userInfo: [
                 NSLocalizedDescriptionKey: "invalid relay token",
             ])
         }
@@ -2822,7 +2822,7 @@ private final class WorkspaceRemoteCLIRelayServer {
             listener.newConnectionHandler = nil
             listener.stateUpdateHandler = nil
             listener.cancel()
-            throw NSError(domain: "cmux.remote.relay", code: 8, userInfo: [
+            throw NSError(domain: "phatmux.remote.relay", code: 8, userInfo: [
                 NSLocalizedDescriptionKey: "timed out waiting for local relay listener",
             ])
         }
@@ -2836,7 +2836,7 @@ private final class WorkspaceRemoteCLIRelayServer {
             listener.newConnectionHandler = nil
             listener.stateUpdateHandler = nil
             listener.cancel()
-            throw NSError(domain: "cmux.remote.relay", code: 8, userInfo: [
+            throw NSError(domain: "phatmux.remote.relay", code: 8, userInfo: [
                 NSLocalizedDescriptionKey: "failed to bind local relay listener",
             ])
         }
@@ -2924,7 +2924,7 @@ final class WorkspaceRemoteSessionController {
         let remotePath: String
     }
 
-    private let queue = DispatchQueue(label: "com.cmux.remote-ssh.\(UUID().uuidString)", qos: .utility)
+    private let queue = DispatchQueue(label: "com.phatmux.remote-ssh.\(UUID().uuidString)", qos: .utility)
     private let queueKey = DispatchSpecificKey<Void>()
     private weak var workspace: Workspace?
     private let configuration: WorkspaceRemoteConfiguration
@@ -3066,7 +3066,7 @@ final class WorkspaceRemoteSessionController {
         do {
             let hello = try bootstrapDaemonLocked()
             guard hello.capabilities.contains(WorkspaceRemoteDaemonRPCClient.requiredProxyStreamCapability) else {
-                throw NSError(domain: "cmux.remote.daemon", code: 43, userInfo: [
+                throw NSError(domain: "phatmux.remote.daemon", code: 43, userInfo: [
                     NSLocalizedDescriptionKey: "remote daemon missing required capability \(WorkspaceRemoteDaemonRPCClient.requiredProxyStreamCapability)",
                 ])
             }
@@ -3438,9 +3438,9 @@ final class WorkspaceRemoteSessionController {
         return args
     }
 
-    private static let remotePlatformProbeOSMarker = "__CMUX_REMOTE_OS__="
-    private static let remotePlatformProbeArchMarker = "__CMUX_REMOTE_ARCH__="
-    private static let remotePlatformProbeExistsMarker = "__CMUX_REMOTE_EXISTS__="
+    private static let remotePlatformProbeOSMarker = "__PHATMUX_REMOTE_OS__="
+    private static let remotePlatformProbeArchMarker = "__PHATMUX_REMOTE_ARCH__="
+    private static let remotePlatformProbeExistsMarker = "__PHATMUX_REMOTE_EXISTS__="
 
     private func sshCommonArguments(batchMode: Bool) -> [String] {
         let effectiveSSHOptions: [String] = {
@@ -3573,7 +3573,7 @@ final class WorkspaceRemoteSessionController {
 
         let stdoutHandle = stdoutPipe.fileHandleForReading
         let stderrHandle = stderrPipe.fileHandleForReading
-        let captureQueue = DispatchQueue(label: "cmux.remote.process.capture")
+        let captureQueue = DispatchQueue(label: "phatmux.remote.process.capture")
         let exitSemaphore = DispatchSemaphore(value: 0)
         var stdoutData = Data()
         var stderrData = Data()
@@ -3608,7 +3608,7 @@ final class WorkspaceRemoteSessionController {
                 "remote.proc.launchFailed exec=\(URL(fileURLWithPath: executable).lastPathComponent) " +
                 "error=\(error.localizedDescription)"
             )
-            throw NSError(domain: "cmux.remote.process", code: 1, userInfo: [
+            throw NSError(domain: "phatmux.remote.process", code: 1, userInfo: [
                 NSLocalizedDescriptionKey: "Failed to launch \(URL(fileURLWithPath: executable).lastPathComponent): \(error.localizedDescription)",
             ])
         }
@@ -3646,7 +3646,7 @@ final class WorkspaceRemoteSessionController {
                 "remote.proc.timeout exec=\(URL(fileURLWithPath: executable).lastPathComponent) " +
                 "timeout=\(Int(timeout)) args=\(debugShellCommand(executable: executable, arguments: arguments))"
             )
-            throw NSError(domain: "cmux.remote.process", code: 2, userInfo: [
+            throw NSError(domain: "phatmux.remote.process", code: 2, userInfo: [
                 NSLocalizedDescriptionKey: "\(URL(fileURLWithPath: executable).lastPathComponent) timed out after \(Int(timeout))s",
             ])
         }
@@ -3753,7 +3753,7 @@ final class WorkspaceRemoteSessionController {
         let result = try sshExec(arguments: sshCommonArguments(batchMode: true) + [configuration.destination, command], timeout: 8)
         guard result.status == 0 else {
             let detail = Self.bestErrorLine(stderr: result.stderr, stdout: result.stdout) ?? "ssh exited \(result.status)"
-            throw NSError(domain: "cmux.remote.relay", code: 70, userInfo: [
+            throw NSError(domain: "phatmux.remote.relay", code: 70, userInfo: [
                 NSLocalizedDescriptionKey: "failed to install remote relay metadata: \(detail)",
             ])
         }
@@ -3773,32 +3773,32 @@ final class WorkspaceRemoteSessionController {
     static func remoteRelayMetadataCleanupScript(relayPort: Int) -> String {
         """
         relay_socket='127.0.0.1:\(relayPort)'
-        socket_addr_file="$HOME/.cmux/socket_addr"
+        socket_addr_file="$HOME/.phatmux/socket_addr"
         if [ -r "$socket_addr_file" ] && [ "$(tr -d '\\r\\n' < "$socket_addr_file")" = "$relay_socket" ]; then
           rm -f "$socket_addr_file"
         fi
-        rm -f "$HOME/.cmux/relay/\(relayPort).auth" "$HOME/.cmux/relay/\(relayPort).daemon_path"
+        rm -f "$HOME/.phatmux/relay/\(relayPort).auth" "$HOME/.phatmux/relay/\(relayPort).daemon_path"
         """
     }
 
     private func probeRemoteBootstrapStateLocked(version: String) throws -> RemoteBootstrapState {
         let script = """
-        cmux_uname_os="$(uname -s)"
-        cmux_uname_arch="$(uname -m)"
-        printf '%s%s\\n' '\(Self.remotePlatformProbeOSMarker)' "$cmux_uname_os"
-        printf '%s%s\\n' '\(Self.remotePlatformProbeArchMarker)' "$cmux_uname_arch"
-        case "$(printf '%s' "$cmux_uname_os" | tr '[:upper:]' '[:lower:]')" in
-          linux|darwin|freebsd) cmux_go_os="$(printf '%s' "$cmux_uname_os" | tr '[:upper:]' '[:lower:]')" ;;
+        phatmux_uname_os="$(uname -s)"
+        phatmux_uname_arch="$(uname -m)"
+        printf '%s%s\\n' '\(Self.remotePlatformProbeOSMarker)' "$phatmux_uname_os"
+        printf '%s%s\\n' '\(Self.remotePlatformProbeArchMarker)' "$phatmux_uname_arch"
+        case "$(printf '%s' "$phatmux_uname_os" | tr '[:upper:]' '[:lower:]')" in
+          linux|darwin|freebsd) phatmux_go_os="$(printf '%s' "$phatmux_uname_os" | tr '[:upper:]' '[:lower:]')" ;;
           *) exit 70 ;;
         esac
-        case "$(printf '%s' "$cmux_uname_arch" | tr '[:upper:]' '[:lower:]')" in
-          x86_64|amd64) cmux_go_arch=amd64 ;;
-          aarch64|arm64) cmux_go_arch=arm64 ;;
-          armv7l) cmux_go_arch=arm ;;
+        case "$(printf '%s' "$phatmux_uname_arch" | tr '[:upper:]' '[:lower:]')" in
+          x86_64|amd64) phatmux_go_arch=amd64 ;;
+          aarch64|arm64) phatmux_go_arch=arm64 ;;
+          armv7l) phatmux_go_arch=arm ;;
           *) exit 71 ;;
         esac
-        cmux_remote_path="$HOME/.cmux/bin/cmuxd-remote/\(version)/${cmux_go_os}-${cmux_go_arch}/cmuxd-remote"
-        if [ -x "$cmux_remote_path" ]; then
+        phatmux_remote_path="$HOME/.phatmux/bin/phatmuxd-remote/\(version)/${phatmux_go_os}-${phatmux_go_arch}/phatmuxd-remote"
+        if [ -x "$phatmux_remote_path" ]; then
           printf '%syes\\n' '\(Self.remotePlatformProbeExistsMarker)'
         else
           printf '%sno\\n' '\(Self.remotePlatformProbeExistsMarker)'
@@ -3817,14 +3817,14 @@ final class WorkspaceRemoteSessionController {
             .map { String($0.dropFirst(Self.remotePlatformProbeArchMarker.count)) }
         guard let unameOS, let unameArch else {
             let detail = Self.bestErrorLine(stderr: result.stderr, stdout: result.stdout) ?? "ssh exited \(result.status)"
-            throw NSError(domain: "cmux.remote.daemon", code: 11, userInfo: [
+            throw NSError(domain: "phatmux.remote.daemon", code: 11, userInfo: [
                 NSLocalizedDescriptionKey: "failed to query remote platform: \(detail)",
             ])
         }
 
         guard let goOS = Self.mapUnameOS(unameOS),
               let goArch = Self.mapUnameArch(unameArch) else {
-            throw NSError(domain: "cmux.remote.daemon", code: 12, userInfo: [
+            throw NSError(domain: "phatmux.remote.daemon", code: 12, userInfo: [
                 NSLocalizedDescriptionKey: "unsupported remote platform \(unameOS)/\(unameArch)",
             ])
         }
@@ -3833,7 +3833,7 @@ final class WorkspaceRemoteSessionController {
             .map { String($0.dropFirst(Self.remotePlatformProbeExistsMarker.count)) == "yes" }
         if result.status != 0, binaryExists == nil {
             let detail = Self.bestErrorLine(stderr: result.stderr, stdout: result.stdout) ?? "ssh exited \(result.status)"
-            throw NSError(domain: "cmux.remote.daemon", code: 13, userInfo: [
+            throw NSError(domain: "phatmux.remote.daemon", code: 13, userInfo: [
                 NSLocalizedDescriptionKey: "failed to query remote daemon state: \(detail)",
             ])
         }
@@ -3844,7 +3844,7 @@ final class WorkspaceRemoteSessionController {
         )
     }
 
-    static let remoteDaemonManifestInfoKey = "CMUXRemoteDaemonManifestJSON"
+    static let remoteDaemonManifestInfoKey = "PHATMUXRemoteDaemonManifestJSON"
 
     static func remoteDaemonManifest(from infoDictionary: [String: Any]?) -> WorkspaceRemoteDaemonManifest? {
         guard let rawManifest = infoDictionary?[remoteDaemonManifestInfoKey] as? String else { return nil }
@@ -3866,7 +3866,7 @@ final class WorkspaceRemoteSessionController {
             create: true
         )
         let cacheRoot = appSupportRoot
-            .appendingPathComponent("cmux", isDirectory: true)
+            .appendingPathComponent("phatmux", isDirectory: true)
             .appendingPathComponent("remote-daemons", isDirectory: true)
         try fileManager.createDirectory(at: cacheRoot, withIntermediateDirectories: true)
         return cacheRoot
@@ -3881,7 +3881,7 @@ final class WorkspaceRemoteSessionController {
         try remoteDaemonCacheRoot(fileManager: fileManager)
             .appendingPathComponent(version, isDirectory: true)
             .appendingPathComponent("\(goOS)-\(goArch)", isDirectory: true)
-            .appendingPathComponent("cmuxd-remote", isDirectory: false)
+            .appendingPathComponent("phatmuxd-remote", isDirectory: false)
     }
 
     private static func sha256Hex(forFile url: URL) throws -> String {
@@ -3891,12 +3891,12 @@ final class WorkspaceRemoteSessionController {
     }
 
     private static func allowLocalDaemonBuildFallback(environment: [String: String] = ProcessInfo.processInfo.environment) -> Bool {
-        environment["CMUX_REMOTE_DAEMON_ALLOW_LOCAL_BUILD"] == "1"
+        environment["PHATMUX_REMOTE_DAEMON_ALLOW_LOCAL_BUILD"] == "1"
     }
 
     private static func explicitRemoteDaemonBinaryURL(environment: [String: String] = ProcessInfo.processInfo.environment) -> URL? {
         guard allowLocalDaemonBuildFallback(environment: environment) else { return nil }
-        guard let path = environment["CMUX_REMOTE_DAEMON_BINARY"]?.trimmingCharacters(in: .whitespacesAndNewlines),
+        guard let path = environment["PHATMUX_REMOTE_DAEMON_BINARY"]?.trimmingCharacters(in: .whitespacesAndNewlines),
               !path.isEmpty else {
             return nil
         }
@@ -3905,15 +3905,15 @@ final class WorkspaceRemoteSessionController {
 
     private static func versionedRemoteDaemonBuildURL(goOS: String, goArch: String, version: String) -> URL {
         URL(fileURLWithPath: NSTemporaryDirectory(), isDirectory: true)
-            .appendingPathComponent("cmux-remote-daemon-build", isDirectory: true)
+            .appendingPathComponent("phatmux-remote-daemon-build", isDirectory: true)
             .appendingPathComponent(version, isDirectory: true)
             .appendingPathComponent("\(goOS)-\(goArch)", isDirectory: true)
-            .appendingPathComponent("cmuxd-remote", isDirectory: false)
+            .appendingPathComponent("phatmuxd-remote", isDirectory: false)
     }
 
     private func downloadRemoteDaemonBinaryLocked(entry: WorkspaceRemoteDaemonManifest.Entry, version: String) throws -> URL {
         guard let url = URL(string: entry.downloadURL) else {
-            throw NSError(domain: "cmux.remote.daemon", code: 25, userInfo: [
+            throw NSError(domain: "phatmux.remote.daemon", code: 25, userInfo: [
                 NSLocalizedDescriptionKey: "remote daemon manifest has an invalid download URL",
             ])
         }
@@ -3924,7 +3924,7 @@ final class WorkspaceRemoteSessionController {
 
         let request = NSMutableURLRequest(url: url)
         request.timeoutInterval = 60
-        request.setValue("cmux/\(version)", forHTTPHeaderField: "User-Agent")
+        request.setValue("phatmux/\(version)", forHTTPHeaderField: "User-Agent")
         let session = URLSession(configuration: .ephemeral)
 
         let semaphore = DispatchSemaphore(value: 0)
@@ -3938,7 +3938,7 @@ final class WorkspaceRemoteSessionController {
             }
             if let httpResponse = response as? HTTPURLResponse,
                !(200...299).contains(httpResponse.statusCode) {
-                downloadError = NSError(domain: "cmux.remote.daemon", code: 26, userInfo: [
+                downloadError = NSError(domain: "phatmux.remote.daemon", code: 26, userInfo: [
                     NSLocalizedDescriptionKey: "remote daemon download failed with HTTP \(httpResponse.statusCode)",
                 ])
                 return
@@ -3952,14 +3952,14 @@ final class WorkspaceRemoteSessionController {
             throw downloadError
         }
         guard let downloadedURL else {
-            throw NSError(domain: "cmux.remote.daemon", code: 27, userInfo: [
+            throw NSError(domain: "phatmux.remote.daemon", code: 27, userInfo: [
                 NSLocalizedDescriptionKey: "remote daemon download did not produce a file",
             ])
         }
 
         let downloadedSHA = try Self.sha256Hex(forFile: downloadedURL)
         guard downloadedSHA == entry.sha256.lowercased() else {
-            throw NSError(domain: "cmux.remote.daemon", code: 28, userInfo: [
+            throw NSError(domain: "phatmux.remote.daemon", code: 28, userInfo: [
                 NSLocalizedDescriptionKey: "remote daemon checksum mismatch for \(entry.assetName)",
             ])
         }
@@ -4000,26 +4000,26 @@ final class WorkspaceRemoteSessionController {
         }
 
         guard Self.allowLocalDaemonBuildFallback() else {
-            throw NSError(domain: "cmux.remote.daemon", code: 20, userInfo: [
-                NSLocalizedDescriptionKey: "this build does not include a verified cmuxd-remote manifest for \(goOS)-\(goArch). Use a release/nightly build, or set CMUX_REMOTE_DAEMON_ALLOW_LOCAL_BUILD=1 for a dev-only fallback.",
+            throw NSError(domain: "phatmux.remote.daemon", code: 20, userInfo: [
+                NSLocalizedDescriptionKey: "this build does not include a verified phatmuxd-remote manifest for \(goOS)-\(goArch). Use a release/nightly build, or set PHATMUX_REMOTE_DAEMON_ALLOW_LOCAL_BUILD=1 for a dev-only fallback.",
             ])
         }
 
         guard let repoRoot = Self.findRepoRoot() else {
-            throw NSError(domain: "cmux.remote.daemon", code: 20, userInfo: [
-                NSLocalizedDescriptionKey: "cannot locate cmux repo root for dev-only cmuxd-remote build fallback",
+            throw NSError(domain: "phatmux.remote.daemon", code: 20, userInfo: [
+                NSLocalizedDescriptionKey: "cannot locate phatmux repo root for dev-only phatmuxd-remote build fallback",
             ])
         }
         let daemonRoot = repoRoot.appendingPathComponent("daemon/remote", isDirectory: true)
         let goModPath = daemonRoot.appendingPathComponent("go.mod").path
         guard FileManager.default.fileExists(atPath: goModPath) else {
-            throw NSError(domain: "cmux.remote.daemon", code: 21, userInfo: [
+            throw NSError(domain: "phatmux.remote.daemon", code: 21, userInfo: [
                 NSLocalizedDescriptionKey: "missing daemon module at \(goModPath)",
             ])
         }
         guard let goBinary = Self.which("go") else {
-            throw NSError(domain: "cmux.remote.daemon", code: 22, userInfo: [
-                NSLocalizedDescriptionKey: "go is required for the dev-only cmuxd-remote build fallback",
+            throw NSError(domain: "phatmux.remote.daemon", code: 22, userInfo: [
+                NSLocalizedDescriptionKey: "go is required for the dev-only phatmuxd-remote build fallback",
             ])
         }
 
@@ -4033,7 +4033,7 @@ final class WorkspaceRemoteSessionController {
         let ldflags = "-s -w -X main.version=\(version)"
         let result = try runProcess(
             executable: goBinary,
-            arguments: ["build", "-trimpath", "-buildvcs=false", "-ldflags", ldflags, "-o", output.path, "./cmd/cmuxd-remote"],
+            arguments: ["build", "-trimpath", "-buildvcs=false", "-ldflags", ldflags, "-o", output.path, "./cmd/phatmuxd-remote"],
             environment: env,
             currentDirectory: daemonRoot,
             stdin: nil,
@@ -4041,13 +4041,13 @@ final class WorkspaceRemoteSessionController {
         )
         guard result.status == 0 else {
             let detail = Self.bestErrorLine(stderr: result.stderr, stdout: result.stdout) ?? "go build failed with status \(result.status)"
-            throw NSError(domain: "cmux.remote.daemon", code: 23, userInfo: [
-                NSLocalizedDescriptionKey: "failed to build cmuxd-remote: \(detail)",
+            throw NSError(domain: "phatmux.remote.daemon", code: 23, userInfo: [
+                NSLocalizedDescriptionKey: "failed to build phatmuxd-remote: \(detail)",
             ])
         }
         guard FileManager.default.isExecutableFile(atPath: output.path) else {
-            throw NSError(domain: "cmux.remote.daemon", code: 24, userInfo: [
-                NSLocalizedDescriptionKey: "cmuxd-remote build output is not executable",
+            throw NSError(domain: "phatmux.remote.daemon", code: 24, userInfo: [
+                NSLocalizedDescriptionKey: "phatmuxd-remote build output is not executable",
             ])
         }
         debugLog("remote.build.output path=\(output.path)")
@@ -4066,7 +4066,7 @@ final class WorkspaceRemoteSessionController {
         let mkdirResult = try sshExec(arguments: sshCommonArguments(batchMode: true) + [configuration.destination, mkdirCommand], timeout: 12)
         guard mkdirResult.status == 0 else {
             let detail = Self.bestErrorLine(stderr: mkdirResult.stderr, stdout: mkdirResult.stdout) ?? "ssh exited \(mkdirResult.status)"
-            throw NSError(domain: "cmux.remote.daemon", code: 30, userInfo: [
+            throw NSError(domain: "phatmux.remote.daemon", code: 30, userInfo: [
                 NSLocalizedDescriptionKey: "failed to create remote daemon directory: \(detail)",
             ])
         }
@@ -4091,8 +4091,8 @@ final class WorkspaceRemoteSessionController {
         let scpResult = try scpExec(arguments: scpArgs, timeout: 45)
         guard scpResult.status == 0 else {
             let detail = Self.bestErrorLine(stderr: scpResult.stderr, stdout: scpResult.stdout) ?? "scp exited \(scpResult.status)"
-            throw NSError(domain: "cmux.remote.daemon", code: 31, userInfo: [
-                NSLocalizedDescriptionKey: "failed to upload cmuxd-remote: \(detail)",
+            throw NSError(domain: "phatmux.remote.daemon", code: 31, userInfo: [
+                NSLocalizedDescriptionKey: "failed to upload phatmuxd-remote: \(detail)",
             ])
         }
 
@@ -4104,7 +4104,7 @@ final class WorkspaceRemoteSessionController {
         let finalizeResult = try sshExec(arguments: sshCommonArguments(batchMode: true) + [configuration.destination, finalizeCommand], timeout: 12)
         guard finalizeResult.status == 0 else {
             let detail = Self.bestErrorLine(stderr: finalizeResult.stderr, stdout: finalizeResult.stdout) ?? "ssh exited \(finalizeResult.status)"
-            throw NSError(domain: "cmux.remote.daemon", code: 32, userInfo: [
+            throw NSError(domain: "phatmux.remote.daemon", code: 32, userInfo: [
                 NSLocalizedDescriptionKey: "failed to install remote daemon binary: \(detail)",
             ])
         }
@@ -4161,7 +4161,7 @@ final class WorkspaceRemoteSessionController {
     static func remoteDropPath(for fileURL: URL, uuid: UUID = UUID()) -> String {
         let extensionSuffix = fileURL.pathExtension.trimmingCharacters(in: .whitespacesAndNewlines)
         let lowercasedSuffix = extensionSuffix.isEmpty ? "" : ".\(extensionSuffix.lowercased())"
-        return "/tmp/cmux-drop-\(uuid.uuidString.lowercased())\(lowercasedSuffix)"
+        return "/tmp/phatmux-drop-\(uuid.uuidString.lowercased())\(lowercasedSuffix)"
     }
 
     private func cleanupUploadedRemotePaths(_ remotePaths: [String]) {
@@ -4181,7 +4181,7 @@ final class WorkspaceRemoteSessionController {
         let result = try sshExec(arguments: sshCommonArguments(batchMode: true) + [configuration.destination, command], timeout: 12)
         guard result.status == 0 else {
             let detail = Self.bestErrorLine(stderr: result.stderr, stdout: result.stdout) ?? "ssh exited \(result.status)"
-            throw NSError(domain: "cmux.remote.daemon", code: 40, userInfo: [
+            throw NSError(domain: "phatmux.remote.daemon", code: 40, userInfo: [
                 NSLocalizedDescriptionKey: "failed to start remote daemon: \(detail)",
             ])
         }
@@ -4193,7 +4193,7 @@ final class WorkspaceRemoteSessionController {
         guard !responseLine.isEmpty,
               let data = responseLine.data(using: .utf8),
               let payload = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] else {
-            throw NSError(domain: "cmux.remote.daemon", code: 41, userInfo: [
+            throw NSError(domain: "phatmux.remote.daemon", code: 41, userInfo: [
                 NSLocalizedDescriptionKey: "remote daemon hello returned invalid JSON",
             ])
         }
@@ -4207,7 +4207,7 @@ final class WorkspaceRemoteSessionController {
                 }
                 return "hello call failed"
             }()
-            throw NSError(domain: "cmux.remote.daemon", code: 42, userInfo: [
+            throw NSError(domain: "phatmux.remote.daemon", code: 42, userInfo: [
                 NSLocalizedDescriptionKey: "remote daemon hello failed: \(errorMessage)",
             ])
         }
@@ -4217,7 +4217,7 @@ final class WorkspaceRemoteSessionController {
         let version = (resultObject["version"] as? String)?.trimmingCharacters(in: .whitespacesAndNewlines)
         let capabilities = (resultObject["capabilities"] as? [String]) ?? []
         return DaemonHello(
-            name: (name?.isEmpty == false ? name! : "cmuxd-remote"),
+            name: (name?.isEmpty == false ? name! : "phatmuxd-remote"),
             version: (version?.isEmpty == false ? version! : "dev"),
             capabilities: capabilities,
             remotePath: remotePath
@@ -4280,15 +4280,15 @@ final class WorkspaceRemoteSessionController {
         #!/usr/bin/env bash
         set -euo pipefail
 
-        daemon="$HOME/.cmux/bin/cmuxd-remote-current"
-        socket_path="${CMUX_SOCKET_PATH:-}"
-        if [ -z "$socket_path" ] && [ -r "$HOME/.cmux/socket_addr" ]; then
-          socket_path="$(tr -d '\\r\\n' < "$HOME/.cmux/socket_addr")"
+        daemon="$HOME/.phatmux/bin/phatmuxd-remote-current"
+        socket_path="${PHATMUX_SOCKET_PATH:-}"
+        if [ -z "$socket_path" ] && [ -r "$HOME/.phatmux/socket_addr" ]; then
+          socket_path="$(tr -d '\\r\\n' < "$HOME/.phatmux/socket_addr")"
         fi
 
         if [ -n "$socket_path" ] && [ "${socket_path#/}" = "$socket_path" ] && [ "${socket_path#*:}" != "$socket_path" ]; then
           relay_port="${socket_path##*:}"
-          relay_map="$HOME/.cmux/relay/${relay_port}.daemon_path"
+          relay_map="$HOME/.phatmux/relay/${relay_port}.daemon_path"
           if [ -r "$relay_map" ]; then
             mapped_daemon="$(tr -d '\\r\\n' < "$relay_map")"
             if [ -n "$mapped_daemon" ] && [ -x "$mapped_daemon" ]; then
@@ -4304,14 +4304,14 @@ final class WorkspaceRemoteSessionController {
     static func remoteCLIWrapperInstallScript(daemonRemotePath: String) -> String {
         let trimmedRemotePath = daemonRemotePath.trimmingCharacters(in: .whitespacesAndNewlines)
         return """
-        mkdir -p "$HOME/.cmux/bin" "$HOME/.cmux/relay"
-        ln -sf "$HOME/\(trimmedRemotePath)" "$HOME/.cmux/bin/cmuxd-remote-current"
-        wrapper_tmp="$HOME/.cmux/bin/.cmux-wrapper.tmp.$$"
-        cat > "$wrapper_tmp" <<'CMUXWRAPPER'
+        mkdir -p "$HOME/.phatmux/bin" "$HOME/.phatmux/relay"
+        ln -sf "$HOME/\(trimmedRemotePath)" "$HOME/.phatmux/bin/phatmuxd-remote-current"
+        wrapper_tmp="$HOME/.phatmux/bin/.phatmux-wrapper.tmp.$$"
+        cat > "$wrapper_tmp" <<'PHATMUXWRAPPER'
         \(remoteCLIWrapperScript())
-        CMUXWRAPPER
+        PHATMUXWRAPPER
         chmod 755 "$wrapper_tmp"
-        mv -f "$wrapper_tmp" "$HOME/.cmux/bin/cmux"
+        mv -f "$wrapper_tmp" "$HOME/.phatmux/bin/phatmux"
         """
     }
 
@@ -4327,15 +4327,15 @@ final class WorkspaceRemoteSessionController {
         """
         return """
         umask 077
-        mkdir -p "$HOME/.cmux" "$HOME/.cmux/relay"
-        chmod 700 "$HOME/.cmux/relay"
+        mkdir -p "$HOME/.phatmux" "$HOME/.phatmux/relay"
+        chmod 700 "$HOME/.phatmux/relay"
         \(remoteCLIWrapperInstallScript(daemonRemotePath: trimmedRemotePath))
-        printf '%s' "$HOME/\(trimmedRemotePath)" > "$HOME/.cmux/relay/\(relayPort).daemon_path"
-        cat > "$HOME/.cmux/relay/\(relayPort).auth" <<'CMUXRELAYAUTH'
+        printf '%s' "$HOME/\(trimmedRemotePath)" > "$HOME/.phatmux/relay/\(relayPort).daemon_path"
+        cat > "$HOME/.phatmux/relay/\(relayPort).auth" <<'PHATMUXRELAYAUTH'
         \(authPayload)
-        CMUXRELAYAUTH
-        chmod 600 "$HOME/.cmux/relay/\(relayPort).auth"
-        printf '%s' '127.0.0.1:\(relayPort)' > "$HOME/.cmux/socket_addr"
+        PHATMUXRELAYAUTH
+        chmod 600 "$HOME/.phatmux/relay/\(relayPort).auth"
+        printf '%s' '127.0.0.1:\(relayPort)' > "$HOME/.phatmux/socket_addr"
         """
     }
 
@@ -4422,7 +4422,7 @@ final class WorkspaceRemoteSessionController {
     }
 
     private static func remoteDaemonPath(version: String, goOS: String, goArch: String) -> String {
-        ".cmux/bin/cmuxd-remote/\(version)/\(goOS)-\(goArch)/cmuxd-remote"
+        ".phatmux/bin/phatmuxd-remote/\(version)/\(goOS)-\(goArch)/phatmuxd-remote"
     }
 
     private static func killOrphanedRelayProcesses(relayPort: Int, destination: String) {
@@ -4457,11 +4457,11 @@ final class WorkspaceRemoteSessionController {
             .deletingLastPathComponent() // repo root
         candidates.append(compileTimeRoot)
         let environment = ProcessInfo.processInfo.environment
-        if let envRoot = environment["CMUX_REMOTE_DAEMON_SOURCE_ROOT"],
+        if let envRoot = environment["PHATMUX_REMOTE_DAEMON_SOURCE_ROOT"],
            !envRoot.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
             candidates.append(URL(fileURLWithPath: envRoot, isDirectory: true))
         }
-        if let envRoot = environment["CMUXTERM_REPO_ROOT"],
+        if let envRoot = environment["PHATMUXTERM_REPO_ROOT"],
            !envRoot.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
             candidates.append(URL(fileURLWithPath: envRoot, isDirectory: true))
         }
@@ -5135,7 +5135,7 @@ final class Workspace: Identifiable, ObservableObject {
     @Published var currentDirectory: String
     private(set) var preferredBrowserProfileID: UUID?
 
-    /// Ordinal for CMUX_PORT range assignment (monotonically increasing per app session)
+    /// Ordinal for PHATMUX_PORT range assignment (monotonically increasing per app session)
     var portOrdinal: Int = 0
 
     /// The bonsplit controller managing the split panes for this workspace
@@ -6834,7 +6834,7 @@ final class Workspace: Identifiable, ObservableObject {
         sourceSurface: ghostty_surface_t,
         inheritedConfig: ghostty_surface_config_s
     ) -> Float? {
-        let runtimePoints = cmuxCurrentSurfaceFontSizePoints(sourceSurface)
+        let runtimePoints = phatmuxCurrentSurfaceFontSizePoints(sourceSurface)
         if let rooted = terminalInheritanceFontPointsByPanelId[terminalPanel.id], rooted > 0 {
             if let runtimePoints, abs(runtimePoints - rooted) > 0.05 {
                 // Runtime zoom changed after lineage was seeded (manual zoom on descendant);
@@ -6852,7 +6852,7 @@ final class Workspace: Identifiable, ObservableObject {
     private func rememberTerminalConfigInheritanceSource(_ terminalPanel: TerminalPanel) {
         lastTerminalConfigInheritancePanelId = terminalPanel.id
         if let sourceSurface = terminalPanel.surface.surface,
-           let runtimePoints = cmuxCurrentSurfaceFontSizePoints(sourceSurface) {
+           let runtimePoints = phatmuxCurrentSurfaceFontSizePoints(sourceSurface) {
             let existing = terminalInheritanceFontPointsByPanelId[terminalPanel.id]
             if existing == nil || abs((existing ?? runtimePoints) - runtimePoints) > 0.05 {
                 terminalInheritanceFontPointsByPanelId[terminalPanel.id] = runtimePoints
@@ -6950,7 +6950,7 @@ final class Workspace: Identifiable, ObservableObject {
             inPane: preferredPaneId
         ) {
             guard let sourceSurface = terminalPanel.surface.surface else { continue }
-            var config = cmuxInheritedSurfaceConfig(
+            var config = phatmuxInheritedSurfaceConfig(
                 sourceSurface: sourceSurface,
                 context: GHOSTTY_SURFACE_CONTEXT_SPLIT
             )
@@ -7487,7 +7487,7 @@ final class Workspace: Identifiable, ObservableObject {
         // Mapping can transiently drift during split-tree mutations. If the target panel is
         // currently focused (or is the active terminal first responder), close whichever tab
         // bonsplit marks selected in that focused pane.
-        let firstResponderPanelId = cmuxOwningGhosttyView(
+        let firstResponderPanelId = phatmuxOwningGhosttyView(
             for: NSApp.keyWindow?.firstResponder ?? NSApp.mainWindow?.firstResponder
         )?.terminalSurface?.id
         let targetIsActive = focusedPanelId == panelId || firstResponderPanelId == panelId
@@ -9209,7 +9209,7 @@ final class Workspace: Identifiable, ObservableObject {
             let failure = NSAlert()
             failure.alertStyle = .warning
             failure.messageText = "Move Failed"
-            failure.informativeText = "cmux could not move this tab to the selected destination."
+            failure.informativeText = "phatmux could not move this tab to the selected destination."
             failure.addButton(withTitle: "OK")
             _ = failure.runModal()
         }
@@ -10091,7 +10091,7 @@ extension Workspace: BonsplitDelegate {
         // If the new pane already has a tab, this split moved an existing tab (drag-to-split).
         //
         // In the "drag the only tab to split edge" case, bonsplit inserts a placeholder "Empty"
-        // tab in the source pane to avoid leaving it tabless. In cmux, this is undesirable:
+        // tab in the source pane to avoid leaving it tabless. In phatmux, this is undesirable:
         // it creates a pane with no real surfaces and leaves an "Empty" tab in the tab bar.
         //
         // Replace placeholder-only source panes with a real terminal surface, then drop the

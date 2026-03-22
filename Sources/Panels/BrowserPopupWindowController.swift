@@ -43,7 +43,7 @@ func browserPopupContentRect(
 /// - The opener `BrowserPanel` also keeps a strong reference for deterministic
 ///   cleanup when the opener tab or workspace is closed.
 /// NSPanel subclass that intercepts Cmd+W before the swizzled
-/// `cmux_performKeyEquivalent` can dispatch it to the main menu's
+/// `phatmux_performKeyEquivalent` can dispatch it to the main menu's
 /// "Close Tab" action (which would close the parent browser tab).
 private class BrowserPopupPanel: NSPanel {
     override func performKeyEquivalent(with event: NSEvent) -> Bool {
@@ -102,7 +102,7 @@ final class BrowserPopupWindowController: NSObject, NSWindowDelegate {
         }
 
         // Create popup web view with WebKit's supplied configuration after
-        // overlaying the opener's browser context so OAuth popups keep cmux's
+        // overlaying the opener's browser context so OAuth popups keep phatmux's
         // shared cookie/storage scope and opener linkage.
         let webView = CmuxWebView(frame: .zero, configuration: configuration)
         webView.allowsBackForwardNavigationGestures = true
@@ -151,7 +151,7 @@ final class BrowserPopupWindowController: NSObject, NSWindowDelegate {
             backing: .buffered,
             defer: false
         )
-        panel.identifier = NSUserInterfaceItemIdentifier("cmux.browser-popup")
+        panel.identifier = NSUserInterfaceItemIdentifier("phatmux.browser-popup")
         panel.level = NSWindow.Level.normal
         panel.hidesOnDeactivate = false
         panel.isReleasedWhenClosed = false
@@ -343,12 +343,12 @@ final class BrowserPopupWindowController: NSObject, NSWindowDelegate {
         let alert = NSAlert()
         alert.alertStyle = .warning
         alert.messageText = String(localized: "browser.error.insecure.title", defaultValue: "Connection isn\u{2019}t secure")
-        alert.informativeText = String(localized: "browser.error.insecure.message", defaultValue: "\(host) uses plain HTTP, so traffic can be read or modified on the network.\n\nOpen this URL in your default browser, or proceed in cmux.")
+        alert.informativeText = String(localized: "browser.error.insecure.message", defaultValue: "\(host) uses plain HTTP, so traffic can be read or modified on the network.\n\nOpen this URL in your default browser, or proceed in phatmux.")
         alert.addButton(withTitle: String(localized: "browser.openInDefaultBrowser", defaultValue: "Open in Default Browser"))
-        alert.addButton(withTitle: String(localized: "browser.proceedInCmux", defaultValue: "Proceed in cmux"))
+        alert.addButton(withTitle: String(localized: "browser.proceedInCmux", defaultValue: "Proceed in phatmux"))
         alert.addButton(withTitle: String(localized: "common.cancel", defaultValue: "Cancel"))
         alert.showsSuppressionButton = true
-        alert.suppressionButton?.title = String(localized: "browser.alwaysAllowHost", defaultValue: "Always allow this host in cmux")
+        alert.suppressionButton?.title = String(localized: "browser.alwaysAllowHost", defaultValue: "Always allow this host in phatmux")
 
         let handleResponse: (NSApplication.ModalResponse) -> Void = { [weak alert] response in
             if browserShouldPersistInsecureHTTPAllowlistSelection(

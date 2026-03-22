@@ -39,7 +39,7 @@ def parse_settings_arg(argv: list[str]) -> dict:
 
 
 def run_wrapper(*, socket_state: str, argv: list[str]) -> tuple[int, list[str], list[str], str, str]:
-    with tempfile.TemporaryDirectory(prefix="cmux-claude-wrapper-test-") as td:
+    with tempfile.TemporaryDirectory(prefix="phatmux-claude-wrapper-test-") as td:
         tmp = Path(td)
         wrapper_dir = tmp / "wrapper-bin"
         real_dir = tmp / "real-bin"
@@ -52,8 +52,8 @@ def run_wrapper(*, socket_state: str, argv: list[str]) -> tuple[int, list[str], 
 
         real_args_log = tmp / "real-args.log"
         real_claudecode_log = tmp / "real-claudecode.log"
-        cmux_log = tmp / "cmux.log"
-        socket_path = str(tmp / "cmux.sock")
+        phatmux_log = tmp / "phatmux.log"
+        socket_path = str(tmp / "phatmux.sock")
 
         make_executable(
             real_dir / "claude",
@@ -68,15 +68,15 @@ done
         )
 
         make_executable(
-            wrapper_dir / "cmux",
+            wrapper_dir / "phatmux",
             """#!/usr/bin/env bash
 set -euo pipefail
-printf '%s timeout=%s\\n' "$*" "${CMUXTERM_CLI_RESPONSE_TIMEOUT_SEC-__UNSET__}" >> "$FAKE_CMUX_LOG"
+printf '%s timeout=%s\\n' "$*" "${PHATMUXTERM_CLI_RESPONSE_TIMEOUT_SEC-__UNSET__}" >> "$FAKE_PHATMUX_LOG"
 if [[ "${1:-}" == "--socket" ]]; then
   shift 2
 fi
 if [[ "${1:-}" == "ping" ]]; then
-  if [[ "${FAKE_CMUX_PING_OK:-0}" == "1" ]]; then
+  if [[ "${FAKE_PHATMUX_PING_OK:-0}" == "1" ]]; then
     exit 0
   fi
   exit 1
@@ -92,12 +92,12 @@ exit 0
 
         env = os.environ.copy()
         env["PATH"] = f"{wrapper_dir}:{real_dir}:/usr/bin:/bin"
-        env["CMUX_SURFACE_ID"] = "surface:test"
-        env["CMUX_SOCKET_PATH"] = socket_path
+        env["PHATMUX_SURFACE_ID"] = "surface:test"
+        env["PHATMUX_SOCKET_PATH"] = socket_path
         env["FAKE_REAL_ARGS_LOG"] = str(real_args_log)
         env["FAKE_REAL_CLAUDECODE_LOG"] = str(real_claudecode_log)
-        env["FAKE_CMUX_LOG"] = str(cmux_log)
-        env["FAKE_CMUX_PING_OK"] = "1" if socket_state == "live" else "0"
+        env["FAKE_PHATMUX_LOG"] = str(phatmux_log)
+        env["FAKE_PHATMUX_PING_OK"] = "1" if socket_state == "live" else "0"
         env["CLAUDECODE"] = "nested-session-sentinel"
 
         try:
@@ -115,7 +115,7 @@ exit 0
 
         claudecode_lines = read_lines(real_claudecode_log)
         claudecode_value = claudecode_lines[0] if claudecode_lines else ""
-        return proc.returncode, read_lines(real_args_log), read_lines(cmux_log), proc.stderr.strip(), claudecode_value
+        return proc.returncode, read_lines(real_args_log), read_lines(phatmux_log), proc.stderr.strip(), claudecode_value
 
 
 def expect(condition: bool, message: str, failures: list[str]) -> None:
@@ -124,15 +124,15 @@ def expect(condition: bool, message: str, failures: list[str]) -> None:
 
 
 def test_live_socket_injects_supported_hooks(failures: list[str]) -> None:
-    code, real_argv, cmux_log, stderr, claudecode = run_wrapper(socket_state="live", argv=["hello"])
+    code, real_argv, phatmux_log, stderr, claudecode = run_wrapper(socket_state="live", argv=["hello"])
     expect(code == 0, f"live socket: wrapper exited {code}: {stderr}", failures)
     expect("--settings" in real_argv, f"live socket: missing --settings in args: {real_argv}", failures)
     expect("--session-id" in real_argv, f"live socket: missing --session-id in args: {real_argv}", failures)
     expect(real_argv[-1] == "hello", f"live socket: expected original arg to pass through, got {real_argv}", failures)
-    expect(any(" ping" in line for line in cmux_log), f"live socket: expected cmux ping, got {cmux_log}", failures)
+    expect(any(" ping" in line for line in phatmux_log), f"live socket: expected phatmux ping, got {phatmux_log}", failures)
     expect(
-        any("timeout=0.75" in line for line in cmux_log),
-        f"live socket: expected bounded ping timeout, got {cmux_log}",
+        any("timeout=0.75" in line for line in phatmux_log),
+        f"live socket: expected bounded ping timeout, got {phatmux_log}",
         failures,
     )
     expect(claudecode == "__UNSET__", f"live socket: expected CLAUDECODE unset, got {claudecode!r}", failures)
@@ -158,21 +158,21 @@ def test_live_socket_injects_supported_hooks(failures: list[str]) -> None:
 
 
 def test_missing_socket_skips_hook_injection(failures: list[str]) -> None:
-    code, real_argv, cmux_log, stderr, claudecode = run_wrapper(socket_state="missing", argv=["hello"])
+    code, real_argv, phatmux_log, stderr, claudecode = run_wrapper(socket_state="missing", argv=["hello"])
     expect(code == 0, f"missing socket: wrapper exited {code}: {stderr}", failures)
     expect(real_argv == ["hello"], f"missing socket: expected passthrough args, got {real_argv}", failures)
-    expect(cmux_log == [], f"missing socket: expected no cmux calls, got {cmux_log}", failures)
+    expect(phatmux_log == [], f"missing socket: expected no phatmux calls, got {phatmux_log}", failures)
     expect(claudecode == "__UNSET__", f"missing socket: expected CLAUDECODE unset, got {claudecode!r}", failures)
 
 
 def test_stale_socket_skips_hook_injection(failures: list[str]) -> None:
-    code, real_argv, cmux_log, stderr, claudecode = run_wrapper(socket_state="stale", argv=["hello"])
+    code, real_argv, phatmux_log, stderr, claudecode = run_wrapper(socket_state="stale", argv=["hello"])
     expect(code == 0, f"stale socket: wrapper exited {code}: {stderr}", failures)
     expect(real_argv == ["hello"], f"stale socket: expected passthrough args, got {real_argv}", failures)
-    expect(any(" ping" in line for line in cmux_log), f"stale socket: expected cmux ping probe, got {cmux_log}", failures)
+    expect(any(" ping" in line for line in phatmux_log), f"stale socket: expected phatmux ping probe, got {phatmux_log}", failures)
     expect(
-        any("timeout=0.75" in line for line in cmux_log),
-        f"stale socket: expected bounded ping timeout, got {cmux_log}",
+        any("timeout=0.75" in line for line in phatmux_log),
+        f"stale socket: expected bounded ping timeout, got {phatmux_log}",
         failures,
     )
     expect(claudecode == "__UNSET__", f"stale socket: expected CLAUDECODE unset, got {claudecode!r}", failures)

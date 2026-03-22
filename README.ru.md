@@ -1,11 +1,11 @@
 > Этот перевод создан Claude. Если у вас есть предложения по улучшению, откройте PR.
 
-<h1 align="center">cmux</h1>
+<h1 align="center">phatmux</h1>
 <p align="center">Терминал macOS на базе Ghostty с вертикальными вкладками и уведомлениями для AI-агентов программирования</p>
 
 <p align="center">
-  <a href="https://github.com/manaflow-ai/cmux/releases/latest/download/cmux-macos.dmg">
-    <img src="./docs/assets/macos-badge.png" alt="Скачать cmux для macOS" width="180" />
+  <a href="https://github.com/amitpaz/phatmux/releases/latest/download/phatmux-macos.dmg">
+    <img src="./docs/assets/macos-badge.png" alt="Скачать phatmux для macOS" width="180" />
   </a>
 </p>
 
@@ -19,11 +19,11 @@
 </p>
 
 <p align="center">
-  <img src="./docs/assets/main-first-image.png" alt="Скриншот cmux" width="900" />
+  <img src="./docs/assets/main-first-image.png" alt="Скриншот phatmux" width="900" />
 </p>
 
 <p align="center">
-  <a href="https://www.youtube.com/watch?v=i-WxO5YUTOs">▶ Демо-видео</a> · <a href="https://cmux.com/blog/zen-of-cmux">The Zen of cmux</a>
+  <a href="https://www.youtube.com/watch?v=i-WxO5YUTOs">▶ Демо-видео</a> · <a href="https://phatmux.com/blog/zen-of-phatmux">The Zen of phatmux</a>
 </p>
 
 ## Возможности
@@ -76,44 +76,44 @@
 
 ### DMG (рекомендуется)
 
-<a href="https://github.com/manaflow-ai/cmux/releases/latest/download/cmux-macos.dmg">
-  <img src="./docs/assets/macos-badge.png" alt="Скачать cmux для macOS" width="180" />
+<a href="https://github.com/amitpaz/phatmux/releases/latest/download/phatmux-macos.dmg">
+  <img src="./docs/assets/macos-badge.png" alt="Скачать phatmux для macOS" width="180" />
 </a>
 
-Откройте файл `.dmg` и перетащите cmux в папку «Программы». cmux автоматически обновляется через Sparkle, поэтому скачивание требуется только один раз.
+Откройте файл `.dmg` и перетащите phatmux в папку «Программы». phatmux автоматически обновляется через Sparkle, поэтому скачивание требуется только один раз.
 
 ### Homebrew
 
 ```bash
-brew tap manaflow-ai/cmux
-brew install --cask cmux
+brew tap amitpaz/phatmux
+brew install --cask phatmux
 ```
 
 Для обновления в дальнейшем:
 
 ```bash
-brew upgrade --cask cmux
+brew upgrade --cask phatmux
 ```
 
 При первом запуске macOS может попросить вас подтвердить открытие приложения от идентифицированного разработчика. Нажмите **Открыть**, чтобы продолжить.
 
-## Почему cmux?
+## Почему phatmux?
 
 Я запускаю множество сессий Claude Code и Codex параллельно. Я использовал Ghostty с кучей разделённых панелей и полагался на нативные уведомления macOS, чтобы знать, когда агент нуждается во мне. Но тело уведомления Claude Code — это всегда просто «Claude is waiting for your input» без контекста, а при достаточном количестве открытых вкладок я даже не мог прочитать заголовки.
 
-Я попробовал несколько оркестраторов для кодирования, но большинство из них были приложениями Electron/Tauri, и их производительность меня раздражала. К тому же я просто предпочитаю терминал, поскольку GUI-оркестраторы привязывают вас к своему рабочему процессу. Поэтому я создал cmux как нативное приложение macOS на Swift/AppKit. Оно использует libghostty для рендеринга терминала и читает вашу существующую конфигурацию Ghostty для тем, шрифтов и цветов.
+Я попробовал несколько оркестраторов для кодирования, но большинство из них были приложениями Electron/Tauri, и их производительность меня раздражала. К тому же я просто предпочитаю терминал, поскольку GUI-оркестраторы привязывают вас к своему рабочему процессу. Поэтому я создал phatmux как нативное приложение macOS на Swift/AppKit. Оно использует libghostty для рендеринга терминала и читает вашу существующую конфигурацию Ghostty для тем, шрифтов и цветов.
 
-Основные дополнения — это боковая панель и система уведомлений. Боковая панель имеет вертикальные вкладки, которые показывают ветку git, статус/номер связанного PR, рабочий каталог, прослушиваемые порты и текст последнего уведомления для каждого рабочего пространства. Система уведомлений перехватывает терминальные последовательности (OSC 9/99/777) и имеет CLI (`cmux notify`), который можно подключить к хукам агентов для Claude Code, OpenCode и т.д. Когда агент ожидает, его панель получает синее кольцо, а вкладка подсвечивается в боковой панели, так что я могу определить, какой из них нуждается во мне, среди разделений и вкладок. Cmd+Shift+U переходит к последнему непрочитанному.
+Основные дополнения — это боковая панель и система уведомлений. Боковая панель имеет вертикальные вкладки, которые показывают ветку git, статус/номер связанного PR, рабочий каталог, прослушиваемые порты и текст последнего уведомления для каждого рабочего пространства. Система уведомлений перехватывает терминальные последовательности (OSC 9/99/777) и имеет CLI (`phatmux notify`), который можно подключить к хукам агентов для Claude Code, OpenCode и т.д. Когда агент ожидает, его панель получает синее кольцо, а вкладка подсвечивается в боковой панели, так что я могу определить, какой из них нуждается во мне, среди разделений и вкладок. Cmd+Shift+U переходит к последнему непрочитанному.
 
 Встроенный браузер имеет скриптуемый API, портированный из [agent-browser](https://github.com/vercel-labs/agent-browser). Агенты могут делать снимок дерева доступности, получать ссылки на элементы, кликать, заполнять формы и выполнять JS. Вы можете разделить панель браузера рядом с терминалом и позволить Claude Code взаимодействовать с вашим сервером разработки напрямую.
 
 Всё скриптуемо через CLI и socket API — создание рабочих пространств/вкладок, разделение панелей, отправка нажатий клавиш, открытие URL в браузере.
 
-## The Zen of cmux
+## The Zen of phatmux
 
-cmux не навязывает разработчикам, как использовать свои инструменты. Это терминал и браузер с CLI, а остальное зависит от вас.
+phatmux не навязывает разработчикам, как использовать свои инструменты. Это терминал и браузер с CLI, а остальное зависит от вас.
 
-cmux — это примитив, а не решение. Он даёт вам терминал, браузер, уведомления, рабочие пространства, разделения, вкладки и CLI для управления всем этим. cmux не заставляет вас использовать агентов для кодирования определённым образом. То, что вы построите из этих примитивов, принадлежит вам.
+phatmux — это примитив, а не решение. Он даёт вам терминал, браузер, уведомления, рабочие пространства, разделения, вкладки и CLI для управления всем этим. phatmux не заставляет вас использовать агентов для кодирования определённым образом. То, что вы построите из этих примитивов, принадлежит вам.
 
 Лучшие разработчики всегда создавали собственные инструменты. Никто ещё не нашёл лучший способ работы с агентами, и команды, создающие закрытые продукты, тоже этого не сделали. Разработчики, ближе всех к своим кодовым базам, найдут это первыми.
 
@@ -121,7 +121,7 @@ cmux — это примитив, а не решение. Он даёт вам �
 
 ## Документация
 
-Подробнее о настройке cmux читайте в [нашей документации](https://cmux.com/docs/getting-started?utm_source=readme).
+Подробнее о настройке phatmux читайте в [нашей документации](https://phatmux.com/docs/getting-started?utm_source=readme).
 
 ## Сочетания Клавиш
 
@@ -211,27 +211,27 @@ cmux — это примитив, а не решение. Он даёт вам �
 
 ## Ночные сборки
 
-[Скачать cmux NIGHTLY](https://github.com/manaflow-ai/cmux/releases/download/nightly/cmux-nightly-macos.dmg)
+[Скачать phatmux NIGHTLY](https://github.com/amitpaz/phatmux/releases/download/nightly/phatmux-nightly-macos.dmg)
 
-cmux NIGHTLY — это отдельное приложение с собственным идентификатором пакета, поэтому оно работает параллельно со стабильной версией. Собирается автоматически из последнего коммита `main` и обновляется через собственный канал Sparkle.
+phatmux NIGHTLY — это отдельное приложение с собственным идентификатором пакета, поэтому оно работает параллельно со стабильной версией. Собирается автоматически из последнего коммита `main` и обновляется через собственный канал Sparkle.
 
 ## Восстановление сессии (текущее поведение)
 
-При перезапуске cmux в настоящее время восстанавливает только макет приложения и метаданные:
+При перезапуске phatmux в настоящее время восстанавливает только макет приложения и метаданные:
 - Макет окон/рабочих пространств/панелей
 - Рабочие каталоги
 - Scrollback терминала (по возможности)
 - URL браузера и история навигации
 
-cmux **не** восстанавливает состояние живых процессов внутри терминальных приложений. Например, активные сессии Claude Code/tmux/vim пока не возобновляются после перезапуска.
+phatmux **не** восстанавливает состояние живых процессов внутри терминальных приложений. Например, активные сессии Claude Code/tmux/vim пока не возобновляются после перезапуска.
 
 ## История звёзд
 
-<a href="https://star-history.com/#manaflow-ai/cmux&Date">
+<a href="https://star-history.com/#amitpaz/phatmux&Date">
  <picture>
-   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=manaflow-ai/cmux&type=Date&theme=dark" />
-   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=manaflow-ai/cmux&type=Date" />
-   <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=manaflow-ai/cmux&type=Date" width="600" />
+   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=amitpaz/phatmux&type=Date&theme=dark" />
+   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=amitpaz/phatmux&type=Date" />
+   <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=amitpaz/phatmux&type=Date" width="600" />
  </picture>
 </a>
 
@@ -241,26 +241,26 @@ cmux **не** восстанавливает состояние живых пр�
 
 - Подписывайтесь на нас в X для получения обновлений [@manaflowai](https://x.com/manaflowai), [@lawrencecchen](https://x.com/lawrencecchen) и [@austinywang](https://x.com/austinywang)
 - Присоединяйтесь к обсуждению в [Discord](https://discord.gg/xsgFEVrWCZ)
-- Создавайте и участвуйте в [GitHub issues](https://github.com/manaflow-ai/cmux/issues) и [обсуждениях](https://github.com/manaflow-ai/cmux/discussions)
-- Расскажите нам, что вы создаёте с помощью cmux
+- Создавайте и участвуйте в [GitHub issues](https://github.com/amitpaz/phatmux/issues) и [обсуждениях](https://github.com/amitpaz/phatmux/discussions)
+- Расскажите нам, что вы создаёте с помощью phatmux
 
 ## Сообщество
 
 - [Discord](https://discord.gg/xsgFEVrWCZ)
-- [GitHub](https://github.com/manaflow-ai/cmux)
+- [GitHub](https://github.com/amitpaz/phatmux)
 - [X / Twitter](https://twitter.com/manaflowai)
 - [YouTube](https://www.youtube.com/channel/UCAa89_j-TWkrXfk9A3CbASw)
 - [LinkedIn](https://www.linkedin.com/company/manaflow-ai/)
-- [Reddit](https://www.reddit.com/r/cmux/)
+- [Reddit](https://www.reddit.com/r/phatmux/)
 
 ## Издание основателя
 
-cmux бесплатен, с открытым исходным кодом и всегда будет таким. Если вы хотите поддержать разработку и получить ранний доступ к будущим возможностям:
+phatmux бесплатен, с открытым исходным кодом и всегда будет таким. Если вы хотите поддержать разработку и получить ранний доступ к будущим возможностям:
 
 **[Получить Издание основателя](https://buy.stripe.com/3cI00j2Ld0it5OU33r5EY0q)**
 
 - **Приоритетные запросы на функции/исправления ошибок**
-- **Ранний доступ: cmux AI, который даёт контекст по каждому рабочему пространству, вкладке и панели**
+- **Ранний доступ: phatmux AI, который даёт контекст по каждому рабочему пространству, вкладке и панели**
 - **Ранний доступ: приложение для iOS с терминалами, синхронизированными между компьютером и телефоном**
 - **Ранний доступ: облачные виртуальные машины**
 - **Ранний доступ: голосовой режим**

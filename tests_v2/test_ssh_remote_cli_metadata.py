@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Regression: `cmux ssh` creates a remote-tagged workspace with remote metadata."""
+"""Regression: `phatmux ssh` creates a remote-tagged workspace with remote metadata."""
 
 from __future__ import annotations
 
@@ -13,40 +13,40 @@ import time
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent))
-from cmux import cmux, cmuxError
+from phatmux import phatmux, phatmuxError
 
 
-SOCKET_PATH = os.environ.get("CMUX_SOCKET", "/tmp/cmux-debug.sock")
+SOCKET_PATH = os.environ.get("PHATMUX_SOCKET", "/tmp/phatmux-debug.sock")
 
 
 def _must(cond: bool, msg: str) -> None:
     if not cond:
-        raise cmuxError(msg)
+        raise phatmuxError(msg)
 
 
 def _find_cli_binary() -> str:
-    env_cli = os.environ.get("CMUXTERM_CLI")
+    env_cli = os.environ.get("PHATMUXTERM_CLI")
     if env_cli and os.path.isfile(env_cli) and os.access(env_cli, os.X_OK):
         return env_cli
 
-    fixed = os.path.expanduser("~/Library/Developer/Xcode/DerivedData/cmux-tests-v2/Build/Products/Debug/cmux")
+    fixed = os.path.expanduser("~/Library/Developer/Xcode/DerivedData/phatmux-tests-v2/Build/Products/Debug/phatmux")
     if os.path.isfile(fixed) and os.access(fixed, os.X_OK):
         return fixed
 
-    candidates = glob.glob(os.path.expanduser("~/Library/Developer/Xcode/DerivedData/**/Build/Products/Debug/cmux"), recursive=True)
-    candidates += glob.glob("/tmp/cmux-*/Build/Products/Debug/cmux")
+    candidates = glob.glob(os.path.expanduser("~/Library/Developer/Xcode/DerivedData/**/Build/Products/Debug/phatmux"), recursive=True)
+    candidates += glob.glob("/tmp/phatmux-*/Build/Products/Debug/phatmux")
     candidates = [p for p in candidates if os.path.isfile(p) and os.access(p, os.X_OK)]
     if not candidates:
-        raise cmuxError("Could not locate cmux CLI binary; set CMUXTERM_CLI")
+        raise phatmuxError("Could not locate phatmux CLI binary; set PHATMUXTERM_CLI")
     candidates.sort(key=lambda p: os.path.getmtime(p), reverse=True)
     return candidates[0]
 
 
 def _run_cli(cli: str, args: list[str], *, json_output: bool, extra_env: dict[str, str] | None = None) -> str:
     env = dict(os.environ)
-    env.pop("CMUX_WORKSPACE_ID", None)
-    env.pop("CMUX_SURFACE_ID", None)
-    env.pop("CMUX_TAB_ID", None)
+    env.pop("PHATMUX_WORKSPACE_ID", None)
+    env.pop("PHATMUX_SURFACE_ID", None)
+    env.pop("PHATMUX_TAB_ID", None)
     if extra_env:
         env.update(extra_env)
 
@@ -57,7 +57,7 @@ def _run_cli(cli: str, args: list[str], *, json_output: bool, extra_env: dict[st
     proc = subprocess.run(cmd, capture_output=True, text=True, check=False, env=env)
     if proc.returncode != 0:
         merged = f"{proc.stdout}\n{proc.stderr}".strip()
-        raise cmuxError(f"CLI failed ({' '.join(cmd)}): {merged}")
+        raise phatmuxError(f"CLI failed ({' '.join(cmd)}): {merged}")
     return proc.stdout
 
 
@@ -66,7 +66,7 @@ def _run_cli_json(cli: str, args: list[str], *, extra_env: dict[str, str] | None
     try:
         return json.loads(output or "{}")
     except Exception as exc:  # noqa: BLE001
-        raise cmuxError(f"Invalid JSON output for {' '.join(args)}: {output!r} ({exc})")
+        raise phatmuxError(f"Invalid JSON output for {' '.join(args)}: {output!r} ({exc})")
 
 
 def _extract_control_path(ssh_command: str) -> str:
@@ -74,7 +74,7 @@ def _extract_control_path(ssh_command: str) -> str:
     return match.group(1) if match else ""
 
 
-def _read_any_terminal_text(client: cmux, workspace_id: str, timeout: float = 8.0) -> str | None:
+def _read_any_terminal_text(client: phatmux, workspace_id: str, timeout: float = 8.0) -> str | None:
     deadline = time.time() + timeout
     last_exc: Exception | None = None
     while time.time() < deadline:
@@ -82,7 +82,7 @@ def _read_any_terminal_text(client: cmux, workspace_id: str, timeout: float = 8.
         for _, surface_id, _ in surfaces:
             try:
                 return client.read_terminal_text(surface_id)
-            except cmuxError as exc:
+            except phatmuxError as exc:
                 text = str(exc).lower()
                 if "terminal surface not found" in text:
                     last_exc = exc
@@ -93,7 +93,7 @@ def _read_any_terminal_text(client: cmux, workspace_id: str, timeout: float = 8.
     return None
 
 
-def _resolve_workspace_id_from_payload(client: cmux, payload: dict) -> str:
+def _resolve_workspace_id_from_payload(client: phatmux, payload: dict) -> str:
     workspace_id = str(payload.get("workspace_id") or "")
     if workspace_id:
         return workspace_id
@@ -118,7 +118,7 @@ def _append_workspace_to_cleanup(workspaces_to_close: list[str], workspace_id: s
 def main() -> int:
     cli = _find_cli_binary()
     help_text = _run_cli(cli, ["ssh", "--help"], json_output=False)
-    _must("cmux ssh" in help_text, "ssh --help output should include command header")
+    _must("phatmux ssh" in help_text, "ssh --help output should include command header")
     _must("Create a new workspace" in help_text, "ssh --help output should describe workspace creation")
 
     workspace_id = ""
@@ -127,7 +127,7 @@ def main() -> int:
     workspace_id_case_override = ""
     workspace_id_invalid_proxy_port = ""
     workspaces_to_close: list[str] = []
-    with cmux(SOCKET_PATH) as client:
+    with phatmux(SOCKET_PATH) as client:
         try:
             payload = _run_cli_json(
                 cli,
@@ -137,13 +137,13 @@ def main() -> int:
                 workspaces_to_close,
                 _resolve_workspace_id_from_payload(client, payload),
             )
-            _must(bool(workspace_id), f"cmux ssh output missing workspace_id: {payload}")
+            _must(bool(workspace_id), f"phatmux ssh output missing workspace_id: {payload}")
             selected_workspace_id = ""
             deadline_select = time.time() + 5.0
             while time.time() < deadline_select:
                 try:
                     selected_workspace_id = client.current_workspace()
-                except cmuxError:
+                except phatmuxError:
                     time.sleep(0.05)
                     continue
                 if selected_workspace_id == workspace_id:
@@ -151,63 +151,63 @@ def main() -> int:
                 time.sleep(0.05)
             _must(
                 selected_workspace_id == workspace_id,
-                f"cmux ssh should select the newly created workspace: expected {workspace_id}, got {selected_workspace_id}",
+                f"phatmux ssh should select the newly created workspace: expected {workspace_id}, got {selected_workspace_id}",
             )
             remote_relay_port = payload.get("remote_relay_port")
-            _must(remote_relay_port is not None, f"cmux ssh output missing remote_relay_port: {payload}")
+            _must(remote_relay_port is not None, f"phatmux ssh output missing remote_relay_port: {payload}")
             remote_socket_addr = f"127.0.0.1:{int(remote_relay_port)}"
             ssh_command = str(payload.get("ssh_command") or "")
-            _must(bool(ssh_command), f"cmux ssh output missing ssh_command: {payload}")
+            _must(bool(ssh_command), f"phatmux ssh output missing ssh_command: {payload}")
             _must(
                 ssh_command.startswith("ssh "),
-                f"cmux ssh should emit plain ssh command text (env is passed via workspace.create initial_env): {ssh_command!r}",
+                f"phatmux ssh should emit plain ssh command text (env is passed via workspace.create initial_env): {ssh_command!r}",
             )
             ssh_startup_command = str(payload.get("ssh_startup_command") or "")
             _must(
                 ssh_startup_command.startswith("/bin/zsh -ilc "),
-                f"cmux ssh should launch startup command via interactive zsh for shell integration: {ssh_startup_command!r}",
+                f"phatmux ssh should launch startup command via interactive zsh for shell integration: {ssh_startup_command!r}",
             )
             ssh_env_overrides = payload.get("ssh_env_overrides") or {}
             _must(
                 str(ssh_env_overrides.get("GHOSTTY_SHELL_FEATURES") or "").endswith("ssh-env,ssh-terminfo"),
-                f"cmux ssh should pass shell niceties via ssh_env_overrides: {payload}",
+                f"phatmux ssh should pass shell niceties via ssh_env_overrides: {payload}",
             )
             _must(not ssh_command.startswith("env "), f"ssh command should not include env prefix: {ssh_command!r}")
             _must("-o StrictHostKeyChecking=accept-new" in ssh_command, f"ssh command prefix mismatch: {ssh_command!r}")
             _must("-o ControlMaster=auto" in ssh_command, f"ssh command should opt into connection reuse: {ssh_command!r}")
             _must("-o ControlPersist=600" in ssh_command, f"ssh command should keep master alive for reuse: {ssh_command!r}")
-            _must("ControlPath=/tmp/cmux-ssh-" in ssh_command, f"ssh command should use shared control path template: {ssh_command!r}")
+            _must("ControlPath=/tmp/phatmux-ssh-" in ssh_command, f"ssh command should use shared control path template: {ssh_command!r}")
             _must(
                 "RemoteCommand=/bin/sh -lc " in ssh_command,
-                f"cmux ssh should route RemoteCommand through /bin/sh for non-POSIX login shells: {ssh_command!r}",
+                f"phatmux ssh should route RemoteCommand through /bin/sh for non-POSIX login shells: {ssh_command!r}",
             )
             _must(
-                f"export PATH=\"$HOME/.cmux/bin:$PATH\"" in ssh_command,
-                f"cmux ssh should still prepend the remote cmux wrapper path: {ssh_command!r}",
+                f"export PATH=\"$HOME/.phatmux/bin:$PATH\"" in ssh_command,
+                f"phatmux ssh should still prepend the remote phatmux wrapper path: {ssh_command!r}",
             )
             _must(
-                f"export CMUX_SOCKET_PATH=127.0.0.1:{int(remote_relay_port)}" in ssh_command,
-                f"cmux ssh should still pin the relay socket path in RemoteCommand: {ssh_command!r}",
+                f"export PHATMUX_SOCKET_PATH=127.0.0.1:{int(remote_relay_port)}" in ssh_command,
+                f"phatmux ssh should still pin the relay socket path in RemoteCommand: {ssh_command!r}",
             )
             _must(
-                "case \"${CMUX_LOGIN_SHELL##*/}\" in" in ssh_command,
-                f"cmux ssh should still branch on the user's login shell when possible: {ssh_command!r}",
+                "case \"${PHATMUX_LOGIN_SHELL##*/}\" in" in ssh_command,
+                f"phatmux ssh should still branch on the user's login shell when possible: {ssh_command!r}",
             )
             _must(
-                "cat > \"$cmux_shell_dir/.zshrc\"" in ssh_command,
-                f"cmux ssh should install a post-rc zsh wrapper so the remote cmux wrapper stays first on PATH: {ssh_command!r}",
+                "cat > \"$phatmux_shell_dir/.zshrc\"" in ssh_command,
+                f"phatmux ssh should install a post-rc zsh wrapper so the remote phatmux wrapper stays first on PATH: {ssh_command!r}",
             )
             _must(
-                "cmux_wait_attempt=0" in ssh_command,
-                f"cmux ssh should wait briefly for the authenticated relay before showing the remote shell: {ssh_command!r}",
+                "phatmux_wait_attempt=0" in ssh_command,
+                f"phatmux ssh should wait briefly for the authenticated relay before showing the remote shell: {ssh_command!r}",
             )
             _must(
-                "exec \"$CMUX_LOGIN_SHELL\" --rcfile \"$cmux_shell_dir/.bashrc\" -i" in ssh_command,
-                f"cmux ssh should still support bash login shells with a post-rc wrapper file: {ssh_command!r}",
+                "exec \"$PHATMUX_LOGIN_SHELL\" --rcfile \"$phatmux_shell_dir/.bashrc\" -i" in ssh_command,
+                f"phatmux ssh should still support bash login shells with a post-rc wrapper file: {ssh_command!r}",
             )
             _must(
-                "exec \"$CMUX_LOGIN_SHELL\" -i" in ssh_command,
-                f"cmux ssh should still hand off to the user's interactive login shell when possible: {ssh_command!r}",
+                "exec \"$PHATMUX_LOGIN_SHELL\" -i" in ssh_command,
+                f"phatmux ssh should still hand off to the user's interactive login shell when possible: {ssh_command!r}",
             )
 
             listed_row = None
@@ -248,11 +248,11 @@ def main() -> int:
                 bool(remote.get("has_ssh_options")) is True,
                 f"workspace remote payload should indicate ssh options are configured: {remote}",
             )
-            # Regression: cmux ssh should launch through initial_command, not visibly type a giant command into the shell.
+            # Regression: phatmux ssh should launch through initial_command, not visibly type a giant command into the shell.
             terminal_text = _read_any_terminal_text(client, workspace_id)
             if terminal_text is not None:
-                _must("ControlPersist=600" not in terminal_text, f"cmux ssh should not inject raw ssh command text: {terminal_text!r}")
-                _must("GHOSTTY_SHELL_FEATURES=" not in terminal_text, f"cmux ssh should not inject env assignment text: {terminal_text!r}")
+                _must("ControlPersist=600" not in terminal_text, f"phatmux ssh should not inject raw ssh command text: {terminal_text!r}")
+                _must("GHOSTTY_SHELL_FEATURES=" not in terminal_text, f"phatmux ssh should not inject env assignment text: {terminal_text!r}")
 
             status = client._call("workspace.remote.status", {"workspace_id": workspace_id}) or {}
             status_remote = status.get("remote") or {}
@@ -273,7 +273,7 @@ def main() -> int:
                     break
                 time.sleep(0.2)
             else:
-                raise cmuxError(f"unreachable host should drive daemon state to error: {last_status}")
+                raise phatmuxError(f"unreachable host should drive daemon state to error: {last_status}")
 
             last_remote = last_status.get("remote") or {}
             last_daemon = last_remote.get("daemon") or {}
@@ -293,8 +293,8 @@ def main() -> int:
             _must(str(disconnected_daemon.get("state") or "") == "unavailable", f"daemon state should reset to unavailable: {disconnected}")
             try:
                 client._call("workspace.remote.reconnect", {"workspace_id": workspace_id})
-                raise cmuxError("workspace.remote.reconnect should fail when remote config was cleared")
-            except cmuxError as exc:
+                raise phatmuxError("workspace.remote.reconnect should fail when remote config was cleared")
+            except phatmuxError as exc:
                 text = str(exc).lower()
                 _must("invalid_state" in text, f"workspace.remote.reconnect missing invalid_state for cleared config: {exc}")
                 _must("not configured" in text, f"workspace.remote.reconnect should explain missing remote config: {exc}")
@@ -310,14 +310,14 @@ def main() -> int:
             )
             ssh_command_without_name = str(payload2.get("ssh_command") or "")
 
-            _must(bool(workspace_id_without_name), f"cmux ssh without --name should still create workspace: {payload2}")
+            _must(bool(workspace_id_without_name), f"phatmux ssh without --name should still create workspace: {payload2}")
             _must(
-                "ControlPath=/tmp/cmux-ssh-" in ssh_command_without_name,
-                f"cmux ssh without --name should still include control path defaults: {ssh_command_without_name!r}",
+                "ControlPath=/tmp/phatmux-ssh-" in ssh_command_without_name,
+                f"phatmux ssh without --name should still include control path defaults: {ssh_command_without_name!r}",
             )
             _must(
                 _extract_control_path(ssh_command) != _extract_control_path(ssh_command_without_name),
-                f"distinct cmux ssh workspaces should get distinct control paths: {ssh_command!r} vs {ssh_command_without_name!r}",
+                f"distinct phatmux ssh workspaces should get distinct control paths: {ssh_command!r} vs {ssh_command_without_name!r}",
             )
             row2 = None
             listed2 = client._call("workspace.list", {}) or {}
@@ -354,7 +354,7 @@ def main() -> int:
             )
             _must(
                 bool(workspace_id_strict_override),
-                f"cmux ssh with StrictHostKeyChecking override should create workspace: {payload_strict_override}",
+                f"phatmux ssh with StrictHostKeyChecking override should create workspace: {payload_strict_override}",
             )
             ssh_command_strict_override = str(payload_strict_override.get("ssh_command") or "")
             _must(
@@ -391,7 +391,7 @@ def main() -> int:
                     "--ssh-option",
                     "controlpersist=0",
                     "--ssh-option",
-                    "controlpath=/tmp/cmux-ssh-%C-custom",
+                    "controlpath=/tmp/phatmux-ssh-%C-custom",
                 ],
             )
             workspace_id_case_override = _append_workspace_to_cleanup(
@@ -400,7 +400,7 @@ def main() -> int:
             )
             _must(
                 bool(workspace_id_case_override),
-                f"cmux ssh with lowercase SSH option overrides should create workspace: {payload_case_override}",
+                f"phatmux ssh with lowercase SSH option overrides should create workspace: {payload_case_override}",
             )
             ssh_command_case_override = str(payload_case_override.get("ssh_command") or "")
             ssh_command_case_override_lower = ssh_command_case_override.lower()
@@ -429,7 +429,7 @@ def main() -> int:
                 f"ssh command should not force default ControlPersist when lowercase override is supplied: {ssh_command_case_override!r}",
             )
             _must(
-                "controlpath=/tmp/cmux-ssh-%c-custom" in ssh_command_case_override_lower,
+                "controlpath=/tmp/phatmux-ssh-%c-custom" in ssh_command_case_override_lower,
                 f"ssh command should preserve lowercase ControlPath override value: {ssh_command_case_override!r}",
             )
             _must(
@@ -455,7 +455,7 @@ def main() -> int:
             merged_features = str(payload3_env.get("GHOSTTY_SHELL_FEATURES") or "")
             _must(
                 merged_features == "cursor,title,ssh-env,ssh-terminfo",
-                f"cmux ssh should merge existing shell features when present: {payload3!r}",
+                f"phatmux ssh should merge existing shell features when present: {payload3!r}",
             )
             workspace_id3 = _append_workspace_to_cleanup(
                 workspaces_to_close,
@@ -558,10 +558,10 @@ def main() -> int:
                             "auto_connect": False,
                         },
                     )
-                    raise cmuxError(
+                    raise phatmuxError(
                         f"workspace.remote.configure should reject local_proxy_port={invalid_local_proxy_port!r}"
                     )
-                except cmuxError as exc:
+                except phatmuxError as exc:
                     text = str(exc)
                     lowered = text.lower()
                     _must(
@@ -584,10 +584,10 @@ def main() -> int:
                             "auto_connect": False,
                         },
                     )
-                    raise cmuxError(
+                    raise phatmuxError(
                         f"workspace.remote.configure should reject port={invalid_port!r}"
                     )
-                except cmuxError as exc:
+                except phatmuxError as exc:
                     text = str(exc)
                     lowered = text.lower()
                     _must(
@@ -614,7 +614,7 @@ def main() -> int:
                 except Exception:
                     pass
 
-    print("PASS: cmux ssh marks workspace as remote, exposes remote metadata, and does not require --name")
+    print("PASS: phatmux ssh marks workspace as remote, exposes remote metadata, and does not require --name")
     return 0
 
 

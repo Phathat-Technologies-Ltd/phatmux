@@ -31,8 +31,8 @@ final class PTYSession {
     private var isFullScreen = false
     private var commandStartDate = Date()
     private var currentWorkingDirectory: String
-    private let readQueue = DispatchQueue(label: "cmux.warpblocks.pty.read", qos: .userInitiated)
-    private let watchingQueue = DispatchQueue(label: "cmux.warpblocks.pty.watch", qos: .userInitiated)
+    private let readQueue = DispatchQueue(label: "phatmux.warpblocks.pty.read", qos: .userInitiated)
+    private let watchingQueue = DispatchQueue(label: "phatmux.warpblocks.pty.watch", qos: .userInitiated)
 
     /**
      * Starts an interactive zsh process attached to a pseudoterminal.

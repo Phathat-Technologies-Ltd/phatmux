@@ -1,0 +1,9 @@
+{
+  "git.ignoredRepositories": [
+    ".build/checkouts/SwiftTerm",
+    ".build/checkouts/swift-argument-parser",
+    ".build/index-build/checkouts/SwiftTerm",
+    ".build/index-build/checkouts/swift-argument-parser",
+    "homebrew-cmux"
+  ]
+}

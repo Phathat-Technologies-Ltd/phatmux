@@ -3,7 +3,7 @@
 Automated test for ctrl+enter keybind using real keystrokes.
 
 Requires:
-  - cmux running
+  - phatmux running
   - Accessibility permissions for System Events (osascript)
   - keybind = ctrl+enter=text:\\r (or \\n/\\x0d) configured in Ghostty config
 """
@@ -15,10 +15,10 @@ import subprocess
 from pathlib import Path
 from typing import Optional
 
-# Add the directory containing cmux.py to the path
+# Add the directory containing phatmux.py to the path
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
-from cmux import cmux, cmuxError
+from phatmux import phatmux, phatmuxError
 
 
 class SkipTest(Exception):
@@ -29,24 +29,24 @@ def infer_app_name_for_osascript(socket_path: str) -> str:
     Infer the app display name from the socket path.
 
     Examples:
-      - /tmp/cmux-debug.sock          -> "cmux DEV"
-      - /tmp/cmux-debug-foo.sock      -> "cmux DEV foo"
-      - ~/Library/Application Support/cmux/cmux.sock -> "cmux"
-      - /tmp/cmux-foo.sock            -> "cmux foo"
+      - /tmp/phatmux-debug.sock          -> "phatmux DEV"
+      - /tmp/phatmux-debug-foo.sock      -> "phatmux DEV foo"
+      - ~/Library/Application Support/phatmux/phatmux.sock -> "phatmux"
+      - /tmp/phatmux-foo.sock            -> "phatmux foo"
     """
     base = Path(socket_path).name
-    if base.startswith("cmux-debug") and base.endswith(".sock"):
-        suffix = base[len("cmux-debug") : -len(".sock")]
+    if base.startswith("phatmux-debug") and base.endswith(".sock"):
+        suffix = base[len("phatmux-debug") : -len(".sock")]
         if suffix.startswith("-") and suffix[1:]:
-            return f"cmux DEV {suffix[1:]}"
-        return "cmux DEV"
-    if base.startswith("cmux") and base.endswith(".sock"):
-        suffix = base[len("cmux") : -len(".sock")]
+            return f"phatmux DEV {suffix[1:]}"
+        return "phatmux DEV"
+    if base.startswith("phatmux") and base.endswith(".sock"):
+        suffix = base[len("phatmux") : -len(".sock")]
         if suffix.startswith("-") and suffix[1:]:
-            return f"cmux {suffix[1:]}"
-        return "cmux"
+            return f"phatmux {suffix[1:]}"
+        return "phatmux"
     # Fallback: tests usually run against Debug builds.
-    return "cmux DEV"
+    return "phatmux DEV"
 
 
 def run_osascript(script: str) -> None:
@@ -102,7 +102,7 @@ def find_config_with_keybind() -> Optional[Path]:
     return None
 
 
-def test_ctrl_enter_keybind(client: cmux) -> tuple[bool, str]:
+def test_ctrl_enter_keybind(client: phatmux) -> tuple[bool, str]:
     marker = Path("/tmp") / f"ghostty_ctrl_enter_{os.getpid()}"
     marker.unlink(missing_ok=True)
 
@@ -143,14 +143,14 @@ def test_ctrl_enter_keybind(client: cmux) -> tuple[bool, str]:
 
 def run_tests() -> int:
     print("=" * 60)
-    print("cmux Ctrl+Enter Keybind Test")
+    print("phatmux Ctrl+Enter Keybind Test")
     print("=" * 60)
     print()
 
-    socket_path = cmux.DEFAULT_SOCKET_PATH
+    socket_path = phatmux.DEFAULT_SOCKET_PATH
     if not os.path.exists(socket_path):
         print(f"Error: Socket not found at {socket_path}")
-        print("Please make sure cmux is running.")
+        print("Please make sure phatmux is running.")
         return 1
 
     config_path = find_config_with_keybind()
@@ -163,12 +163,12 @@ def run_tests() -> int:
     print()
 
     try:
-        with cmux() as client:
+        with phatmux() as client:
             ok, message = test_ctrl_enter_keybind(client)
             status = "✅" if ok else "❌"
             print(f"{status} {message}")
             return 0 if ok else 1
-    except cmuxError as e:
+    except phatmuxError as e:
         print(f"Error: {e}")
         return 1
     except SkipTest as e:

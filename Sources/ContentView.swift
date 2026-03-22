@@ -40,7 +40,7 @@ func sidebarActiveForegroundNSColor(
     return baseColor.withAlphaComponent(clampedOpacity)
 }
 
-func cmuxAccentNSColor(for colorScheme: ColorScheme) -> NSColor {
+func phatmuxAccentNSColor(for colorScheme: ColorScheme) -> NSColor {
     switch colorScheme {
     case .dark:
         return NSColor(
@@ -59,20 +59,20 @@ func cmuxAccentNSColor(for colorScheme: ColorScheme) -> NSColor {
     }
 }
 
-func cmuxAccentNSColor(for appAppearance: NSAppearance?) -> NSColor {
+func phatmuxAccentNSColor(for appAppearance: NSAppearance?) -> NSColor {
     let bestMatch = appAppearance?.bestMatch(from: [.darkAqua, .aqua])
     let scheme: ColorScheme = (bestMatch == .darkAqua) ? .dark : .light
-    return cmuxAccentNSColor(for: scheme)
+    return phatmuxAccentNSColor(for: scheme)
 }
 
-func cmuxAccentNSColor() -> NSColor {
+func phatmuxAccentNSColor() -> NSColor {
     NSColor(name: nil) { appearance in
-        cmuxAccentNSColor(for: appearance)
+        phatmuxAccentNSColor(for: appearance)
     }
 }
 
-func cmuxAccentColor() -> Color {
-    Color(nsColor: cmuxAccentNSColor())
+func phatmuxAccentColor() -> Color {
+    Color(nsColor: phatmuxAccentNSColor())
 }
 
 struct SidebarRemoteErrorCopyEntry: Equatable {
@@ -113,7 +113,7 @@ enum SidebarRemoteErrorCopySupport {
 }
 
 func sidebarSelectedWorkspaceBackgroundNSColor(for colorScheme: ColorScheme) -> NSColor {
-    cmuxAccentNSColor(for: colorScheme)
+    phatmuxAccentNSColor(for: colorScheme)
 }
 
 func sidebarSelectedWorkspaceForegroundNSColor(opacity: CGFloat) -> NSColor {
@@ -124,7 +124,7 @@ func sidebarSelectedWorkspaceForegroundNSColor(opacity: CGFloat) -> NSColor {
 #if compiler(>=6.2)
 @available(macOS 26.0, *)
 enum InternalTabDragConfigurationProvider {
-    // These drags only make sense inside cmux. Outside the app, Finder should
+    // These drags only make sense inside phatmux. Outside the app, Finder should
     // reject them instead of materializing placeholder files from the payload.
     static let value = DragConfiguration(
         operationsWithinApp: .init(allowCopy: false, allowMove: true, allowDelete: false),
@@ -929,7 +929,7 @@ final class FileDropOverlayView: NSView {
 
 var fileDropOverlayKey: UInt8 = 0
 private var commandPaletteWindowOverlayKey: UInt8 = 0
-let commandPaletteOverlayContainerIdentifier = NSUserInterfaceItemIdentifier("cmux.commandPalette.overlay.container")
+let commandPaletteOverlayContainerIdentifier = NSUserInterfaceItemIdentifier("phatmux.commandPalette.overlay.container")
 
 enum CommandPaletteOverlayPromotionPolicy {
     static func shouldPromote(previouslyVisible: Bool, isVisible: Bool) -> Bool {
@@ -2184,7 +2184,7 @@ struct ContentView: View {
     @AppStorage("debugTitlebarLeadingExtra") private var debugTitlebarLeadingExtra: Double = 0
 
     @State private var titlebarLeadingInset: CGFloat = 12
-    private var windowIdentifier: String { "cmux.main.\(windowId.uuidString)" }
+    private var windowIdentifier: String { "phatmux.main.\(windowId.uuidString)" }
     private var fakeTitlebarTextColor: Color {
         _ = titlebarThemeGeneration
         let ghosttyBackground = GhosttyApp.shared.defaultBackgroundColor
@@ -2888,7 +2888,7 @@ struct ContentView: View {
                 }
             }
 #if DEBUG
-            if ProcessInfo.processInfo.environment["CMUX_UI_TEST_MODE"] == "1" {
+            if ProcessInfo.processInfo.environment["PHATMUX_UI_TEST_MODE"] == "1" {
                 UpdateLogStore.shared.append("ui test window accessor: id=\(windowIdentifier) visible=\(window.isVisible)")
             }
 #endif
@@ -3177,7 +3177,7 @@ struct ContentView: View {
     }
 
     private func setTitlebarControlsHidden(_ hidden: Bool, in window: NSWindow) {
-        let controlsId = NSUserInterfaceItemIdentifier("cmux.titlebarControls")
+        let controlsId = NSUserInterfaceItemIdentifier("phatmux.titlebarControls")
         for accessory in window.titlebarAccessoryViewControllers {
             if accessory.view.identifier == controlsId {
                 accessory.isHidden = hidden
@@ -3394,7 +3394,7 @@ struct ContentView: View {
                             let isSelected = index == selectedIndex
                             let isHovered = commandPaletteHoveredResultIndex == index
                             let rowBackground: Color = isSelected
-                                ? cmuxAccentColor().opacity(0.12)
+                                ? phatmuxAccentColor().opacity(0.12)
                                 : (isHovered ? Color.primary.opacity(0.08) : .clear)
 
                             Button {
@@ -5065,7 +5065,7 @@ struct ContentView: View {
         contributions.append(
             CommandPaletteCommandContribution(
                 commandId: "palette.installCLI",
-                title: constant(String(localized: "command.installCLI.title", defaultValue: "Shell Command: Install 'cmux' in PATH")),
+                title: constant(String(localized: "command.installCLI.title", defaultValue: "Shell Command: Install 'phatmux' in PATH")),
                 subtitle: constant(String(localized: "command.installCLI.subtitle", defaultValue: "CLI")),
                 keywords: ["install", "cli", "path", "shell", "command", "symlink"],
                 when: { !$0.bool(CommandPaletteContextKeys.cliInstalledInPATH) }
@@ -5074,7 +5074,7 @@ struct ContentView: View {
         contributions.append(
             CommandPaletteCommandContribution(
                 commandId: "palette.uninstallCLI",
-                title: constant(String(localized: "command.uninstallCLI.title", defaultValue: "Shell Command: Uninstall 'cmux' from PATH")),
+                title: constant(String(localized: "command.uninstallCLI.title", defaultValue: "Shell Command: Uninstall 'phatmux' from PATH")),
                 subtitle: constant(String(localized: "command.uninstallCLI.subtitle", defaultValue: "CLI")),
                 keywords: ["uninstall", "remove", "cli", "path", "shell", "command", "symlink"],
                 when: { $0.bool(CommandPaletteContextKeys.cliInstalledInPATH) }
@@ -5238,7 +5238,7 @@ struct ContentView: View {
                 commandId: "palette.restartSocketListener",
                 title: constant(String(localized: "command.restartSocketListener.title", defaultValue: "Restart CLI Listener")),
                 subtitle: constant(String(localized: "command.restartSocketListener.subtitle", defaultValue: "Global")),
-                keywords: ["restart", "socket", "listener", "cli", "cmux", "control"]
+                keywords: ["restart", "socket", "listener", "cli", "phatmux", "control"]
             )
         )
 
@@ -6682,7 +6682,7 @@ struct ContentView: View {
     }
 
     private func commandPaletteBackdropFocusTarget(for responder: NSResponder) -> CommandPaletteRestoreFocusTarget? {
-        if let terminalView = cmuxOwningGhosttyView(for: responder),
+        if let terminalView = phatmuxOwningGhosttyView(for: responder),
            let workspaceId = terminalView.tabId,
            let panelId = terminalView.terminalSurface?.id,
            tabManager.tabs.contains(where: { $0.id == workspaceId }) {
@@ -6988,7 +6988,7 @@ struct ContentView: View {
 #if DEBUG
         guard !didApplyUITestSidebarSelection else { return }
         let env = ProcessInfo.processInfo.environment
-        guard let rawValue = env["CMUX_UI_TEST_SIDEBAR_SELECTED_WORKSPACE_INDICES"]?
+        guard let rawValue = env["PHATMUX_UI_TEST_SIDEBAR_SELECTED_WORKSPACE_INDICES"]?
             .trimmingCharacters(in: .whitespacesAndNewlines),
               !rawValue.isEmpty else {
             return
@@ -8497,8 +8497,8 @@ enum DevBuildBannerDebugSettings {
 
 private enum FeedbackComposerSettings {
     static let storedEmailKey = "sidebarHelpFeedbackEmail"
-    static let endpointEnvironmentKey = "CMUX_FEEDBACK_API_URL"
-    static let defaultEndpoint = "https://cmux.com/api/feedback"
+    static let endpointEnvironmentKey = "PHATMUX_FEEDBACK_API_URL"
+    static let defaultEndpoint = "https://phatmux.com/api/feedback"
     static let foundersEmail = "founders@manaflow.com"
     static let maxMessageLength = 4_000
     static let maxAttachmentCount = 10
@@ -8571,9 +8571,9 @@ private struct FeedbackComposerAppMetadata {
     static var current: FeedbackComposerAppMetadata {
         let infoDictionary = Bundle.main.infoDictionary ?? [:]
         let env = ProcessInfo.processInfo.environment
-        let commit = (infoDictionary["CMUXCommit"] as? String).flatMap { value in
+        let commit = (infoDictionary["PHATMUXCommit"] as? String).flatMap { value in
             value.isEmpty ? nil : value
-        } ?? env["CMUX_COMMIT"]
+        } ?? env["PHATMUX_COMMIT"]
 
         return FeedbackComposerAppMetadata(
             appVersion: infoDictionary["CFBundleShortVersionString"] as? String ?? "",
@@ -8872,8 +8872,8 @@ private enum FeedbackComposerClient {
 }
 
 enum SidebarDragLifecycleNotification {
-    static let stateDidChange = Notification.Name("cmux.sidebarDragStateDidChange")
-    static let requestClear = Notification.Name("cmux.sidebarDragRequestClear")
+    static let stateDidChange = Notification.Name("phatmux.sidebarDragStateDidChange")
+    static let requestClear = Notification.Name("phatmux.sidebarDragRequestClear")
     static let tabIdKey = "tabId"
     static let reasonKey = "reason"
 
@@ -9997,10 +9997,10 @@ enum FeedbackComposerBridge {
 }
 
 private struct SidebarHelpMenuButton: View {
-    private let docsURL = URL(string: "https://cmux.com/docs")
-    private let changelogURL = URL(string: "https://cmux.com/docs/changelog")
-    private let githubURL = URL(string: "https://github.com/manaflow-ai/cmux")
-    private let githubIssuesURL = URL(string: "https://github.com/manaflow-ai/cmux/issues")
+    private let docsURL = URL(string: "https://phatmux.com/docs")
+    private let changelogURL = URL(string: "https://phatmux.com/docs/changelog")
+    private let githubURL = URL(string: "https://github.com/amitpaz/phatmux")
+    private let githubIssuesURL = URL(string: "https://github.com/amitpaz/phatmux/issues")
     private let discordURL = URL(string: "https://discord.gg/xsgFEVrWCZ")
     private let helpTitle = String(localized: "sidebar.help.button", defaultValue: "Help")
     private let buttonSize: CGFloat = 22
@@ -10046,7 +10046,7 @@ private struct SidebarHelpMenuButton: View {
     private var helpPopover: some View {
         VStack(alignment: .leading, spacing: 2) {
             helpOptionButton(
-                title: String(localized: "sidebar.help.welcome", defaultValue: "Welcome to cmux!"),
+                title: String(localized: "sidebar.help.welcome", defaultValue: "Welcome to phatmux!"),
                 action: .welcome,
                 accessibilityIdentifier: "SidebarHelpMenuOptionWelcome",
                 isExternalLink: false
@@ -10543,7 +10543,7 @@ private struct SidebarEmptyArea: View {
             .overlay(alignment: .top) {
                 if shouldShowTopDropIndicator {
                     Rectangle()
-                        .fill(cmuxAccentColor())
+                        .fill(phatmuxAccentColor())
                         .frame(height: 2)
                         .padding(.horizontal, 8)
                         .offset(y: -(rowSpacing / 2))
@@ -10781,7 +10781,7 @@ private struct TabItemView: View, Equatable {
     }
 
     private var activeUnreadBadgeFillColor: Color {
-        usesInvertedActiveForeground ? Color.white.opacity(0.25) : cmuxAccentColor()
+        usesInvertedActiveForeground ? Color.white.opacity(0.25) : phatmuxAccentColor()
     }
 
     private var activeProgressTrackColor: Color {
@@ -10789,7 +10789,7 @@ private struct TabItemView: View, Equatable {
     }
 
     private var activeProgressFillColor: Color {
-        usesInvertedActiveForeground ? Color.white.opacity(0.8) : cmuxAccentColor()
+        usesInvertedActiveForeground ? Color.white.opacity(0.8) : phatmuxAccentColor()
     }
 
     private var shortcutHintEmphasis: Double {
@@ -11232,7 +11232,7 @@ private struct TabItemView: View, Equatable {
         .overlay(alignment: .top) {
             if showsCenteredTopDropIndicator {
                 Rectangle()
-                    .fill(cmuxAccentColor())
+                    .fill(phatmuxAccentColor())
                     .frame(height: 2)
                     .padding(.horizontal, 8)
                     .offset(y: index == 0 ? 0 : -(rowSpacing / 2))
@@ -11505,7 +11505,7 @@ private struct TabItemView: View, Equatable {
         switch activeTabIndicatorStyle {
         case .leftRail:
             if isActive        { return Color(nsColor: sidebarSelectedWorkspaceBackgroundNSColor(for: colorScheme)) }
-            if isMultiSelected { return cmuxAccentColor().opacity(0.25) }
+            if isMultiSelected { return phatmuxAccentColor().opacity(0.25) }
             return Color.clear
         case .solidFill:
             if isActive { return Color(nsColor: sidebarSelectedWorkspaceBackgroundNSColor(for: colorScheme)) }
@@ -11513,7 +11513,7 @@ private struct TabItemView: View, Equatable {
                 if isMultiSelected { return custom.opacity(0.35) }
                 return custom.opacity(0.7)
             }
-            if isMultiSelected { return cmuxAccentColor().opacity(0.25) }
+            if isMultiSelected { return phatmuxAccentColor().opacity(0.25) }
             return Color.clear
         }
     }
@@ -12657,10 +12657,10 @@ private final class SidebarDragAutoScrollController: ObservableObject {
 }
 
 private enum SidebarTabDragPayload {
-    static let typeIdentifier = "com.cmux.sidebar-tab-reorder"
+    static let typeIdentifier = "com.phatmux.sidebar-tab-reorder"
     static let dropContentType = UTType(exportedAs: typeIdentifier)
     static let dropContentTypes: [UTType] = [dropContentType]
-    private static let prefix = "cmux.sidebar-tab."
+    private static let prefix = "phatmux.sidebar-tab."
 
     static func provider(for tabId: UUID) -> NSItemProvider {
         let provider = NSItemProvider()

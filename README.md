@@ -1,9 +1,9 @@
-<h1 align="center">cmux</h1>
+<h1 align="center">phatmux</h1>
 <p align="center">A Ghostty-based macOS terminal with vertical tabs and notifications for AI coding agents</p>
 
 <p align="center">
-  <a href="https://github.com/manaflow-ai/cmux/releases/latest/download/cmux-macos.dmg">
-    <img src="./docs/assets/macos-badge.png" alt="Download cmux for macOS" width="180" />
+  <a href="https://github.com/amitpaz/phatmux/releases/latest/download/phatmux-macos.dmg">
+    <img src="./docs/assets/macos-badge.png" alt="Download phatmux for macOS" width="180" />
   </a>
 </p>
 
@@ -17,11 +17,11 @@
 </p>
 
 <p align="center">
-  <img src="./docs/assets/main-first-image.png" alt="cmux screenshot" width="900" />
+  <img src="./docs/assets/main-first-image.png" alt="phatmux screenshot" width="900" />
 </p>
 
 <p align="center">
-  <a href="https://www.youtube.com/watch?v=i-WxO5YUTOs">▶ Demo video</a> · <a href="https://cmux.com/blog/zen-of-cmux">The Zen of cmux</a>
+  <a href="https://www.youtube.com/watch?v=i-WxO5YUTOs">▶ Demo video</a> · <a href="https://phatmux.com/blog/zen-of-phatmux">The Zen of phatmux</a>
 </p>
 
 ## Features
@@ -74,44 +74,44 @@ Sidebar shows git branch, linked PR status/number, working directory, listening 
 
 ### DMG (recommended)
 
-<a href="https://github.com/manaflow-ai/cmux/releases/latest/download/cmux-macos.dmg">
-  <img src="./docs/assets/macos-badge.png" alt="Download cmux for macOS" width="180" />
+<a href="https://github.com/amitpaz/phatmux/releases/latest/download/phatmux-macos.dmg">
+  <img src="./docs/assets/macos-badge.png" alt="Download phatmux for macOS" width="180" />
 </a>
 
-Open the `.dmg` and drag cmux to your Applications folder. cmux auto-updates via Sparkle, so you only need to download once.
+Open the `.dmg` and drag phatmux to your Applications folder. phatmux auto-updates via Sparkle, so you only need to download once.
 
 ### Homebrew
 
 ```bash
-brew tap manaflow-ai/cmux
-brew install --cask cmux
+brew tap amitpaz/phatmux
+brew install --cask phatmux
 ```
 
 To update later:
 
 ```bash
-brew upgrade --cask cmux
+brew upgrade --cask phatmux
 ```
 
 On first launch, macOS may ask you to confirm opening an app from an identified developer. Click **Open** to proceed.
 
-## Why cmux?
+## Why phatmux?
 
 I run a lot of Claude Code and Codex sessions in parallel. I was using Ghostty with a bunch of split panes, and relying on native macOS notifications to know when an agent needed me. But Claude Code's notification body is always just "Claude is waiting for your input" with no context, and with enough tabs open I couldn't even read the titles anymore.
 
-I tried a few coding orchestrators but most of them were Electron/Tauri apps and the performance bugged me. I also just prefer the terminal since GUI orchestrators lock you into their workflow. So I built cmux as a native macOS app in Swift/AppKit. It uses libghostty for terminal rendering and reads your existing Ghostty config for themes, fonts, and colors.
+I tried a few coding orchestrators but most of them were Electron/Tauri apps and the performance bugged me. I also just prefer the terminal since GUI orchestrators lock you into their workflow. So I built phatmux as a native macOS app in Swift/AppKit. It uses libghostty for terminal rendering and reads your existing Ghostty config for themes, fonts, and colors.
 
-The main additions are the sidebar and notification system. The sidebar has vertical tabs that show git branch, linked PR status/number, working directory, listening ports, and the latest notification text for each workspace. The notification system picks up terminal sequences (OSC 9/99/777) and has a CLI (`cmux notify`) you can wire into agent hooks for Claude Code, OpenCode, etc. When an agent is waiting, its pane gets a blue ring and the tab lights up in the sidebar, so I can tell which one needs me across splits and tabs. Cmd+Shift+U jumps to the most recent unread.
+The main additions are the sidebar and notification system. The sidebar has vertical tabs that show git branch, linked PR status/number, working directory, listening ports, and the latest notification text for each workspace. The notification system picks up terminal sequences (OSC 9/99/777) and has a CLI (`phatmux notify`) you can wire into agent hooks for Claude Code, OpenCode, etc. When an agent is waiting, its pane gets a blue ring and the tab lights up in the sidebar, so I can tell which one needs me across splits and tabs. Cmd+Shift+U jumps to the most recent unread.
 
 The in-app browser has a scriptable API ported from [agent-browser](https://github.com/vercel-labs/agent-browser). Agents can snapshot the accessibility tree, get element refs, click, fill forms, and evaluate JS. You can split a browser pane next to your terminal and have Claude Code interact with your dev server directly.
 
 Everything is scriptable through the CLI and socket API — create workspaces/tabs, split panes, send keystrokes, open URLs in the browser.
 
-## The Zen of cmux
+## The Zen of phatmux
 
-cmux is not prescriptive about how developers hold their tools. It's a terminal and browser with a CLI, and the rest is up to you.
+phatmux is not prescriptive about how developers hold their tools. It's a terminal and browser with a CLI, and the rest is up to you.
 
-cmux is a primitive, not a solution. It gives you a terminal, a browser, notifications, workspaces, splits, tabs, and a CLI to control all of it. cmux doesn't force you into an opinionated way to use coding agents. What you build with the primitives is yours.
+phatmux is a primitive, not a solution. It gives you a terminal, a browser, notifications, workspaces, splits, tabs, and a CLI to control all of it. phatmux doesn't force you into an opinionated way to use coding agents. What you build with the primitives is yours.
 
 The best developers have always built their own tools. Nobody has figured out the best way to work with agents yet, and the teams building closed products definitely haven't either. The developers closest to their own codebases will figure it out first.
 
@@ -119,7 +119,7 @@ Give a million developers composable primitives and they'll collectively find th
 
 ## Documentation
 
-For more info on how to configure cmux, [head over to our docs](https://cmux.com/docs/getting-started?utm_source=readme).
+For more info on how to configure phatmux, [head over to our docs](https://phatmux.com/docs/getting-started?utm_source=readme).
 
 ## Keyboard Shortcuts
 
@@ -209,29 +209,29 @@ Browser developer-tool shortcuts follow Safari defaults and are customizable in 
 
 ## Nightly Builds
 
-[Download cmux NIGHTLY](https://github.com/manaflow-ai/cmux/releases/download/nightly/cmux-nightly-macos.dmg)
+[Download phatmux NIGHTLY](https://github.com/amitpaz/phatmux/releases/download/nightly/phatmux-nightly-macos.dmg)
 
-cmux NIGHTLY is a separate app with its own bundle ID, so it runs alongside the stable version. Built automatically from the latest `main` commit and auto-updates via its own Sparkle feed.
+phatmux NIGHTLY is a separate app with its own bundle ID, so it runs alongside the stable version. Built automatically from the latest `main` commit and auto-updates via its own Sparkle feed.
 
-Report nightly bugs on [GitHub Issues](https://github.com/manaflow-ai/cmux/issues) or in [#nightly-bugs on Discord](https://discord.gg/xsgFEVrWCZ).
+Report nightly bugs on [GitHub Issues](https://github.com/amitpaz/phatmux/issues) or in [#nightly-bugs on Discord](https://discord.gg/xsgFEVrWCZ).
 
 ## Session restore (current behavior)
 
-On relaunch, cmux currently restores app layout and metadata only:
+On relaunch, phatmux currently restores app layout and metadata only:
 - Window/workspace/pane layout
 - Working directories
 - Terminal scrollback (best effort)
 - Browser URL and navigation history
 
-cmux does **not** restore live process state inside terminal apps. For example, active Claude Code/tmux/vim sessions are not resumed after restart yet.
+phatmux does **not** restore live process state inside terminal apps. For example, active Claude Code/tmux/vim sessions are not resumed after restart yet.
 
 ## Star History
 
-<a href="https://star-history.com/#manaflow-ai/cmux&Date">
+<a href="https://star-history.com/#amitpaz/phatmux&Date">
  <picture>
-   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=manaflow-ai/cmux&type=Date&theme=dark" />
-   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=manaflow-ai/cmux&type=Date" />
-   <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=manaflow-ai/cmux&type=Date" width="600" />
+   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=amitpaz/phatmux&type=Date&theme=dark" />
+   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=amitpaz/phatmux&type=Date" />
+   <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=amitpaz/phatmux&type=Date" width="600" />
  </picture>
 </a>
 
@@ -241,26 +241,26 @@ Ways to get involved:
 
 - Follow us on X for updates [@manaflowai](https://x.com/manaflowai), [@lawrencecchen](https://x.com/lawrencecchen), and [@austinywang](https://x.com/austinywang)
 - Join the conversation on [Discord](https://discord.gg/xsgFEVrWCZ)
-- Create and participate in [GitHub issues](https://github.com/manaflow-ai/cmux/issues) and [discussions](https://github.com/manaflow-ai/cmux/discussions)
-- Let us know what you're building with cmux
+- Create and participate in [GitHub issues](https://github.com/amitpaz/phatmux/issues) and [discussions](https://github.com/amitpaz/phatmux/discussions)
+- Let us know what you're building with phatmux
 
 ## Community
 
 - [Discord](https://discord.gg/xsgFEVrWCZ)
-- [GitHub](https://github.com/manaflow-ai/cmux)
+- [GitHub](https://github.com/amitpaz/phatmux)
 - [X / Twitter](https://twitter.com/manaflowai)
 - [YouTube](https://www.youtube.com/channel/UCAa89_j-TWkrXfk9A3CbASw)
 - [LinkedIn](https://www.linkedin.com/company/manaflow-ai/)
-- [Reddit](https://www.reddit.com/r/cmux/)
+- [Reddit](https://www.reddit.com/r/phatmux/)
 
 ## Founder's Edition
 
-cmux is free, open source, and always will be. If you'd like to support development and get early access to what's coming next:
+phatmux is free, open source, and always will be. If you'd like to support development and get early access to what's coming next:
 
 **[Get Founder's Edition](https://buy.stripe.com/3cI00j2Ld0it5OU33r5EY0q)**
 
 - **Prioritized feature requests/bug fixes**
-- **Early access: cmux AI that gives you context on every workspace, tab and panel**
+- **Early access: phatmux AI that gives you context on every workspace, tab and panel**
 - **Early access: iOS app with terminals synced between desktop and phone**
 - **Early access: Cloud VMs**
 - **Early access: Voice mode**

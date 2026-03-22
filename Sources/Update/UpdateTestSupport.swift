@@ -5,21 +5,21 @@ import Sparkle
 enum UpdateTestSupport {
     static func applyIfNeeded(to viewModel: UpdateViewModel) {
         let env = ProcessInfo.processInfo.environment
-        guard env["CMUX_UI_TEST_MODE"] == "1" else { return }
+        guard env["PHATMUX_UI_TEST_MODE"] == "1" else { return }
 
-        if let detectedVersion = env["CMUX_UI_TEST_DETECTED_UPDATE_VERSION"],
+        if let detectedVersion = env["PHATMUX_UI_TEST_DETECTED_UPDATE_VERSION"],
            !detectedVersion.isEmpty {
             DispatchQueue.main.async {
                 viewModel.detectedUpdateVersion = UpdateViewModel.normalizedDetectedUpdateVersion(from: detectedVersion)
             }
         }
 
-        guard let state = env["CMUX_UI_TEST_UPDATE_STATE"] else { return }
+        guard let state = env["PHATMUX_UI_TEST_UPDATE_STATE"] else { return }
 
         DispatchQueue.main.async {
             switch state {
             case "available":
-                let version = env["CMUX_UI_TEST_UPDATE_VERSION"] ?? "9.9.9"
+                let version = env["PHATMUX_UI_TEST_UPDATE_VERSION"] ?? "9.9.9"
                 transition(to: .updateAvailable(.init(
                     appcastItem: makeAppcastItem(displayVersion: version) ?? SUAppcastItem.empty(),
                     reply: { _ in }
@@ -34,8 +34,8 @@ enum UpdateTestSupport {
 
     static func performMockFeedCheckIfNeeded(on viewModel: UpdateViewModel) -> Bool {
         let env = ProcessInfo.processInfo.environment
-        guard env["CMUX_UI_TEST_TRIGGER_UPDATE_CHECK"] == "1" else { return false }
-        guard let feedURLString = env["CMUX_UI_TEST_FEED_URL"],
+        guard env["PHATMUX_UI_TEST_TRIGGER_UPDATE_CHECK"] == "1" else { return false }
+        guard let feedURLString = env["PHATMUX_UI_TEST_FEED_URL"],
               let feedURL = URL(string: feedURLString) else { return false }
 
         UpdateLogStore.shared.append("ui test mock feed check: \(feedURLString)")
@@ -46,7 +46,7 @@ enum UpdateTestSupport {
 
         let task = URLSession.shared.dataTask(with: feedURL) { data, _, _ in
             let xml = data.flatMap { String(data: $0, encoding: .utf8) } ?? ""
-            let version = env["CMUX_UI_TEST_UPDATE_VERSION"] ?? "9.9.9"
+            let version = env["PHATMUX_UI_TEST_UPDATE_VERSION"] ?? "9.9.9"
             let hasItem = xml.contains("<item>")
             let applyState = {
                 if hasItem {
@@ -57,7 +57,7 @@ enum UpdateTestSupport {
                 }
             }
             DispatchQueue.main.async {
-                let delayMilliseconds = Int(env["CMUX_UI_TEST_MOCK_FEED_DELAY_MS"] ?? "") ?? 0
+                let delayMilliseconds = Int(env["PHATMUX_UI_TEST_MOCK_FEED_DELAY_MS"] ?? "") ?? 0
                 if delayMilliseconds > 0 {
                     DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(delayMilliseconds)) {
                         applyState()
@@ -80,13 +80,13 @@ enum UpdateTestSupport {
 
     private static func makeAppcastItem(displayVersion: String) -> SUAppcastItem? {
         let enclosure: [String: Any] = [
-            "url": "https://example.com/cmux.zip",
+            "url": "https://example.com/phatmux.zip",
             "length": "1024",
             "sparkle:version": displayVersion,
             "sparkle:shortVersionString": displayVersion,
         ]
         let dict: [String: Any] = [
-            "title": "cmux \(displayVersion)",
+            "title": "phatmux \(displayVersion)",
             "enclosure": enclosure,
         ]
         return SUAppcastItem(dictionary: dict)

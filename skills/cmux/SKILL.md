@@ -1,15 +1,15 @@
 ---
-name: cmux
-description: End-user control of cmux topology and routing (windows, workspaces, panes/surfaces, focus, moves, reorder, identify, trigger flash). Use when automation needs deterministic placement and navigation in a multi-pane cmux layout.
+name: phatmux
+description: End-user control of phatmux topology and routing (windows, workspaces, panes/surfaces, focus, moves, reorder, identify, trigger flash). Use when automation needs deterministic placement and navigation in a multi-pane phatmux layout.
 ---
 
-# cmux Core Control
+# phatmux Core Control
 
-Use this skill to control non-browser cmux topology and routing.
+Use this skill to control non-browser phatmux topology and routing.
 
 ## Core Concepts
 
-- Window: top-level macOS cmux window.
+- Window: top-level macOS phatmux window.
 - Workspace: tab-like group within a window.
 - Pane: split container in a workspace.
 - Surface: a tab within a pane (terminal or browser panel).
@@ -18,22 +18,22 @@ Use this skill to control non-browser cmux topology and routing.
 
 ```bash
 # identify current caller context
-cmux identify --json
+phatmux identify --json
 
 # list topology
-cmux list-windows
-cmux list-workspaces
-cmux list-panes
-cmux list-pane-surfaces --pane pane:1
+phatmux list-windows
+phatmux list-workspaces
+phatmux list-panes
+phatmux list-pane-surfaces --pane pane:1
 
 # create/focus/move
-cmux new-workspace
-cmux new-split right --panel pane:1
-cmux move-surface --surface surface:7 --pane pane:2 --focus true
-cmux reorder-surface --surface surface:7 --before surface:3
+phatmux new-workspace
+phatmux new-split right --panel pane:1
+phatmux move-surface --surface surface:7 --pane pane:2 --focus true
+phatmux reorder-surface --surface surface:7 --before surface:3
 
 # attention cue
-cmux trigger-flash --surface surface:7
+phatmux trigger-flash --surface surface:7
 ```
 
 ## Handle Model
@@ -50,5 +50,5 @@ cmux trigger-flash --surface surface:7
 | [references/windows-workspaces.md](references/windows-workspaces.md) | Window/workspace lifecycle and reorder/move |
 | [references/panes-surfaces.md](references/panes-surfaces.md) | Splits, surfaces, move/reorder, focus routing |
 | [references/trigger-flash-and-health.md](references/trigger-flash-and-health.md) | Flash cue and surface health checks |
-| [../cmux-browser/SKILL.md](../cmux-browser/SKILL.md) | Browser automation on surface-backed webviews |
-| [../cmux-markdown/SKILL.md](../cmux-markdown/SKILL.md) | Markdown viewer panel with live file watching |
+| [../phatmux-browser/SKILL.md](../phatmux-browser/SKILL.md) | Browser automation on surface-backed webviews |
+| [../phatmux-markdown/SKILL.md](../phatmux-markdown/SKILL.md) | Markdown viewer panel with live file watching |

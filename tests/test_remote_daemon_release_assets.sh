@@ -2,22 +2,22 @@
 set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
-OUTPUT_DIR="$(mktemp -d "${TMPDIR:-/tmp}/cmux-remote-assets-test.XXXXXX")"
+OUTPUT_DIR="$(mktemp -d "${TMPDIR:-/tmp}/phatmux-remote-assets-test.XXXXXX")"
 trap 'rm -rf "$OUTPUT_DIR"' EXIT
 
 "$ROOT_DIR/scripts/build_remote_daemon_release_assets.sh" \
   --version "0.62.0-test" \
   --release-tag "v0.62.0-test" \
-  --repo "manaflow-ai/cmux" \
+  --repo "amitpaz/phatmux" \
   --output-dir "$OUTPUT_DIR" >/dev/null
 
 for asset in \
-  cmuxd-remote-darwin-arm64 \
-  cmuxd-remote-darwin-amd64 \
-  cmuxd-remote-linux-arm64 \
-  cmuxd-remote-linux-amd64 \
-  cmuxd-remote-checksums.txt \
-  cmuxd-remote-manifest.json
+  phatmuxd-remote-darwin-arm64 \
+  phatmuxd-remote-darwin-amd64 \
+  phatmuxd-remote-linux-arm64 \
+  phatmuxd-remote-linux-amd64 \
+  phatmuxd-remote-checksums.txt \
+  phatmuxd-remote-manifest.json
 do
   if [[ ! -f "$OUTPUT_DIR/$asset" ]]; then
     echo "FAIL: missing asset $asset" >&2
@@ -25,7 +25,7 @@ do
   fi
 done
 
-python3 - <<'PY' "$OUTPUT_DIR/cmuxd-remote-manifest.json" "$OUTPUT_DIR/cmuxd-remote-checksums.txt"
+python3 - <<'PY' "$OUTPUT_DIR/phatmuxd-remote-manifest.json" "$OUTPUT_DIR/phatmuxd-remote-checksums.txt"
 import json
 import sys
 from pathlib import Path
@@ -48,7 +48,7 @@ if manifest["appVersion"] != "0.62.0-test":
     raise SystemExit(f"FAIL: unexpected appVersion {manifest['appVersion']}")
 if manifest["releaseTag"] != "v0.62.0-test":
     raise SystemExit(f"FAIL: unexpected releaseTag {manifest['releaseTag']}")
-if not manifest["checksumsURL"].endswith("/cmuxd-remote-checksums.txt"):
+if not manifest["checksumsURL"].endswith("/phatmuxd-remote-checksums.txt"):
     raise SystemExit(f"FAIL: unexpected checksumsURL {manifest['checksumsURL']}")
 
 checksum_lines = [line for line in checksums_path.read_text(encoding="utf-8").splitlines() if line.strip()]

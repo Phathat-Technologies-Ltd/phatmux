@@ -1,11 +1,11 @@
 > Bu çeviri Claude tarafından oluşturulmuştur. İyileştirme önerileriniz varsa lütfen bir PR açın.
 
-<h1 align="center">cmux</h1>
+<h1 align="center">phatmux</h1>
 <p align="center">AI kodlama ajanları için dikey sekmeler ve bildirimler içeren Ghostty tabanlı macOS terminali</p>
 
 <p align="center">
-  <a href="https://github.com/manaflow-ai/cmux/releases/latest/download/cmux-macos.dmg">
-    <img src="./docs/assets/macos-badge.png" alt="macOS için cmux'u indir" width="180" />
+  <a href="https://github.com/amitpaz/phatmux/releases/latest/download/phatmux-macos.dmg">
+    <img src="./docs/assets/macos-badge.png" alt="macOS için phatmux'u indir" width="180" />
   </a>
 </p>
 
@@ -19,11 +19,11 @@
 </p>
 
 <p align="center">
-  <img src="./docs/assets/main-first-image.png" alt="cmux ekran görüntüsü" width="900" />
+  <img src="./docs/assets/main-first-image.png" alt="phatmux ekran görüntüsü" width="900" />
 </p>
 
 <p align="center">
-  <a href="https://www.youtube.com/watch?v=i-WxO5YUTOs">▶ Demo videosu</a> · <a href="https://cmux.com/blog/zen-of-cmux">The Zen of cmux</a>
+  <a href="https://www.youtube.com/watch?v=i-WxO5YUTOs">▶ Demo videosu</a> · <a href="https://phatmux.com/blog/zen-of-phatmux">The Zen of phatmux</a>
 </p>
 
 ## Özellikler
@@ -76,44 +76,44 @@ Kenar çubuğu git dalını, bağlantılı PR durumunu/numarasını, çalışma 
 
 ### DMG (önerilen)
 
-<a href="https://github.com/manaflow-ai/cmux/releases/latest/download/cmux-macos.dmg">
-  <img src="./docs/assets/macos-badge.png" alt="macOS için cmux'u indir" width="180" />
+<a href="https://github.com/amitpaz/phatmux/releases/latest/download/phatmux-macos.dmg">
+  <img src="./docs/assets/macos-badge.png" alt="macOS için phatmux'u indir" width="180" />
 </a>
 
-`.dmg` dosyasını açın ve cmux'u Uygulamalar klasörüne sürükleyin. cmux Sparkle aracılığıyla otomatik güncellenir, bu yüzden yalnızca bir kez indirmeniz yeterlidir.
+`.dmg` dosyasını açın ve phatmux'u Uygulamalar klasörüne sürükleyin. phatmux Sparkle aracılığıyla otomatik güncellenir, bu yüzden yalnızca bir kez indirmeniz yeterlidir.
 
 ### Homebrew
 
 ```bash
-brew tap manaflow-ai/cmux
-brew install --cask cmux
+brew tap amitpaz/phatmux
+brew install --cask phatmux
 ```
 
 Daha sonra güncellemek için:
 
 ```bash
-brew upgrade --cask cmux
+brew upgrade --cask phatmux
 ```
 
 İlk açılışta macOS, tanımlanmış bir geliştiriciden gelen bir uygulamayı açmayı onaylamanızı isteyebilir. Devam etmek için **Aç**'a tıklayın.
 
-## Neden cmux?
+## Neden phatmux?
 
 Birçok Claude Code ve Codex oturumunu paralel olarak çalıştırıyorum. Ghostty'yi bir sürü bölünmüş panelle kullanıyor ve bir ajanın bana ne zaman ihtiyacı olduğunu anlamak için yerel macOS bildirimlerine güveniyordum. Ancak Claude Code'un bildirim metni her zaman sadece "Claude is waiting for your input" oluyor, hiçbir bağlam yok ve yeterince sekme açıkken başlıkları bile okuyamıyordum artık.
 
-Birkaç kodlama orkestratörü denedim ama çoğu Electron/Tauri uygulamasıydı ve performansları beni rahatsız ediyordu. Ayrıca terminali tercih ediyorum çünkü GUI orkestratörleri sizi kendi iş akışlarına kilitliyor. Bu yüzden cmux'u Swift/AppKit'te yerel bir macOS uygulaması olarak geliştirdim. Terminal görüntüleme için libghostty kullanıyor ve temalar, yazı tipleri ve renkler için mevcut Ghostty yapılandırmanızı okuyor.
+Birkaç kodlama orkestratörü denedim ama çoğu Electron/Tauri uygulamasıydı ve performansları beni rahatsız ediyordu. Ayrıca terminali tercih ediyorum çünkü GUI orkestratörleri sizi kendi iş akışlarına kilitliyor. Bu yüzden phatmux'u Swift/AppKit'te yerel bir macOS uygulaması olarak geliştirdim. Terminal görüntüleme için libghostty kullanıyor ve temalar, yazı tipleri ve renkler için mevcut Ghostty yapılandırmanızı okuyor.
 
-Ana eklemeler kenar çubuğu ve bildirim sistemi. Kenar çubuğunda her çalışma alanı için git dalını, bağlantılı PR durumunu/numarasını, çalışma dizinini, dinlenen portları ve en son bildirim metnini gösteren dikey sekmeler var. Bildirim sistemi terminal dizilerini (OSC 9/99/777) yakalıyor ve Claude Code, OpenCode vb. için ajan kancalarına bağlayabileceğiniz bir CLI'ye (`cmux notify`) sahip. Bir ajan beklerken paneli mavi bir halka alıyor ve sekme kenar çubuğunda yanıyor, böylece bölmeler ve sekmeler arasında hangisinin bana ihtiyacı olduğunu görebiliyorum. Cmd+Shift+U en son okunmamışa atlıyor.
+Ana eklemeler kenar çubuğu ve bildirim sistemi. Kenar çubuğunda her çalışma alanı için git dalını, bağlantılı PR durumunu/numarasını, çalışma dizinini, dinlenen portları ve en son bildirim metnini gösteren dikey sekmeler var. Bildirim sistemi terminal dizilerini (OSC 9/99/777) yakalıyor ve Claude Code, OpenCode vb. için ajan kancalarına bağlayabileceğiniz bir CLI'ye (`phatmux notify`) sahip. Bir ajan beklerken paneli mavi bir halka alıyor ve sekme kenar çubuğunda yanıyor, böylece bölmeler ve sekmeler arasında hangisinin bana ihtiyacı olduğunu görebiliyorum. Cmd+Shift+U en son okunmamışa atlıyor.
 
 Uygulama içi tarayıcının [agent-browser](https://github.com/vercel-labs/agent-browser)'dan aktarılmış betiklenebilir bir API'si var. Ajanlar erişilebilirlik ağacının anlık görüntüsünü alabilir, öğe referansları elde edebilir, tıklayabilir, formları doldurabilir ve JS çalıştırabilir. Terminalinizin yanında bir tarayıcı paneli bölebilir ve Claude Code'un geliştirme sunucunuzla doğrudan etkileşime girmesini sağlayabilirsiniz.
 
 Her şey CLI ve socket API aracılığıyla betiklenebilir — çalışma alanları/sekmeler oluşturun, panelleri bölün, tuş vuruşları gönderin, tarayıcıda URL'ler açın.
 
-## The Zen of cmux
+## The Zen of phatmux
 
-cmux, geliştiricilerin araçlarını nasıl kullandığını dikte etmez. Bir terminal ve tarayıcı ile CLI'dir, geri kalanı size kalmış.
+phatmux, geliştiricilerin araçlarını nasıl kullandığını dikte etmez. Bir terminal ve tarayıcı ile CLI'dir, geri kalanı size kalmış.
 
-cmux bir ilkel yapıdır, hazır bir çözüm değil. Size bir terminal, bir tarayıcı, bildirimler, çalışma alanları, bölmeler, sekmeler ve hepsini kontrol etmek için bir CLI verir. cmux sizi kodlama ajanlarını belirli bir şekilde kullanmaya zorlamaz. İlkel yapılarla ne inşa edeceğiniz tamamen size aittir.
+phatmux bir ilkel yapıdır, hazır bir çözüm değil. Size bir terminal, bir tarayıcı, bildirimler, çalışma alanları, bölmeler, sekmeler ve hepsini kontrol etmek için bir CLI verir. phatmux sizi kodlama ajanlarını belirli bir şekilde kullanmaya zorlamaz. İlkel yapılarla ne inşa edeceğiniz tamamen size aittir.
 
 En iyi geliştiriciler her zaman kendi araçlarını yapmıştır. Ajanlarla çalışmanın en iyi yolunu henüz kimse bulamadı ve kapalı ürünler geliştiren ekipler de kesinlikle bulamadı. Kendi kod tabanlarına en yakın olan geliştiriciler bunu ilk keşfedenler olacak.
 
@@ -121,7 +121,7 @@ Bir milyon geliştiriciye birleştirilebilir ilkel yapılar verin, en verimli i�
 
 ## Dokümantasyon
 
-cmux'u nasıl yapılandıracağınız hakkında daha fazla bilgi için, [dokümantasyonumuza gidin](https://cmux.com/docs/getting-started?utm_source=readme).
+phatmux'u nasıl yapılandıracağınız hakkında daha fazla bilgi için, [dokümantasyonumuza gidin](https://phatmux.com/docs/getting-started?utm_source=readme).
 
 ## Klavye Kısayolları
 
@@ -211,27 +211,27 @@ Tarayıcı geliştirici araçları kısayolları Safari varsayılanlarını taki
 
 ## Nightly Sürümler
 
-[cmux NIGHTLY'i indir](https://github.com/manaflow-ai/cmux/releases/download/nightly/cmux-nightly-macos.dmg)
+[phatmux NIGHTLY'i indir](https://github.com/amitpaz/phatmux/releases/download/nightly/phatmux-nightly-macos.dmg)
 
-cmux NIGHTLY, kendi bundle ID'sine sahip ayrı bir uygulamadır, bu yüzden kararlı sürümle yan yana çalışır. En son `main` commit'inden otomatik olarak derlenir ve kendi Sparkle akışı aracılığıyla otomatik güncellenir.
+phatmux NIGHTLY, kendi bundle ID'sine sahip ayrı bir uygulamadır, bu yüzden kararlı sürümle yan yana çalışır. En son `main` commit'inden otomatik olarak derlenir ve kendi Sparkle akışı aracılığıyla otomatik güncellenir.
 
 ## Oturum geri yükleme (mevcut davranış)
 
-Yeniden başlatıldığında, cmux şu anda yalnızca uygulama düzenini ve meta verileri geri yükler:
+Yeniden başlatıldığında, phatmux şu anda yalnızca uygulama düzenini ve meta verileri geri yükler:
 - Pencere/çalışma alanı/panel düzeni
 - Çalışma dizinleri
 - Terminal kaydırma geçmişi (en iyi çaba)
 - Tarayıcı URL'si ve gezinme geçmişi
 
-cmux, terminal uygulamaları içindeki canlı işlem durumunu geri **yüklemez**. Örneğin, aktif Claude Code/tmux/vim oturumları yeniden başlatma sonrasında henüz devam ettirilmez.
+phatmux, terminal uygulamaları içindeki canlı işlem durumunu geri **yüklemez**. Örneğin, aktif Claude Code/tmux/vim oturumları yeniden başlatma sonrasında henüz devam ettirilmez.
 
 ## Yıldız Geçmişi
 
-<a href="https://star-history.com/#manaflow-ai/cmux&Date">
+<a href="https://star-history.com/#amitpaz/phatmux&Date">
  <picture>
-   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=manaflow-ai/cmux&type=Date&theme=dark" />
-   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=manaflow-ai/cmux&type=Date" />
-   <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=manaflow-ai/cmux&type=Date" width="600" />
+   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=amitpaz/phatmux&type=Date&theme=dark" />
+   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=amitpaz/phatmux&type=Date" />
+   <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=amitpaz/phatmux&type=Date" width="600" />
  </picture>
 </a>
 
@@ -241,26 +241,26 @@ Katılım yolları:
 
 - Güncellemeler için bizi X'te takip edin [@manaflowai](https://x.com/manaflowai), [@lawrencecchen](https://x.com/lawrencecchen) ve [@austinywang](https://x.com/austinywang)
 - [Discord](https://discord.gg/xsgFEVrWCZ)'da sohbete katılın
-- [GitHub issues](https://github.com/manaflow-ai/cmux/issues) ve [discussions](https://github.com/manaflow-ai/cmux/discussions) oluşturun ve katılın
-- cmux ile ne inşa ettiğinizi bize bildirin
+- [GitHub issues](https://github.com/amitpaz/phatmux/issues) ve [discussions](https://github.com/amitpaz/phatmux/discussions) oluşturun ve katılın
+- phatmux ile ne inşa ettiğinizi bize bildirin
 
 ## Topluluk
 
 - [Discord](https://discord.gg/xsgFEVrWCZ)
-- [GitHub](https://github.com/manaflow-ai/cmux)
+- [GitHub](https://github.com/amitpaz/phatmux)
 - [X / Twitter](https://twitter.com/manaflowai)
 - [YouTube](https://www.youtube.com/channel/UCAa89_j-TWkrXfk9A3CbASw)
 - [LinkedIn](https://www.linkedin.com/company/manaflow-ai/)
-- [Reddit](https://www.reddit.com/r/cmux/)
+- [Reddit](https://www.reddit.com/r/phatmux/)
 
 ## Founder's Edition
 
-cmux ücretsiz, açık kaynak ve her zaman öyle olacak. Geliştirmeyi desteklemek ve sırada ne olduğuna erken erişim almak isterseniz:
+phatmux ücretsiz, açık kaynak ve her zaman öyle olacak. Geliştirmeyi desteklemek ve sırada ne olduğuna erken erişim almak isterseniz:
 
 **[Founder's Edition'ı Edinin](https://buy.stripe.com/3cI00j2Ld0it5OU33r5EY0q)**
 
 - **Öncelikli özellik istekleri/hata düzeltmeleri**
-- **Erken erişim: Her çalışma alanı, sekme ve panel hakkında bağlam sağlayan cmux AI**
+- **Erken erişim: Her çalışma alanı, sekme ve panel hakkında bağlam sağlayan phatmux AI**
 - **Erken erişim: Masaüstü ve telefon arasında senkronize terminallere sahip iOS uygulaması**
 - **Erken erişim: Bulut VM'ler**
 - **Erken erişim: Sesli mod**

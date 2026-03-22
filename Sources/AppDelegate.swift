@@ -34,25 +34,25 @@ final class MainWindowHostingView<Content: View>: NSHostingView<Content> {
 }
 
 private enum CmuxThemeNotifications {
-    static let reloadConfig = Notification.Name("com.cmuxterm.themes.reload-config")
+    static let reloadConfig = Notification.Name("com.phatmux.themes.reload-config")
 }
 
 #if DEBUG
 enum CmuxTypingTiming {
     static let isEnabled: Bool = {
         let environment = ProcessInfo.processInfo.environment
-        if environment["CMUX_TYPING_TIMING_LOGS"] == "1" || environment["CMUX_KEY_LATENCY_PROBE"] == "1" {
+        if environment["PHATMUX_TYPING_TIMING_LOGS"] == "1" || environment["PHATMUX_KEY_LATENCY_PROBE"] == "1" {
             return true
         }
         let defaults = UserDefaults.standard
-        return defaults.bool(forKey: "cmuxTypingTimingLogs") || defaults.bool(forKey: "cmuxKeyLatencyProbe")
+        return defaults.bool(forKey: "phatmuxTypingTimingLogs") || defaults.bool(forKey: "phatmuxKeyLatencyProbe")
     }()
     static let isVerboseProbeEnabled: Bool = {
         let environment = ProcessInfo.processInfo.environment
-        if environment["CMUX_KEY_LATENCY_PROBE"] == "1" {
+        if environment["PHATMUX_KEY_LATENCY_PROBE"] == "1" {
             return true
         }
-        return UserDefaults.standard.bool(forKey: "cmuxKeyLatencyProbe")
+        return UserDefaults.standard.bool(forKey: "phatmuxKeyLatencyProbe")
     }()
     private static let delayLogThresholdMs: Double = 6.0
     private static let durationLogThresholdMs: Double = 1.0
@@ -716,8 +716,8 @@ final class VSCodeServeWebController {
     static let shared = VSCodeServeWebController()
     private static let serveWebStartupTimeoutSeconds: TimeInterval = 60
 
-    private let queue = DispatchQueue(label: "cmux.vscode.serveWeb")
-    private let launchQueue = DispatchQueue(label: "cmux.vscode.serveWeb.launch")
+    private let queue = DispatchQueue(label: "phatmux.vscode.serveWeb")
+    private let launchQueue = DispatchQueue(label: "phatmux.vscode.serveWeb.launch")
     private let launchProcessOverride: ((URL, UInt64) -> (process: Process, url: URL)?)?
     private var serveWebProcess: Process?
     private var launchingProcess: Process?
@@ -1032,7 +1032,7 @@ final class VSCodeServeWebController {
 
     private static func makeConnectionTokenFile() -> URL? {
         let token = randomConnectionToken()
-        let tokenFileName = "cmux-vscode-token-\(UUID().uuidString)"
+        let tokenFileName = "phatmux-vscode-token-\(UUID().uuidString)"
         let tokenFileURL = URL(fileURLWithPath: NSTemporaryDirectory(), isDirectory: true)
             .appendingPathComponent(tokenFileName, isDirectory: false)
         guard let tokenData = token.data(using: .utf8) else { return nil }
@@ -1165,13 +1165,13 @@ struct CmuxCLIPathInstaller {
         var errorDescription: String? {
             switch self {
             case .bundledCLIMissing(let expectedPath):
-                return "Bundled cmux CLI was not found at \(expectedPath)."
+                return "Bundled phatmux CLI was not found at \(expectedPath)."
             case .destinationParentNotDirectory(let path):
                 return "Expected \(path) to be a directory."
             case .destinationIsDirectory(let path):
                 return "\(path) is a directory. Remove or rename it and try again."
             case .installVerificationFailed(let path):
-                return "Installed symlink at \(path) did not point to the bundled cmux CLI."
+                return "Installed symlink at \(path) did not point to the bundled phatmux CLI."
             case .uninstallVerificationFailed(let path):
                 return "Failed to remove \(path)."
             case .privilegedCommandFailed(let message):
@@ -1192,7 +1192,7 @@ struct CmuxCLIPathInstaller {
 
     init(
         fileManager: FileManager = .default,
-        destinationURL: URL = URL(fileURLWithPath: "/usr/local/bin/cmux"),
+        destinationURL: URL = URL(fileURLWithPath: "/usr/local/bin/phatmux"),
         bundledCLIURLProvider: @escaping () -> URL? = {
             CmuxCLIPathInstaller.defaultBundledCLIURL()
         },
@@ -1368,12 +1368,12 @@ struct CmuxCLIPathInstaller {
     }
 
     private static func defaultBundledCLIURL(bundle: Bundle = .main) -> URL? {
-        bundle.resourceURL?.appendingPathComponent("bin/cmux", isDirectory: false)
+        bundle.resourceURL?.appendingPathComponent("bin/phatmux", isDirectory: false)
     }
 
     private static func defaultBundledCLIExpectedPath(bundle: Bundle = .main) -> String {
         bundle.bundleURL
-            .appendingPathComponent("Contents/Resources/bin/cmux", isDirectory: false)
+            .appendingPathComponent("Contents/Resources/bin/phatmux", isDirectory: false)
             .path
     }
 
@@ -1457,7 +1457,7 @@ struct CmuxCLIPathInstaller {
 }
 
 private extension NSScreen {
-    var cmuxDisplayID: UInt32? {
+    var phatmuxDisplayID: UInt32? {
         let key = NSDeviceDescriptionKey("NSScreenNumber")
         guard let value = deviceDescription[key] as? NSNumber else { return nil }
         return value.uint32Value
@@ -1798,20 +1798,20 @@ func shouldRouteCommandEquivalentDirectlyToMainMenu(_ event: NSEvent) -> Bool {
     return true
 }
 
-func cmuxOwningGhosttyView(for responder: NSResponder?) -> GhosttyNSView? {
+func phatmuxOwningGhosttyView(for responder: NSResponder?) -> GhosttyNSView? {
     guard let responder else { return nil }
     if let ghosttyView = responder as? GhosttyNSView {
         return ghosttyView
     }
 
     if let view = responder as? NSView,
-       let ghosttyView = cmuxOwningGhosttyView(for: view) {
+       let ghosttyView = phatmuxOwningGhosttyView(for: view) {
         return ghosttyView
     }
 
     if let textView = responder as? NSTextView,
        let delegateView = textView.delegate as? NSView,
-       let ghosttyView = cmuxOwningGhosttyView(for: delegateView) {
+       let ghosttyView = phatmuxOwningGhosttyView(for: delegateView) {
         return ghosttyView
     }
 
@@ -1821,7 +1821,7 @@ func cmuxOwningGhosttyView(for responder: NSResponder?) -> GhosttyNSView? {
             return ghosttyView
         }
         if let view = next as? NSView,
-           let ghosttyView = cmuxOwningGhosttyView(for: view) {
+           let ghosttyView = phatmuxOwningGhosttyView(for: view) {
             return ghosttyView
         }
         current = next.nextResponder
@@ -1830,7 +1830,7 @@ func cmuxOwningGhosttyView(for responder: NSResponder?) -> GhosttyNSView? {
     return nil
 }
 
-private func cmuxOwningGhosttyView(for view: NSView) -> GhosttyNSView? {
+private func phatmuxOwningGhosttyView(for view: NSView) -> GhosttyNSView? {
     if let ghosttyView = view as? GhosttyNSView {
         return ghosttyView
     }
@@ -1936,7 +1936,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, UNUserNotificationCent
         if env["XCInjectBundle"] != nil { return true }
         if env["XCInjectBundleInto"] != nil { return true }
         if env["DYLD_INSERT_LIBRARIES"]?.contains("libXCTest") == true { return true }
-        if env.keys.contains(where: { $0.hasPrefix("CMUX_UI_TEST_") }) { return true }
+        if env.keys.contains(where: { $0.hasPrefix("PHATMUX_UI_TEST_") }) { return true }
         return false
     }
 
@@ -1994,7 +1994,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, UNUserNotificationCent
         let display: SessionDisplaySnapshot?
     }
 
-    private static let persistedWindowGeometryDefaultsKey = "cmux.session.lastWindowGeometry.v1"
+    private static let persistedWindowGeometryDefaultsKey = "phatmux.session.lastWindowGeometry.v1"
 
     weak var tabManager: TabManager?
     weak var notificationStore: TerminalNotificationStore?
@@ -2029,7 +2029,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, UNUserNotificationCent
     private static let didInstallWindowKeyEquivalentSwizzle: Void = {
         let targetClass: AnyClass = NSWindow.self
         let originalSelector = #selector(NSWindow.performKeyEquivalent(with:))
-        let swizzledSelector = #selector(NSWindow.cmux_performKeyEquivalent(with:))
+        let swizzledSelector = #selector(NSWindow.phatmux_performKeyEquivalent(with:))
         guard let originalMethod = class_getInstanceMethod(targetClass, originalSelector),
               let swizzledMethod = class_getInstanceMethod(targetClass, swizzledSelector) else {
             return
@@ -2039,7 +2039,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, UNUserNotificationCent
     private static let didInstallWindowFirstResponderSwizzle: Void = {
         let targetClass: AnyClass = NSWindow.self
         let originalSelector = #selector(NSWindow.makeFirstResponder(_:))
-        let swizzledSelector = #selector(NSWindow.cmux_makeFirstResponder(_:))
+        let swizzledSelector = #selector(NSWindow.phatmux_makeFirstResponder(_:))
         guard let originalMethod = class_getInstanceMethod(targetClass, originalSelector),
               let swizzledMethod = class_getInstanceMethod(targetClass, swizzledSelector) else {
             return
@@ -2049,7 +2049,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, UNUserNotificationCent
     private static let didInstallWindowSendEventSwizzle: Void = {
         let targetClass: AnyClass = NSWindow.self
         let originalSelector = #selector(NSWindow.sendEvent(_:))
-        let swizzledSelector = #selector(NSWindow.cmux_sendEvent(_:))
+        let swizzledSelector = #selector(NSWindow.phatmux_sendEvent(_:))
         guard let originalMethod = class_getInstanceMethod(targetClass, originalSelector),
               let swizzledMethod = class_getInstanceMethod(targetClass, swizzledSelector) else {
             return
@@ -2059,7 +2059,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, UNUserNotificationCent
     private static let didInstallApplicationSendEventSwizzle: Void = {
         let targetClass: AnyClass = NSApplication.self
         let originalSelector = #selector(NSApplication.sendEvent(_:))
-        let swizzledSelector = #selector(NSApplication.cmux_applicationSendEvent(_:))
+        let swizzledSelector = #selector(NSApplication.phatmux_applicationSendEvent(_:))
         guard let originalMethod = class_getInstanceMethod(targetClass, originalSelector),
               let swizzledMethod = class_getInstanceMethod(targetClass, swizzledSelector) else {
             return
@@ -2094,8 +2094,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate, UNUserNotificationCent
 
     private func childExitKeyboardProbePath() -> String? {
         let env = ProcessInfo.processInfo.environment
-        guard env["CMUX_UI_TEST_CHILD_EXIT_KEYBOARD_SETUP"] == "1",
-              let path = env["CMUX_UI_TEST_CHILD_EXIT_KEYBOARD_PATH"],
+        guard env["PHATMUX_UI_TEST_CHILD_EXIT_KEYBOARD_SETUP"] == "1",
+              let path = env["PHATMUX_UI_TEST_CHILD_EXIT_KEYBOARD_PATH"],
               !path.isEmpty else {
             return nil
         }
@@ -2140,11 +2140,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate, UNUserNotificationCent
     private var sessionAutosaveTickInFlight = false
     private var sessionAutosaveDeferredRetryPending = false
     private let sessionPersistenceQueue = DispatchQueue(
-        label: "com.cmuxterm.app.sessionPersistence",
+        label: "com.phatmux.app.sessionPersistence",
         qos: .utility
     )
     private nonisolated static let launchServicesRegistrationQueue = DispatchQueue(
-        label: "com.cmuxterm.app.launchServicesRegistration",
+        label: "com.phatmux.app.launchServicesRegistration",
         qos: .utility
     )
     private nonisolated static func enqueueLaunchServicesRegistrationWork(_ work: @escaping @Sendable () -> Void) {
@@ -2304,7 +2304,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, UNUserNotificationCent
             PostHogAnalytics.shared.startIfNeeded()
         }
 
-        let forceDuplicateLaunchObserver = env["CMUX_UI_TEST_ENABLE_DUPLICATE_LAUNCH_OBSERVER"] == "1"
+        let forceDuplicateLaunchObserver = env["PHATMUX_UI_TEST_ENABLE_DUPLICATE_LAUNCH_OBSERVER"] == "1"
 
         // UI tests frequently time out waiting for the main window if we do heavyweight
         // LaunchServices registration / single-instance enforcement synchronously at startup.
@@ -2344,12 +2344,12 @@ final class AppDelegate: NSObject, NSApplicationDelegate, UNUserNotificationCent
         NSApp.servicesProvider = self
 #if DEBUG
         UpdateTestSupport.applyIfNeeded(to: updateController.viewModel)
-        if env["CMUX_UI_TEST_MODE"] == "1" {
-            let trigger = env["CMUX_UI_TEST_TRIGGER_UPDATE_CHECK"] ?? "<nil>"
-            let feed = env["CMUX_UI_TEST_FEED_URL"] ?? "<nil>"
+        if env["PHATMUX_UI_TEST_MODE"] == "1" {
+            let trigger = env["PHATMUX_UI_TEST_TRIGGER_UPDATE_CHECK"] ?? "<nil>"
+            let feed = env["PHATMUX_UI_TEST_FEED_URL"] ?? "<nil>"
             UpdateLogStore.shared.append("ui test env: trigger=\(trigger) feed=\(feed)")
         }
-        if env["CMUX_UI_TEST_TRIGGER_UPDATE_CHECK"] == "1" {
+        if env["PHATMUX_UI_TEST_TRIGGER_UPDATE_CHECK"] == "1" {
             UpdateLogStore.shared.append("ui test trigger update check detected")
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) { [weak self] in
                 guard let self else { return }
@@ -2365,19 +2365,19 @@ final class AppDelegate: NSObject, NSApplicationDelegate, UNUserNotificationCent
         // In UI tests, `WindowGroup` occasionally fails to materialize a window quickly on the VM.
         // If there are no windows shortly after launch, force-create one so XCUITest can proceed.
         if isRunningUnderXCTest {
-            if let rawVariant = env["CMUX_UI_TEST_BROWSER_IMPORT_HINT_VARIANT"] {
+            if let rawVariant = env["PHATMUX_UI_TEST_BROWSER_IMPORT_HINT_VARIANT"] {
                 UserDefaults.standard.set(
                     BrowserImportHintSettings.variant(for: rawVariant).rawValue,
                     forKey: BrowserImportHintSettings.variantKey
                 )
             }
-            if let rawShow = env["CMUX_UI_TEST_BROWSER_IMPORT_HINT_SHOW"] {
+            if let rawShow = env["PHATMUX_UI_TEST_BROWSER_IMPORT_HINT_SHOW"] {
                 UserDefaults.standard.set(
                     rawShow == "1",
                     forKey: BrowserImportHintSettings.showOnBlankTabsKey
                 )
             }
-            if let rawDismissed = env["CMUX_UI_TEST_BROWSER_IMPORT_HINT_DISMISSED"] {
+            if let rawDismissed = env["PHATMUX_UI_TEST_BROWSER_IMPORT_HINT_DISMISSED"] {
                 UserDefaults.standard.set(
                     rawDismissed == "1",
                     forKey: BrowserImportHintSettings.dismissedKey
@@ -2392,13 +2392,13 @@ final class AppDelegate: NSObject, NSApplicationDelegate, UNUserNotificationCent
                 NSRunningApplication.current.activate(options: [.activateAllWindows, .activateIgnoringOtherApps])
                 self.writeUITestDiagnosticsIfNeeded(stage: "afterForceWindow")
             }
-            if env["CMUX_UI_TEST_BROWSER_IMPORT_HINT_OPEN_BLANK_BROWSER"] == "1" {
+            if env["PHATMUX_UI_TEST_BROWSER_IMPORT_HINT_OPEN_BLANK_BROWSER"] == "1" {
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.45) { [weak self] in
                     guard let self else { return }
                     _ = self.openBrowserAndFocusAddressBar(insertAtEnd: true)
                 }
             }
-            if env["CMUX_UI_TEST_BROWSER_IMPORT_HINT_OPEN_SETTINGS"] == "1" {
+            if env["PHATMUX_UI_TEST_BROWSER_IMPORT_HINT_OPEN_SETTINGS"] == "1" {
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.55) { [weak self] in
                     self?.openPreferencesWindow(
                         debugSource: "uiTest.browserImportHint",
@@ -2406,7 +2406,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, UNUserNotificationCent
                     )
                 }
             }
-            if env["CMUX_UI_TEST_BROWSER_IMPORT_AUTO_OPEN"] == "1" {
+            if env["PHATMUX_UI_TEST_BROWSER_IMPORT_AUTO_OPEN"] == "1" {
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
                     BrowserDataImportCoordinator.shared.presentImportDialog()
                 }
@@ -2418,7 +2418,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, UNUserNotificationCent
 #if DEBUG
     private func writeUITestDiagnosticsIfNeeded(stage: String) {
         let env = ProcessInfo.processInfo.environment
-        guard let path = env["CMUX_UI_TEST_DIAGNOSTICS_PATH"], !path.isEmpty else { return }
+        guard let path = env["PHATMUX_UI_TEST_DIAGNOSTICS_PATH"], !path.isEmpty else { return }
 
         var payload = loadUITestDiagnostics(at: path)
         let isRunningUnderXCTest = isRunningUnderXCTest(env)
@@ -2426,8 +2426,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate, UNUserNotificationCent
         let windows = NSApp.windows
         let ids = windows.map { $0.identifier?.rawValue ?? "" }.joined(separator: ",")
         let vis = windows.map { $0.isVisible ? "1" : "0" }.joined(separator: ",")
-        let screenIDs = windows.map { $0.screen?.cmuxDisplayID.map(String.init) ?? "" }.joined(separator: ",")
-        let targetDisplayID = env["CMUX_UI_TEST_TARGET_DISPLAY_ID"] ?? ""
+        let screenIDs = windows.map { $0.screen?.phatmuxDisplayID.map(String.init) ?? "" }.joined(separator: ",")
+        let targetDisplayID = env["PHATMUX_UI_TEST_TARGET_DISPLAY_ID"] ?? ""
 
         payload["stage"] = stage
         payload["pid"] = String(ProcessInfo.processInfo.processIdentifier)
@@ -2439,8 +2439,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate, UNUserNotificationCent
         payload["windowScreenDisplayIDs"] = screenIDs
         payload["uiTestTargetDisplayID"] = targetDisplayID
         if let rawDisplayID = UInt32(targetDisplayID) {
-            let screenPresent = NSScreen.screens.contains(where: { $0.cmuxDisplayID == rawDisplayID })
-            let movedWindow = windows.contains(where: { $0.screen?.cmuxDisplayID == rawDisplayID })
+            let screenPresent = NSScreen.screens.contains(where: { $0.phatmuxDisplayID == rawDisplayID })
+            let movedWindow = windows.contains(where: { $0.screen?.phatmuxDisplayID == rawDisplayID })
             payload["targetDisplayPresent"] = screenPresent ? "1" : "0"
             payload["targetDisplayMoveSucceeded"] = movedWindow ? "1" : "0"
         }
@@ -2463,10 +2463,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate, UNUserNotificationCent
         _ payload: inout [String: String],
         environment env: [String: String]
     ) {
-        guard env["CMUX_UI_TEST_SOCKET_SANITY"] == "1" else { return }
+        guard env["PHATMUX_UI_TEST_SOCKET_SANITY"] == "1" else { return }
 
         guard let config = socketListenerConfigurationIfEnabled() else {
-            payload["socketExpectedPath"] = env["CMUX_SOCKET_PATH"] ?? ""
+            payload["socketExpectedPath"] = env["PHATMUX_SOCKET_PATH"] ?? ""
             payload["socketMode"] = "off"
             payload["socketReady"] = "0"
             payload["socketPingResponse"] = ""
@@ -2504,7 +2504,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, UNUserNotificationCent
         _ payload: inout [String: String],
         environment env: [String: String]
     ) {
-        guard env["CMUX_UI_TEST_DISPLAY_RENDER_STATS"] == "1" else { return }
+        guard env["PHATMUX_UI_TEST_DISPLAY_RENDER_STATS"] == "1" else { return }
 
         guard let renderState = currentUITestRenderDiagnostics() else {
             payload["renderStatsAvailable"] = "0"
@@ -2566,12 +2566,12 @@ final class AppDelegate: NSObject, NSApplicationDelegate, UNUserNotificationCent
 
     private func moveUITestWindowToTargetDisplayIfNeeded(attempt: Int = 0) {
         let env = ProcessInfo.processInfo.environment
-        guard let rawDisplayID = env["CMUX_UI_TEST_TARGET_DISPLAY_ID"],
+        guard let rawDisplayID = env["PHATMUX_UI_TEST_TARGET_DISPLAY_ID"],
               let targetDisplayID = UInt32(rawDisplayID) else {
             return
         }
 
-        guard let screen = NSScreen.screens.first(where: { $0.cmuxDisplayID == targetDisplayID }) else {
+        guard let screen = NSScreen.screens.first(where: { $0.phatmuxDisplayID == targetDisplayID }) else {
             if attempt < 20 {
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) { [weak self] in
                     self?.moveUITestWindowToTargetDisplayIfNeeded(attempt: attempt + 1)
@@ -2604,7 +2604,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, UNUserNotificationCent
         window.setFrame(frame, display: true, animate: false)
         window.makeKeyAndOrderFront(nil)
         window.orderFrontRegardless()
-        if window.screen?.cmuxDisplayID != targetDisplayID, attempt < 20 {
+        if window.screen?.phatmuxDisplayID != targetDisplayID, attempt < 20 {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) { [weak self] in
                 self?.moveUITestWindowToTargetDisplayIfNeeded(attempt: attempt + 1)
             }
@@ -2705,7 +2705,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, UNUserNotificationCent
 #if DEBUG
     private func scheduleUITestSocketSanityCheckIfNeeded() {
         let env = ProcessInfo.processInfo.environment
-        guard env["CMUX_UI_TEST_SOCKET_SANITY"] == "1" else { return }
+        guard env["PHATMUX_UI_TEST_SOCKET_SANITY"] == "1" else { return }
 
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.75) { [weak self] in
             guard let self else { return }
@@ -2735,7 +2735,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, UNUserNotificationCent
 
     private func setupDisplayResolutionUITestDiagnosticsIfNeeded() {
         let env = ProcessInfo.processInfo.environment
-        guard env["CMUX_UI_TEST_DISPLAY_RENDER_STATS"] == "1" else { return }
+        guard env["PHATMUX_UI_TEST_DISPLAY_RENDER_STATS"] == "1" else { return }
         guard !didSetupDisplayResolutionUITestDiagnostics else { return }
         didSetupDisplayResolutionUITestDiagnostics = true
 
@@ -2811,14 +2811,14 @@ final class AppDelegate: NSObject, NSApplicationDelegate, UNUserNotificationCent
     ) {
         let available = NSScreen.screens.map { screen in
             SessionDisplayGeometry(
-                displayID: screen.cmuxDisplayID,
+                displayID: screen.phatmuxDisplayID,
                 frame: screen.frame,
                 visibleFrame: screen.visibleFrame
             )
         }
         let fallback = (NSScreen.main ?? NSScreen.screens.first).map { screen in
             SessionDisplayGeometry(
-                displayID: screen.cmuxDisplayID,
+                displayID: screen.phatmuxDisplayID,
                 frame: screen.frame,
                 visibleFrame: screen.visibleFrame
             )
@@ -3228,7 +3228,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, UNUserNotificationCent
         guard let screen else { return nil }
 
         return SessionDisplaySnapshot(
-            displayID: screen.cmuxDisplayID,
+            displayID: screen.phatmuxDisplayID,
             frame: SessionRectSnapshot(screen.frame),
             visibleFrame: SessionRectSnapshot(screen.visibleFrame)
         )
@@ -4890,7 +4890,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, UNUserNotificationCent
            let window = ctx.window {
             return window
         }
-        let expectedIdentifier = "cmux.main.\(windowId.uuidString)"
+        let expectedIdentifier = "phatmux.main.\(windowId.uuidString)"
         return NSApp.windows.first(where: { $0.identifier?.rawValue == expectedIdentifier })
     }
 
@@ -4904,7 +4904,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, UNUserNotificationCent
 
     private func mainWindowId(from window: NSWindow) -> UUID? {
         guard let raw = window.identifier?.rawValue else { return nil }
-        let prefix = "cmux.main."
+        let prefix = "phatmux.main."
         guard raw.hasPrefix(prefix) else { return nil }
         let suffix = String(raw.dropFirst(prefix.count))
         return UUID(uuidString: suffix)
@@ -5024,8 +5024,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate, UNUserNotificationCent
             return context.windowId
         }
         guard let rawIdentifier = window.identifier?.rawValue,
-              rawIdentifier.hasPrefix("cmux.main.") else { return nil }
-        let idPart = String(rawIdentifier.dropFirst("cmux.main.".count))
+              rawIdentifier.hasPrefix("phatmux.main.") else { return nil }
+        let idPart = String(rawIdentifier.dropFirst("phatmux.main.".count))
         return UUID(uuidString: idPart)
     }
 
@@ -5270,7 +5270,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, UNUserNotificationCent
         let responder = targetWindow?.firstResponder
             ?? NSApp.keyWindow?.firstResponder
             ?? NSApp.mainWindow?.firstResponder
-        guard let ghosttyView = cmuxOwningGhosttyView(for: responder),
+        guard let ghosttyView = phatmuxOwningGhosttyView(for: responder),
               let workspaceId = ghosttyView.tabId,
               let panelId = ghosttyView.terminalSurface?.id,
               let manager = resolveShortcutTabManager(for: workspaceId, preferredWindow: targetWindow) else {
@@ -5870,7 +5870,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, UNUserNotificationCent
     }
 
     func sendWelcomeCommandWhenReady(to workspace: Workspace, markShownOnSend: Bool = false) {
-        sendTextWhenReady("cmux welcome\n", to: workspace) {
+        sendTextWhenReady("phatmux welcome\n", to: workspace) {
             if markShownOnSend {
                 UserDefaults.standard.set(true, forKey: WelcomeSettings.shownKey)
             }
@@ -5900,13 +5900,13 @@ final class AppDelegate: NSObject, NSApplicationDelegate, UNUserNotificationCent
                 informativeText += "\n\n" + String(localized: "cli.install.adminRequired", defaultValue: "Administrator privileges were required to write to /usr/local/bin.")
             }
             presentCLIPathAlert(
-                title: String(localized: "cli.installed", defaultValue: "cmux CLI Installed"),
+                title: String(localized: "cli.installed", defaultValue: "phatmux CLI Installed"),
                 informativeText: informativeText,
                 style: .informational
             )
         } catch {
             presentCLIPathAlert(
-                title: String(localized: "cli.installFailed", defaultValue: "Couldn't Install cmux CLI"),
+                title: String(localized: "cli.installFailed", defaultValue: "Couldn't Install phatmux CLI"),
                 informativeText: error.localizedDescription,
                 style: .warning
             )
@@ -5919,19 +5919,19 @@ final class AppDelegate: NSObject, NSApplicationDelegate, UNUserNotificationCent
             let outcome = try installer.uninstall()
             let prefix = outcome.removedExistingEntry
                 ? String(localized: "cli.uninstall.removed", defaultValue: "Removed \(outcome.destinationURL.path).")
-                : String(localized: "cli.uninstall.notFound", defaultValue: "No cmux CLI symlink was found at \(outcome.destinationURL.path).")
+                : String(localized: "cli.uninstall.notFound", defaultValue: "No phatmux CLI symlink was found at \(outcome.destinationURL.path).")
             var informativeText = prefix
             if outcome.usedAdministratorPrivileges {
                 informativeText += "\n\n" + String(localized: "cli.uninstall.adminRequired", defaultValue: "Administrator privileges were required to modify /usr/local/bin.")
             }
             presentCLIPathAlert(
-                title: String(localized: "cli.uninstalled", defaultValue: "cmux CLI Uninstalled"),
+                title: String(localized: "cli.uninstalled", defaultValue: "phatmux CLI Uninstalled"),
                 informativeText: informativeText,
                 style: .informational
             )
         } catch {
             presentCLIPathAlert(
-                title: String(localized: "cli.uninstallFailed", defaultValue: "Couldn't Uninstall cmux CLI"),
+                title: String(localized: "cli.uninstallFailed", defaultValue: "Couldn't Uninstall phatmux CLI"),
                 informativeText: error.localizedDescription,
                 style: .warning
             )
@@ -6793,7 +6793,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, UNUserNotificationCent
         guard !didSetupJumpUnreadUITest else { return }
         didSetupJumpUnreadUITest = true
         let env = ProcessInfo.processInfo.environment
-        guard env["CMUX_UI_TEST_JUMP_UNREAD_SETUP"] == "1" else { return }
+        guard env["PHATMUX_UI_TEST_JUMP_UNREAD_SETUP"] == "1" else { return }
         guard let notificationStore else { return }
 
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) { [weak self] in
@@ -6863,7 +6863,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, UNUserNotificationCent
 
     func armJumpUnreadFocusRecord(tabId: UUID, surfaceId: UUID) {
         let env = ProcessInfo.processInfo.environment
-        guard let path = env["CMUX_UI_TEST_JUMP_UNREAD_PATH"], !path.isEmpty else { return }
+        guard let path = env["PHATMUX_UI_TEST_JUMP_UNREAD_PATH"], !path.isEmpty else { return }
         jumpUnreadFocusExpectation = (tabId: tabId, surfaceId: surfaceId)
         installJumpUnreadFocusObserverIfNeeded()
     }
@@ -6895,7 +6895,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, UNUserNotificationCent
 
     private func writeJumpUnreadTestData(_ updates: [String: String]) {
         let env = ProcessInfo.processInfo.environment
-        guard let path = env["CMUX_UI_TEST_JUMP_UNREAD_PATH"], !path.isEmpty else { return }
+        guard let path = env["PHATMUX_UI_TEST_JUMP_UNREAD_PATH"], !path.isEmpty else { return }
         var payload = loadJumpUnreadTestData(at: path)
         for (key, value) in updates {
             payload[key] = value
@@ -6916,10 +6916,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate, UNUserNotificationCent
         guard !didSetupGotoSplitUITest else { return }
         didSetupGotoSplitUITest = true
         let env = ProcessInfo.processInfo.environment
-        guard env["CMUX_UI_TEST_GOTO_SPLIT_SETUP"] == "1" else { return }
+        guard env["PHATMUX_UI_TEST_GOTO_SPLIT_SETUP"] == "1" else { return }
         guard tabManager != nil else { return }
 
-        let useGhosttyConfig = env["CMUX_UI_TEST_GOTO_SPLIT_USE_GHOSTTY_CONFIG"] == "1"
+        let useGhosttyConfig = env["PHATMUX_UI_TEST_GOTO_SPLIT_USE_GHOSTTY_CONFIG"] == "1"
 
         if useGhosttyConfig {
             // Keep the test hermetic: ensure the app does not accidentally pass using a persisted
@@ -6957,7 +6957,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, UNUserNotificationCent
         func hasMainTerminalWindow() -> Bool {
             NSApp.windows.contains { window in
                 guard let raw = window.identifier?.rawValue else { return false }
-                return raw == "cmux.main" || raw.hasPrefix("cmux.main.")
+                return raw == "phatmux.main" || raw.hasPrefix("phatmux.main.")
             }
         }
 
@@ -7004,15 +7004,15 @@ final class AppDelegate: NSObject, NSApplicationDelegate, UNUserNotificationCent
         guard !didSetupBonsplitTabDragUITest else { return }
         didSetupBonsplitTabDragUITest = true
         let env = ProcessInfo.processInfo.environment
-        guard env["CMUX_UI_TEST_BONSPLIT_TAB_DRAG_SETUP"] == "1" else { return }
+        guard env["PHATMUX_UI_TEST_BONSPLIT_TAB_DRAG_SETUP"] == "1" else { return }
         guard tabManager != nil else { return }
-        let startWithHiddenSidebar = env["CMUX_UI_TEST_BONSPLIT_START_WITH_HIDDEN_SIDEBAR"] == "1"
+        let startWithHiddenSidebar = env["PHATMUX_UI_TEST_BONSPLIT_START_WITH_HIDDEN_SIDEBAR"] == "1"
 
         let deadline = Date().addingTimeInterval(20.0)
         func hasMainTerminalWindow() -> Bool {
             NSApp.windows.contains { window in
                 guard let raw = window.identifier?.rawValue else { return false }
-                return raw == "cmux.main" || raw.hasPrefix("cmux.main.")
+                return raw == "phatmux.main" || raw.hasPrefix("phatmux.main.")
             }
         }
 
@@ -7029,7 +7029,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, UNUserNotificationCent
             }
             if let mainWindow = NSApp.windows.first(where: { window in
                 guard let raw = window.identifier?.rawValue else { return false }
-                return raw == "cmux.main" || raw.hasPrefix("cmux.main.")
+                return raw == "phatmux.main" || raw.hasPrefix("phatmux.main.")
             }) {
                 let screenFrame = mainWindow.screen?.visibleFrame ?? NSScreen.main?.visibleFrame
                 if let screenFrame {
@@ -7092,8 +7092,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate, UNUserNotificationCent
 
     private func bonsplitTabDragUITestDataPath() -> String? {
         let env = ProcessInfo.processInfo.environment
-        guard env["CMUX_UI_TEST_BONSPLIT_TAB_DRAG_SETUP"] == "1",
-              let path = env["CMUX_UI_TEST_BONSPLIT_TAB_DRAG_PATH"],
+        guard env["PHATMUX_UI_TEST_BONSPLIT_TAB_DRAG_SETUP"] == "1",
+              let path = env["PHATMUX_UI_TEST_BONSPLIT_TAB_DRAG_PATH"],
               !path.isEmpty else {
             return nil
         }
@@ -7172,13 +7172,13 @@ final class AppDelegate: NSObject, NSApplicationDelegate, UNUserNotificationCent
     }
     private func isGotoSplitUITestRecordingEnabled() -> Bool {
         let env = ProcessInfo.processInfo.environment
-        return env["CMUX_UI_TEST_GOTO_SPLIT_SETUP"] == "1" || env["CMUX_UI_TEST_GOTO_SPLIT_RECORD_ONLY"] == "1"
+        return env["PHATMUX_UI_TEST_GOTO_SPLIT_SETUP"] == "1" || env["PHATMUX_UI_TEST_GOTO_SPLIT_RECORD_ONLY"] == "1"
     }
 
     private func gotoSplitUITestDataPath() -> String? {
         guard isGotoSplitUITestRecordingEnabled() else { return nil }
         let env = ProcessInfo.processInfo.environment
-        guard let path = env["CMUX_UI_TEST_GOTO_SPLIT_PATH"], !path.isEmpty else { return nil }
+        guard let path = env["PHATMUX_UI_TEST_GOTO_SPLIT_PATH"], !path.isEmpty else { return nil }
         return path
     }
 
@@ -7279,7 +7279,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, UNUserNotificationCent
                 "ghosttyGotoSplitDownShortcut": ghosttyGotoSplitDownShortcut?.displayString ?? "",
                 "webViewFocused": "true"
             ])
-            if ProcessInfo.processInfo.environment["CMUX_UI_TEST_GOTO_SPLIT_INPUT_SETUP"] == "1" {
+            if ProcessInfo.processInfo.environment["PHATMUX_UI_TEST_GOTO_SPLIT_INPUT_SETUP"] == "1" {
                 setupFocusedInputForGotoSplitUITest(panel: panel)
             }
         }
@@ -7479,11 +7479,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate, UNUserNotificationCent
               secondaryCenterY: -1,
               activeId: active && typeof active.id === "string" ? active.id : "",
               activeTag: active && active.tagName ? active.tagName.toLowerCase() : "",
-              trackerInstalled: window.__cmuxAddressBarFocusTrackerInstalled === true,
+              trackerInstalled: window.__phatmuxAddressBarFocusTrackerInstalled === true,
               trackedStateId:
-                window.__cmuxAddressBarFocusState &&
-                typeof window.__cmuxAddressBarFocusState.id === "string"
-                  ? window.__cmuxAddressBarFocusState.id
+                window.__phatmuxAddressBarFocusState &&
+                typeof window.__phatmuxAddressBarFocusState.id === "string"
+                  ? window.__phatmuxAddressBarFocusState.id
                   : "",
               readyState: String(document.readyState || "")
             };
@@ -7517,10 +7517,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate, UNUserNotificationCent
               return input;
             };
 
-            let container = document.getElementById("cmux-ui-test-focus-container");
+            let container = document.getElementById("phatmux-ui-test-focus-container");
             if (!container || !container.tagName || container.tagName.toLowerCase() !== "div") {
               container = document.createElement("div");
-              container.id = "cmux-ui-test-focus-container";
+              container.id = "phatmux-ui-test-focus-container";
               document.body.appendChild(container);
             }
             container.style.position = "fixed";
@@ -7536,8 +7536,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate, UNUserNotificationCent
             container.style.boxShadow = "0 2px 10px rgba(0,0,0,0.2)";
             container.style.zIndex = "2147483647";
 
-            const input = ensureInput("cmux-ui-test-focus-input", "cmux-ui-focus-primary");
-            const secondaryInput = ensureInput("cmux-ui-test-focus-input-secondary", "cmux-ui-focus-secondary");
+            const input = ensureInput("phatmux-ui-test-focus-input", "phatmux-ui-focus-primary");
+            const secondaryInput = ensureInput("phatmux-ui-test-focus-input-secondary", "phatmux-ui-focus-secondary");
             if (input.parentElement !== container) {
               container.appendChild(input);
             }
@@ -7551,19 +7551,19 @@ final class AppDelegate: NSObject, NSApplicationDelegate, UNUserNotificationCent
               input.setSelectionRange(end, end);
             }
 
-            let trackedFocusId = input.getAttribute("data-cmux-addressbar-focus-id");
+            let trackedFocusId = input.getAttribute("data-phatmux-addressbar-focus-id");
             if (!trackedFocusId) {
-              trackedFocusId = "cmux-ui-test-focus-input-tracked";
-              input.setAttribute("data-cmux-addressbar-focus-id", trackedFocusId);
+              trackedFocusId = "phatmux-ui-test-focus-input-tracked";
+              input.setAttribute("data-phatmux-addressbar-focus-id", trackedFocusId);
             }
             const selectionStart = typeof input.selectionStart === "number" ? input.selectionStart : null;
             const selectionEnd = typeof input.selectionEnd === "number" ? input.selectionEnd : null;
             if (
-              !window.__cmuxAddressBarFocusState ||
-              typeof window.__cmuxAddressBarFocusState.id !== "string" ||
-              window.__cmuxAddressBarFocusState.id !== trackedFocusId
+              !window.__phatmuxAddressBarFocusState ||
+              typeof window.__phatmuxAddressBarFocusState.id !== "string" ||
+              window.__phatmuxAddressBarFocusState.id !== trackedFocusId
             ) {
-              window.__cmuxAddressBarFocusState = { id: trackedFocusId, selectionStart, selectionEnd };
+              window.__phatmuxAddressBarFocusState = { id: trackedFocusId, selectionStart, selectionEnd };
             }
 
             const secondaryRect = secondaryInput.getBoundingClientRect();
@@ -7586,17 +7586,17 @@ final class AppDelegate: NSObject, NSApplicationDelegate, UNUserNotificationCent
               secondaryCenterY,
               activeId: active && typeof active.id === "string" ? active.id : "",
               activeTag: active && active.tagName ? active.tagName.toLowerCase() : "",
-              trackerInstalled: window.__cmuxAddressBarFocusTrackerInstalled === true,
+              trackerInstalled: window.__phatmuxAddressBarFocusTrackerInstalled === true,
               trackedStateId:
-                window.__cmuxAddressBarFocusState &&
-                typeof window.__cmuxAddressBarFocusState.id === "string"
-                  ? window.__cmuxAddressBarFocusState.id
+                window.__phatmuxAddressBarFocusState &&
+                typeof window.__phatmuxAddressBarFocusState.id === "string"
+                  ? window.__phatmuxAddressBarFocusState.id
                   : "",
               readyState: String(document.readyState || "")
             };
           };
           const ready = () =>
-            window.__cmuxAddressBarFocusTrackerInstalled === true &&
+            window.__phatmuxAddressBarFocusTrackerInstalled === true &&
             String(document.readyState || "") === "complete";
 
           if (ready()) {
@@ -7773,7 +7773,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, UNUserNotificationCent
                   type: "",
                   editable: "false",
                   trackedFocusStateId: "",
-                  focusTrackerInstalled: window.__cmuxAddressBarFocusTrackerInstalled === true ? "true" : "false"
+                  focusTrackerInstalled: window.__phatmuxAddressBarFocusTrackerInstalled === true ? "true" : "false"
                 };
               }
               const tag = (active.tagName || "").toLowerCase();
@@ -7788,12 +7788,12 @@ final class AppDelegate: NSObject, NSApplicationDelegate, UNUserNotificationCent
                 type,
                 editable: editable ? "true" : "false",
                 trackedFocusStateId:
-                  window.__cmuxAddressBarFocusState &&
-                  typeof window.__cmuxAddressBarFocusState.id === "string"
-                    ? window.__cmuxAddressBarFocusState.id
+                  window.__phatmuxAddressBarFocusState &&
+                  typeof window.__phatmuxAddressBarFocusState.id === "string"
+                    ? window.__phatmuxAddressBarFocusState.id
                     : "",
                 focusTrackerInstalled:
-                  window.__cmuxAddressBarFocusTrackerInstalled === true ? "true" : "false"
+                  window.__phatmuxAddressBarFocusTrackerInstalled === true ? "true" : "false"
               };
             } catch (_) {
               return {
@@ -7875,7 +7875,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, UNUserNotificationCent
 
     private func gotoSplitUITestExpectedInputId() -> String? {
         let env = ProcessInfo.processInfo.environment
-        guard let path = env["CMUX_UI_TEST_GOTO_SPLIT_PATH"], !path.isEmpty else { return nil }
+        guard let path = env["PHATMUX_UI_TEST_GOTO_SPLIT_PATH"], !path.isEmpty else { return nil }
         return loadGotoSplitTestData(at: path)["webInputFocusElementId"]
     }
 
@@ -8068,8 +8068,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate, UNUserNotificationCent
         didSetupMultiWindowNotificationsUITest = true
 
         let env = ProcessInfo.processInfo.environment
-        guard env["CMUX_UI_TEST_MULTI_WINDOW_NOTIF_SETUP"] == "1" else { return }
-        guard let path = env["CMUX_UI_TEST_MULTI_WINDOW_NOTIF_PATH"], !path.isEmpty else { return }
+        guard env["PHATMUX_UI_TEST_MULTI_WINDOW_NOTIF_SETUP"] == "1" else { return }
+        guard let path = env["PHATMUX_UI_TEST_MULTI_WINDOW_NOTIF_PATH"], !path.isEmpty else { return }
 
         try? FileManager.default.removeItem(atPath: path)
 
@@ -8279,7 +8279,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, UNUserNotificationCent
         surfaceId: UUID
     ) {
         let env = ProcessInfo.processInfo.environment
-        guard env["CMUX_UI_TEST_NOTIFY_SOURCE_TERMINAL_READY"] == "1" else { return }
+        guard env["PHATMUX_UI_TEST_NOTIFY_SOURCE_TERMINAL_READY"] == "1" else { return }
 
         writeMultiWindowNotificationTestData([
             "sourceTerminalReady": "pending",
@@ -8407,11 +8407,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate, UNUserNotificationCent
 
     private func publishMultiWindowNotificationSocketStateIfNeeded(at path: String) {
         let env = ProcessInfo.processInfo.environment
-        guard env["CMUX_UI_TEST_SOCKET_SANITY"] == "1" else { return }
+        guard env["PHATMUX_UI_TEST_SOCKET_SANITY"] == "1" else { return }
 
         guard let config = socketListenerConfigurationIfEnabled() else {
             writeMultiWindowNotificationTestData([
-                "socketExpectedPath": env["CMUX_SOCKET_PATH"] ?? "",
+                "socketExpectedPath": env["PHATMUX_SOCKET_PATH"] ?? "",
                 "socketMode": "off",
                 "socketReady": "0",
                 "socketPingResponse": "",
@@ -8518,7 +8518,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, UNUserNotificationCent
         sidebarSelection: SidebarSelection
     ) {
         let env = ProcessInfo.processInfo.environment
-        guard let path = env["CMUX_UI_TEST_MULTI_WINDOW_NOTIF_PATH"], !path.isEmpty else { return }
+        guard let path = env["PHATMUX_UI_TEST_MULTI_WINDOW_NOTIF_PATH"], !path.isEmpty else { return }
         let sidebarSelectionString: String = {
             switch sidebarSelection {
             case .tabs: return "tabs"
@@ -8560,7 +8560,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, UNUserNotificationCent
     func jumpToLatestUnread() {
         guard let notificationStore else { return }
 #if DEBUG
-        if ProcessInfo.processInfo.environment["CMUX_UI_TEST_JUMP_UNREAD_SETUP"] == "1" {
+        if ProcessInfo.processInfo.environment["PHATMUX_UI_TEST_JUMP_UNREAD_SETUP"] == "1" {
             writeJumpUnreadTestData([
                 "jumpUnreadInvoked": "1",
                 "jumpUnreadNotificationCount": String(notificationStore.notifications.count),
@@ -8585,13 +8585,13 @@ final class AppDelegate: NSObject, NSApplicationDelegate, UNUserNotificationCent
 
 #if DEBUG
     static func setWindowFirstResponderGuardTesting(currentEvent: NSEvent?, hitView: NSView?) {
-        cmuxFirstResponderGuardCurrentEventOverride = currentEvent
-        cmuxFirstResponderGuardHitViewOverride = hitView
+        phatmuxFirstResponderGuardCurrentEventOverride = currentEvent
+        phatmuxFirstResponderGuardHitViewOverride = hitView
     }
 
     static func clearWindowFirstResponderGuardTesting() {
-        cmuxFirstResponderGuardCurrentEventOverride = nil
-        cmuxFirstResponderGuardHitViewOverride = nil
+        phatmuxFirstResponderGuardCurrentEventOverride = nil
+        phatmuxFirstResponderGuardHitViewOverride = nil
     }
 #endif
 
@@ -8614,8 +8614,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate, UNUserNotificationCent
                 var shortcutMs: Double = 0
                 CmuxTypingTiming.logEventDelay(path: "appMonitor", event: event)
                 let shortcutMonitorTraceEnabled =
-                    ProcessInfo.processInfo.environment["CMUX_SHORTCUT_MONITOR_TRACE"] == "1"
-                    || UserDefaults.standard.bool(forKey: "cmuxShortcutMonitorTrace")
+                    ProcessInfo.processInfo.environment["PHATMUX_SHORTCUT_MONITOR_TRACE"] == "1"
+                    || UserDefaults.standard.bool(forKey: "phatmuxShortcutMonitorTrace")
                 if shortcutMonitorTraceEnabled {
                     let frType = NSApp.keyWindow?.firstResponder.map { String(describing: type(of: $0)) } ?? "nil"
                     dlog(
@@ -8868,7 +8868,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, UNUserNotificationCent
 
         let alert = NSAlert()
         alert.alertStyle = .warning
-        alert.messageText = String(localized: "dialog.quitCmux.title", defaultValue: "Quit cmux?")
+        alert.messageText = String(localized: "dialog.quitCmux.title", defaultValue: "Quit phatmux?")
         alert.informativeText = String(localized: "dialog.quitCmux.message", defaultValue: "This will close all windows and workspaces.")
         alert.addButton(withTitle: String(localized: "dialog.quitCmux.quit", defaultValue: "Quit"))
         alert.addButton(withTitle: String(localized: "common.cancel", defaultValue: "Cancel"))
@@ -9131,7 +9131,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, UNUserNotificationCent
         // (e.g., split that doesn't properly blur the address bar). If the first responder
         // is a terminal surface, the address bar can't be focused.
         if browserAddressBarFocusedPanelId != nil,
-           cmuxOwningGhosttyView(for: NSApp.keyWindow?.firstResponder) != nil {
+           phatmuxOwningGhosttyView(for: NSApp.keyWindow?.firstResponder) != nil {
 #if DEBUG
             let stalePanelToken = browserAddressBarFocusedPanelId.map { String($0.uuidString.prefix(5)) } ?? "nil"
             let firstResponderType = NSApp.keyWindow?.firstResponder.map { String(describing: type(of: $0)) } ?? "nil"
@@ -9210,7 +9210,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, UNUserNotificationCent
         // input method. Cmd-based shortcuts (Cmd+T, Cmd+Shift+L, etc.) should still
         // work during composition since Cmd is never part of IME input sequences.
         if !normalizedFlags.contains(.command),
-           let ghosttyView = cmuxOwningGhosttyView(for: NSApp.keyWindow?.firstResponder),
+           let ghosttyView = phatmuxOwningGhosttyView(for: NSApp.keyWindow?.firstResponder),
            ghosttyView.hasMarkedText() {
             return false
         }
@@ -9353,7 +9353,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, UNUserNotificationCent
         // Check Jump to Unread shortcut
         if matchShortcut(event: event, shortcut: KeyboardShortcutSettings.shortcut(for: .jumpToUnread)) {
 #if DEBUG
-            if ProcessInfo.processInfo.environment["CMUX_UI_TEST_JUMP_UNREAD_SETUP"] == "1" {
+            if ProcessInfo.processInfo.environment["PHATMUX_UI_TEST_JUMP_UNREAD_SETUP"] == "1" {
                 writeJumpUnreadTestData(["jumpUnreadShortcutHandled": "1"])
             }
 #endif
@@ -9424,7 +9424,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, UNUserNotificationCent
             shortcut: StoredShortcut(key: "t", command: true, shift: false, option: true, control: false)
         ) {
             if let targetWindow = event.window ?? NSApp.keyWindow ?? NSApp.mainWindow,
-               targetWindow.identifier?.rawValue == "cmux.settings" {
+               targetWindow.identifier?.rawValue == "phatmux.settings" {
                 targetWindow.performClose(nil)
             } else {
                 let targetWindow = event.window ?? NSApp.keyWindow ?? NSApp.mainWindow
@@ -9448,14 +9448,14 @@ final class AppDelegate: NSObject, NSApplicationDelegate, UNUserNotificationCent
             // event through the global shortcut handler first.
             if let targetWindow = [NSApp.keyWindow, event.window]
                 .compactMap({ $0 })
-                .first(where: { $0.identifier?.rawValue == "cmux.browser-popup" }) {
+                .first(where: { $0.identifier?.rawValue == "phatmux.browser-popup" }) {
 #if DEBUG
                 dlog("shortcut.cmdW route=browserPopup")
 #endif
                 targetWindow.performClose(nil)
                 return true
             } else if let targetWindow = event.window ?? NSApp.keyWindow ?? NSApp.mainWindow,
-               cmuxWindowShouldOwnCloseShortcut(targetWindow) {
+               phatmuxWindowShouldOwnCloseShortcut(targetWindow) {
                 targetWindow.performClose(nil)
             } else {
                 let targetWindow = event.window ?? NSApp.keyWindow ?? NSApp.mainWindow
@@ -10829,7 +10829,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, UNUserNotificationCent
     private func observeDuplicateLaunches() {
         guard let bundleId = Bundle.main.bundleIdentifier else { return }
         let embeddedCLIURL = Bundle.main.bundleURL
-            .appendingPathComponent("Contents/Resources/bin/cmux", isDirectory: false)
+            .appendingPathComponent("Contents/Resources/bin/phatmux", isDirectory: false)
             .standardizedFileURL
             .resolvingSymlinksInPath()
         let currentPid = ProcessInfo.processInfo.processIdentifier
@@ -11048,7 +11048,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, UNUserNotificationCent
             return true
         }
         guard let raw = window.identifier?.rawValue else { return false }
-        return raw == "cmux.main" || raw.hasPrefix("cmux.main.")
+        return raw == "phatmux.main" || raw.hasPrefix("phatmux.main.")
     }
 
     private func contextContainingTabId(_ tabId: UUID) -> MainWindowContext? {
@@ -11077,7 +11077,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, UNUserNotificationCent
 
     func closeMainWindowContainingTabId(_ tabId: UUID) {
         guard let context = contextContainingTabId(tabId) else { return }
-        let expectedIdentifier = "cmux.main.\(context.windowId.uuidString)"
+        let expectedIdentifier = "phatmux.main.\(context.windowId.uuidString)"
         let window: NSWindow? = context.window ?? NSApp.windows.first(where: { $0.identifier?.rawValue == expectedIdentifier })
         window?.performClose(nil)
     }
@@ -11085,7 +11085,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, UNUserNotificationCent
     @discardableResult
     func openNotification(tabId: UUID, surfaceId: UUID?, notificationId: UUID?) -> Bool {
 #if DEBUG
-        let isJumpUnreadUITest = ProcessInfo.processInfo.environment["CMUX_UI_TEST_JUMP_UNREAD_SETUP"] == "1"
+        let isJumpUnreadUITest = ProcessInfo.processInfo.environment["PHATMUX_UI_TEST_JUMP_UNREAD_SETUP"] == "1"
         if isJumpUnreadUITest {
             writeJumpUnreadTestData([
                 "jumpUnreadOpenCalled": "1",
@@ -11125,7 +11125,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, UNUserNotificationCent
     }
 
     private func openNotificationInContext(_ context: MainWindowContext, tabId: UUID, surfaceId: UUID?, notificationId: UUID?) -> Bool {
-        let expectedIdentifier = "cmux.main.\(context.windowId.uuidString)"
+        let expectedIdentifier = "phatmux.main.\(context.windowId.uuidString)"
         let window: NSWindow? = context.window ?? NSApp.windows.first(where: { $0.identifier?.rawValue == expectedIdentifier })
         guard let window else {
 #if DEBUG
@@ -11149,7 +11149,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, UNUserNotificationCent
                 notificationId: notificationId,
                 reason: "focus_failed"
             )
-            if ProcessInfo.processInfo.environment["CMUX_UI_TEST_JUMP_UNREAD_SETUP"] == "1" {
+            if ProcessInfo.processInfo.environment["PHATMUX_UI_TEST_JUMP_UNREAD_SETUP"] == "1" {
                 writeJumpUnreadTestData(["jumpUnreadOpenResult": "0"])
             }
 #endif
@@ -11183,7 +11183,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, UNUserNotificationCent
             surfaceId: surfaceId,
             sidebarSelection: context.sidebarSelectionState.selection
         )
-        if ProcessInfo.processInfo.environment["CMUX_UI_TEST_JUMP_UNREAD_SETUP"] == "1" {
+        if ProcessInfo.processInfo.environment["PHATMUX_UI_TEST_JUMP_UNREAD_SETUP"] == "1" {
             writeJumpUnreadTestData(["jumpUnreadOpenInContext": "1", "jumpUnreadOpenResult": "1"])
         }
 #endif
@@ -11194,7 +11194,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, UNUserNotificationCent
         // If the owning window context hasn't been registered yet, fall back to the "active" window.
         guard let tabManager else {
 #if DEBUG
-            if ProcessInfo.processInfo.environment["CMUX_UI_TEST_JUMP_UNREAD_SETUP"] == "1" {
+            if ProcessInfo.processInfo.environment["PHATMUX_UI_TEST_JUMP_UNREAD_SETUP"] == "1" {
                 writeJumpUnreadTestData(["jumpUnreadFallbackFail": "missing_tabManager"])
             }
 #endif
@@ -11202,7 +11202,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, UNUserNotificationCent
         }
         guard tabManager.tabs.contains(where: { $0.id == tabId }) else {
 #if DEBUG
-            if ProcessInfo.processInfo.environment["CMUX_UI_TEST_JUMP_UNREAD_SETUP"] == "1" {
+            if ProcessInfo.processInfo.environment["PHATMUX_UI_TEST_JUMP_UNREAD_SETUP"] == "1" {
                 writeJumpUnreadTestData(["jumpUnreadFallbackFail": "tab_not_in_active_manager"])
             }
 #endif
@@ -11210,7 +11210,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, UNUserNotificationCent
         }
         guard let window = (NSApp.keyWindow ?? NSApp.windows.first(where: { isMainTerminalWindow($0) })) else {
 #if DEBUG
-            if ProcessInfo.processInfo.environment["CMUX_UI_TEST_JUMP_UNREAD_SETUP"] == "1" {
+            if ProcessInfo.processInfo.environment["PHATMUX_UI_TEST_JUMP_UNREAD_SETUP"] == "1" {
                 writeJumpUnreadTestData(["jumpUnreadFallbackFail": "missing_window"])
             }
 #endif
@@ -11221,7 +11221,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, UNUserNotificationCent
         bringToFront(window)
         guard tabManager.focusTabFromNotification(tabId, surfaceId: surfaceId) else {
 #if DEBUG
-            if ProcessInfo.processInfo.environment["CMUX_UI_TEST_JUMP_UNREAD_SETUP"] == "1" {
+            if ProcessInfo.processInfo.environment["PHATMUX_UI_TEST_JUMP_UNREAD_SETUP"] == "1" {
                 writeJumpUnreadTestData([
                     "jumpUnreadFallbackFail": "focus_failed",
                     "jumpUnreadOpenResult": "0",
@@ -11249,7 +11249,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, UNUserNotificationCent
             )
         }
 #if DEBUG
-        if ProcessInfo.processInfo.environment["CMUX_UI_TEST_JUMP_UNREAD_SETUP"] == "1" {
+        if ProcessInfo.processInfo.environment["PHATMUX_UI_TEST_JUMP_UNREAD_SETUP"] == "1" {
             writeJumpUnreadTestData(["jumpUnreadOpenInFallback": "1", "jumpUnreadOpenResult": "1"])
         }
 #endif
@@ -11263,7 +11263,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, UNUserNotificationCent
         expectedSurfaceId: UUID?
     ) {
         let env = ProcessInfo.processInfo.environment
-        guard env["CMUX_UI_TEST_JUMP_UNREAD_SETUP"] == "1" else { return }
+        guard env["PHATMUX_UI_TEST_JUMP_UNREAD_SETUP"] == "1" else { return }
         guard let expectedSurfaceId else { return }
 
         // Ensure the expectation is armed even if the view doesn't become first responder.
@@ -11367,7 +11367,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, UNUserNotificationCent
         reason: String
     ) {
         let env = ProcessInfo.processInfo.environment
-        guard let path = env["CMUX_UI_TEST_MULTI_WINDOW_NOTIF_PATH"], !path.isEmpty else { return }
+        guard let path = env["PHATMUX_UI_TEST_MULTI_WINDOW_NOTIF_PATH"], !path.isEmpty else { return }
 
         let contextSummaries: [String] = mainWindowContexts.values.map { ctx in
             let tabIds = ctx.tabManager.tabs.map { $0.id.uuidString }.joined(separator: ",")
@@ -11391,7 +11391,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, UNUserNotificationCent
 @MainActor
 final class MenuBarExtraController: NSObject, NSMenuDelegate {
     private let statusItem: NSStatusItem
-    private let menu = NSMenu(title: "cmux")
+    private let menu = NSMenu(title: "phatmux")
     private let notificationStore: TerminalNotificationStore
     private let onShowNotifications: () -> Void
     private let onOpenNotification: (TerminalNotification) -> Void
@@ -11412,7 +11412,7 @@ final class MenuBarExtraController: NSObject, NSMenuDelegate {
     private let clearAllItem = NSMenuItem(title: String(localized: "statusMenu.clearAll", defaultValue: "Clear All"), action: nil, keyEquivalent: "")
     private let checkForUpdatesItem = NSMenuItem(title: String(localized: "menu.checkForUpdates", defaultValue: "Check for Updates…"), action: nil, keyEquivalent: "")
     private let preferencesItem = NSMenuItem(title: String(localized: "menu.preferences", defaultValue: "Preferences…"), action: nil, keyEquivalent: "")
-    private let quitItem = NSMenuItem(title: String(localized: "menu.quitCmux", defaultValue: "Quit cmux"), action: nil, keyEquivalent: "")
+    private let quitItem = NSMenuItem(title: String(localized: "menu.quitCmux", defaultValue: "Quit phatmux"), action: nil, keyEquivalent: "")
 
     private var notificationItems: [NSMenuItem] = []
     private let maxInlineNotificationItems = 6
@@ -11443,7 +11443,7 @@ final class MenuBarExtraController: NSObject, NSMenuDelegate {
             button.imagePosition = .imageOnly
             button.imageScaling = .scaleProportionallyDown
             button.image = MenuBarIconRenderer.makeImage(unreadCount: 0)
-            button.toolTip = "cmux"
+            button.toolTip = "phatmux"
         }
 
         notificationsCancellable = notificationStore.$notifications
@@ -11547,10 +11547,10 @@ final class MenuBarExtraController: NSObject, NSMenuDelegate {
         if let button = statusItem.button {
             button.image = MenuBarIconRenderer.makeImage(unreadCount: displayedUnreadCount)
             button.toolTip = displayedUnreadCount == 0
-                ? "cmux"
+                ? "phatmux"
                 : displayedUnreadCount == 1
-                    ? "cmux: " + String(localized: "statusMenu.tooltip.unread.one", defaultValue: "1 unread notification")
-                    : "cmux: " + String(localized: "statusMenu.tooltip.unread.other", defaultValue: "\(displayedUnreadCount) unread notifications")
+                    ? "phatmux: " + String(localized: "statusMenu.tooltip.unread.one", defaultValue: "1 unread notification")
+                    : "phatmux: " + String(localized: "statusMenu.tooltip.unread.other", defaultValue: "\(displayedUnreadCount) unread notifications")
         }
     }
 
@@ -11818,7 +11818,7 @@ enum MenuBarBuildHintFormatter {
     ) -> String? {
         guard isDebugBuild else { return nil }
         let normalized = appName.trimmingCharacters(in: .whitespacesAndNewlines)
-        let prefix = "cmux DEV"
+        let prefix = "phatmux DEV"
         guard normalized.hasPrefix(prefix) else { return "Build: DEV" }
 
         let suffix = String(normalized.dropFirst(prefix.count)).trimmingCharacters(in: .whitespacesAndNewlines)
@@ -11999,7 +11999,7 @@ enum MenuBarIconRenderer {
     }
 
     private static func drawGlyph(in rect: NSRect) {
-        // Match the canonical cmux center-mark path from Icon Center Image Artwork.svg.
+        // Match the canonical phatmux center-mark path from Icon Center Image Artwork.svg.
         let srcMinX: CGFloat = 384.0
         let srcMinY: CGFloat = 255.0
         let srcWidth: CGFloat = 369.0
@@ -12050,27 +12050,27 @@ enum MenuBarIconRenderer {
 
 
 #if DEBUG
-private var cmuxFirstResponderGuardCurrentEventOverride: NSEvent?
-private var cmuxFirstResponderGuardHitViewOverride: NSView?
+private var phatmuxFirstResponderGuardCurrentEventOverride: NSEvent?
+private var phatmuxFirstResponderGuardHitViewOverride: NSView?
 #endif
-private var cmuxFirstResponderGuardCurrentEventContext: NSEvent?
-private var cmuxFirstResponderGuardHitViewContext: NSView?
-private var cmuxFirstResponderGuardContextWindowNumber: Int?
-private var cmuxBrowserReturnForwardingDepth = 0
-private var cmuxWindowFirstResponderBypassDepth = 0
-private var cmuxFieldEditorOwningWebViewAssociationKey: UInt8 = 0
+private var phatmuxFirstResponderGuardCurrentEventContext: NSEvent?
+private var phatmuxFirstResponderGuardHitViewContext: NSView?
+private var phatmuxFirstResponderGuardContextWindowNumber: Int?
+private var phatmuxBrowserReturnForwardingDepth = 0
+private var phatmuxWindowFirstResponderBypassDepth = 0
+private var phatmuxFieldEditorOwningWebViewAssociationKey: UInt8 = 0
 
 @discardableResult
-func cmuxWithWindowFirstResponderBypass<T>(_ body: () -> T) -> T {
-    cmuxWindowFirstResponderBypassDepth += 1
+func phatmuxWithWindowFirstResponderBypass<T>(_ body: () -> T) -> T {
+    phatmuxWindowFirstResponderBypassDepth += 1
     defer {
-        cmuxWindowFirstResponderBypassDepth = max(0, cmuxWindowFirstResponderBypassDepth - 1)
+        phatmuxWindowFirstResponderBypassDepth = max(0, phatmuxWindowFirstResponderBypassDepth - 1)
     }
     return body()
 }
 
-func cmuxIsWindowFirstResponderBypassActive() -> Bool {
-    cmuxWindowFirstResponderBypassDepth > 0
+func phatmuxIsWindowFirstResponderBypassActive() -> Bool {
+    phatmuxWindowFirstResponderBypassDepth > 0
 }
 
 private final class CmuxFieldEditorOwningWebViewBox: NSObject {
@@ -12082,7 +12082,7 @@ private final class CmuxFieldEditorOwningWebViewBox: NSObject {
 }
 
 private extension NSApplication {
-    @objc func cmux_applicationSendEvent(_ event: NSEvent) {
+    @objc func phatmux_applicationSendEvent(_ event: NSEvent) {
 #if DEBUG
         let typingTimingStart = event.type == .keyDown ? CmuxTypingTiming.start() : nil
         let phaseTotalStart = event.type == .keyDown ? ProcessInfo.processInfo.systemUptime : 0
@@ -12107,21 +12107,21 @@ private extension NSApplication {
             }
         }
 #endif
-        cmux_applicationSendEvent(event)
+        phatmux_applicationSendEvent(event)
     }
 }
 
 private extension AppDelegate {
     @objc func handleThemesReloadNotification(_ notification: Notification) {
         DispatchQueue.main.async {
-            GhosttyApp.shared.reloadConfiguration(source: "distributed.cmux.themes")
+            GhosttyApp.shared.reloadConfiguration(source: "distributed.phatmux.themes")
         }
     }
 }
 
 private extension NSWindow {
-    @objc func cmux_makeFirstResponder(_ responder: NSResponder?) -> Bool {
-        if cmuxIsWindowFirstResponderBypassActive() {
+    @objc func phatmux_makeFirstResponder(_ responder: NSResponder?) -> Bool {
+        if phatmuxIsWindowFirstResponderBypassActive() {
 #if DEBUG
             dlog(
                 "focus.guard bypassFirstResponder responder=\(String(describing: responder.map { type(of: $0) })) " +
@@ -12131,9 +12131,9 @@ private extension NSWindow {
             return false
         }
 
-        let currentEvent = Self.cmuxCurrentEvent(for: self)
+        let currentEvent = Self.phatmuxCurrentEvent(for: self)
         let responderWebView = responder.flatMap {
-            Self.cmuxOwningWebView(for: $0, in: self, event: currentEvent)
+            Self.phatmuxOwningWebView(for: $0, in: self, event: currentEvent)
         }
         var pointerInitiatedWebFocus = false
 
@@ -12153,7 +12153,7 @@ private extension NSWindow {
         if let responder,
            let webView = responderWebView,
            !webView.allowsFirstResponderAcquisitionEffective {
-            let pointerInitiatedFocus = Self.cmuxShouldAllowPointerInitiatedWebViewFocus(
+            let pointerInitiatedFocus = Self.phatmuxShouldAllowPointerInitiatedWebViewFocus(
                 window: self,
                 webView: webView,
                 event: currentEvent
@@ -12201,22 +12201,22 @@ private extension NSWindow {
             // `NSWindow.makeFirstResponder` may run before `CmuxWebView.mouseDown(with:)`.
             // Preserve pointer intent during this synchronous responder change.
             result = webView.withPointerFocusAllowance {
-                cmux_makeFirstResponder(responder)
+                phatmux_makeFirstResponder(responder)
             }
         } else {
-            result = cmux_makeFirstResponder(responder)
+            result = phatmux_makeFirstResponder(responder)
         }
         if result {
             if let fieldEditor = responder as? NSTextView, fieldEditor.isFieldEditor {
-                Self.cmuxTrackFieldEditor(fieldEditor, owningWebView: responderWebView)
+                Self.phatmuxTrackFieldEditor(fieldEditor, owningWebView: responderWebView)
             } else if let fieldEditor = self.firstResponder as? NSTextView, fieldEditor.isFieldEditor {
-                Self.cmuxTrackFieldEditor(fieldEditor, owningWebView: responderWebView)
+                Self.phatmuxTrackFieldEditor(fieldEditor, owningWebView: responderWebView)
             }
         }
         return result
     }
 
-    @objc func cmux_sendEvent(_ event: NSEvent) {
+    @objc func phatmux_sendEvent(_ event: NSEvent) {
 #if DEBUG
         let typingTimingStart = event.type == .keyDown ? CmuxTypingTiming.start() : nil
         let phaseTotalStart = event.type == .keyDown ? ProcessInfo.processInfo.systemUptime : 0
@@ -12226,10 +12226,10 @@ private extension NSWindow {
         let typingTimingExtra: String? = {
             guard event.type == .keyDown else { return nil }
             let responderWebView = self.firstResponder.flatMap {
-                Self.cmuxOwningWebView(for: $0, in: self, event: event)
+                Self.phatmuxOwningWebView(for: $0, in: self, event: event)
             }
-            let hitWebView = Self.cmuxHitViewForEventDispatch(in: self, event: event).flatMap {
-                Self.cmuxOwningWebView(for: $0)
+            let hitWebView = Self.phatmuxHitViewForEventDispatch(in: self, event: event).flatMap {
+                Self.phatmuxOwningWebView(for: $0)
             }
             let firstResponderType = self.firstResponder.map { String(describing: type(of: $0)) } ?? "nil"
             return "browser=\((responderWebView != nil || hitWebView != nil) ? 1 : 0) firstResponder=\(firstResponderType)"
@@ -12269,12 +12269,12 @@ private extension NSWindow {
         }
         let contextSetupStart = event.type == .keyDown ? ProcessInfo.processInfo.systemUptime : 0
 #endif
-        let previousContextEvent = cmuxFirstResponderGuardCurrentEventContext
-        let previousContextHitView = cmuxFirstResponderGuardHitViewContext
-        let previousContextWindowNumber = cmuxFirstResponderGuardContextWindowNumber
-        cmuxFirstResponderGuardCurrentEventContext = event
-        cmuxFirstResponderGuardHitViewContext = Self.cmuxHitViewForEventDispatch(in: self, event: event)
-        cmuxFirstResponderGuardContextWindowNumber = self.windowNumber
+        let previousContextEvent = phatmuxFirstResponderGuardCurrentEventContext
+        let previousContextHitView = phatmuxFirstResponderGuardHitViewContext
+        let previousContextWindowNumber = phatmuxFirstResponderGuardContextWindowNumber
+        phatmuxFirstResponderGuardCurrentEventContext = event
+        phatmuxFirstResponderGuardHitViewContext = Self.phatmuxHitViewForEventDispatch(in: self, event: event)
+        phatmuxFirstResponderGuardContextWindowNumber = self.windowNumber
 #if DEBUG
         if event.type == .keyDown {
             contextSetupMs = (ProcessInfo.processInfo.systemUptime - contextSetupStart) * 1000.0
@@ -12282,9 +12282,9 @@ private extension NSWindow {
         let folderGuardStart = event.type == .keyDown ? ProcessInfo.processInfo.systemUptime : 0
 #endif
         defer {
-            cmuxFirstResponderGuardCurrentEventContext = previousContextEvent
-            cmuxFirstResponderGuardHitViewContext = previousContextHitView
-            cmuxFirstResponderGuardContextWindowNumber = previousContextWindowNumber
+            phatmuxFirstResponderGuardCurrentEventContext = previousContextEvent
+            phatmuxFirstResponderGuardHitViewContext = previousContextHitView
+            phatmuxFirstResponderGuardContextWindowNumber = previousContextWindowNumber
         }
 
         guard shouldSuppressWindowMoveForFolderDrag(window: self, event: event),
@@ -12293,12 +12293,12 @@ private extension NSWindow {
             if event.type == .keyDown {
                 folderGuardMs = (ProcessInfo.processInfo.systemUptime - folderGuardStart) * 1000.0
                 let originalDispatchStart = ProcessInfo.processInfo.systemUptime
-                cmux_sendEvent(event)
+                phatmux_sendEvent(event)
                 originalDispatchMs = (ProcessInfo.processInfo.systemUptime - originalDispatchStart) * 1000.0
                 return
             }
 #endif
-            cmux_sendEvent(event)
+            phatmux_sendEvent(event)
             return
         }
 #if DEBUG
@@ -12320,7 +12320,7 @@ private extension NSWindow {
         dlog("window.sendEvent.folderDown suppress=1 hit=\(hitDesc) wasMovable=\(previousMovableState)")
         #endif
 
-        cmux_sendEvent(event)
+        phatmux_sendEvent(event)
 #if DEBUG
         if event.type == .keyDown {
             originalDispatchMs = (ProcessInfo.processInfo.systemUptime - originalDispatchStart) * 1000.0
@@ -12336,7 +12336,7 @@ private extension NSWindow {
         #endif
     }
 
-    @objc func cmux_performKeyEquivalent(with event: NSEvent) -> Bool {
+    @objc func phatmux_performKeyEquivalent(with event: NSEvent) -> Bool {
 #if DEBUG
         let typingTimingStart = CmuxTypingTiming.start()
         defer {
@@ -12365,9 +12365,9 @@ private extension NSWindow {
         // Command shortcuts when the terminal is focused — the local event monitor
         // (handleCustomShortcut) already handles app-level shortcuts, and anything
         // remaining should be menu items.
-        let firstResponderGhosttyView = cmuxOwningGhosttyView(for: self.firstResponder)
+        let firstResponderGhosttyView = phatmuxOwningGhosttyView(for: self.firstResponder)
         let firstResponderWebView = self.firstResponder.flatMap {
-            Self.cmuxOwningWebView(for: $0, in: self, event: event)
+            Self.phatmuxOwningWebView(for: $0, in: self, event: event)
         }
         if let ghosttyView = firstResponderGhosttyView {
             // If the IME is composing and the key has no Cmd modifier, don't intercept —
@@ -12375,7 +12375,7 @@ private extension NSWindow {
             // process it. Cmd-based shortcuts should still work during composition since
             // Cmd is never part of IME input sequences.
             if ghosttyView.hasMarkedText(), !event.modifierFlags.intersection(.deviceIndependentFlagsMask).contains(.command) {
-                return cmux_performKeyEquivalent(with: event)
+                return phatmux_performKeyEquivalent(with: event)
             }
 
             let flags = event.modifierFlags.intersection(.deviceIndependentFlagsMask)
@@ -12416,14 +12416,14 @@ private extension NSWindow {
         ) {
             // Forwarding keyDown can re-enter performKeyEquivalent in WebKit/AppKit internals.
             // On re-entry, fall back to normal dispatch to avoid an infinite loop.
-            if cmuxBrowserReturnForwardingDepth > 0 {
+            if phatmuxBrowserReturnForwardingDepth > 0 {
 #if DEBUG
                 dlog("  → browser Return/Enter reentry; using normal dispatch")
 #endif
                 return false
             }
-            cmuxBrowserReturnForwardingDepth += 1
-            defer { cmuxBrowserReturnForwardingDepth = max(0, cmuxBrowserReturnForwardingDepth - 1) }
+            phatmuxBrowserReturnForwardingDepth += 1
+            defer { phatmuxBrowserReturnForwardingDepth = max(0, phatmuxBrowserReturnForwardingDepth - 1) }
 #if DEBUG
             dlog("  → browser Return/Enter routed to firstResponder.keyDown")
 #endif
@@ -12468,7 +12468,7 @@ private extension NSWindow {
             }
         }
 
-        let result = cmux_performKeyEquivalent(with: event)
+        let result = phatmux_performKeyEquivalent(with: event)
 #if DEBUG
         if result { dlog("  → consumed by original performKeyEquivalent") }
 #endif
@@ -12487,13 +12487,13 @@ private extension NSWindow {
         return parts.joined(separator: "+")
     }
 
-    private static func cmuxOwningWebView(for responder: NSResponder) -> CmuxWebView? {
+    private static func phatmuxOwningWebView(for responder: NSResponder) -> CmuxWebView? {
         if let webView = responder as? CmuxWebView {
             return webView
         }
 
         if let view = responder as? NSView,
-           let webView = cmuxOwningWebView(for: view) {
+           let webView = phatmuxOwningWebView(for: view) {
             return webView
         }
 
@@ -12505,7 +12505,7 @@ private extension NSWindow {
                 return webView
             }
             if let view = next as? NSView,
-               let webView = cmuxOwningWebView(for: view) {
+               let webView = phatmuxOwningWebView(for: view) {
                 return webView
             }
             current = next.nextResponder
@@ -12514,7 +12514,7 @@ private extension NSWindow {
         return nil
     }
 
-    private static func cmuxOwningWebView(
+    private static func phatmuxOwningWebView(
         for responder: NSResponder,
         in window: NSWindow,
         event: NSEvent?
@@ -12526,7 +12526,7 @@ private extension NSWindow {
             return nil
         }
 
-        if let webView = cmuxOwningWebView(for: responder) {
+        if let webView = phatmuxOwningWebView(for: responder) {
             return webView
         }
 
@@ -12535,15 +12535,15 @@ private extension NSWindow {
         }
 
         if let event,
-           let hitWebView = cmuxPointerHitWebView(in: window, event: event) {
-            cmuxTrackFieldEditor(textView, owningWebView: hitWebView)
+           let hitWebView = phatmuxPointerHitWebView(in: window, event: event) {
+            phatmuxTrackFieldEditor(textView, owningWebView: hitWebView)
             return hitWebView
         }
 
-        return cmuxTrackedOwningWebView(for: textView)
+        return phatmuxTrackedOwningWebView(for: textView)
     }
 
-    private static func cmuxOwningWebView(for view: NSView) -> CmuxWebView? {
+    private static func phatmuxOwningWebView(for view: NSView) -> CmuxWebView? {
         if let webView = view as? CmuxWebView {
             return webView
         }
@@ -12554,7 +12554,7 @@ private extension NSWindow {
                 return webView
             }
             if String(describing: type(of: candidate)).contains("WindowBrowserSlotView"),
-               let portalWebView = cmuxUniqueBrowserWebView(in: candidate) {
+               let portalWebView = phatmuxUniqueBrowserWebView(in: candidate) {
                 // Portal-hosted browser chrome (for example the Cmd+F overlay) is a
                 // sibling of the hosted WKWebView inside WindowBrowserSlotView, not a
                 // descendant of it. Allow native text-entry controls in that slot to
@@ -12564,7 +12564,7 @@ private extension NSWindow {
                 if view === portalWebView || view.isDescendant(of: portalWebView) {
                     return portalWebView
                 }
-                if cmuxAllowsPortalSlotTextEntryFocus(view) {
+                if phatmuxAllowsPortalSlotTextEntryFocus(view) {
                     return nil
                 }
                 return portalWebView
@@ -12575,7 +12575,7 @@ private extension NSWindow {
         return nil
     }
 
-    private static func cmuxAllowsPortalSlotTextEntryFocus(_ view: NSView) -> Bool {
+    private static func phatmuxAllowsPortalSlotTextEntryFocus(_ view: NSView) -> Bool {
         var current: NSView? = view
         while let candidate = current {
             if let textField = candidate as? NSTextField {
@@ -12589,7 +12589,7 @@ private extension NSWindow {
         return false
     }
 
-    private static func cmuxUniqueBrowserWebView(in root: NSView) -> CmuxWebView? {
+    private static func phatmuxUniqueBrowserWebView(in root: NSView) -> CmuxWebView? {
         var stack: [NSView] = [root]
         var found: CmuxWebView?
         while let current = stack.popLast() {
@@ -12605,19 +12605,19 @@ private extension NSWindow {
         return found
     }
 
-    private static func cmuxCurrentEvent(for window: NSWindow) -> NSEvent? {
+    private static func phatmuxCurrentEvent(for window: NSWindow) -> NSEvent? {
 #if DEBUG
-        if let override = cmuxFirstResponderGuardCurrentEventOverride {
+        if let override = phatmuxFirstResponderGuardCurrentEventOverride {
             return override
         }
 #endif
-        if cmuxFirstResponderGuardContextWindowNumber == window.windowNumber {
-            return cmuxFirstResponderGuardCurrentEventContext
+        if phatmuxFirstResponderGuardContextWindowNumber == window.windowNumber {
+            return phatmuxFirstResponderGuardCurrentEventContext
         }
         return NSApp.currentEvent
     }
 
-    private static func cmuxHitViewInThemeFrame(in window: NSWindow, event: NSEvent) -> NSView? {
+    private static func phatmuxHitViewInThemeFrame(in window: NSWindow, event: NSEvent) -> NSView? {
         guard let contentView = window.contentView,
               let themeFrame = contentView.superview else {
             return nil
@@ -12626,7 +12626,7 @@ private extension NSWindow {
         return themeFrame.hitTest(pointInTheme)
     }
 
-    private static func cmuxHitViewInContentView(in window: NSWindow, event: NSEvent) -> NSView? {
+    private static func phatmuxHitViewInContentView(in window: NSWindow, event: NSEvent) -> NSView? {
         guard let contentView = window.contentView else {
             return nil
         }
@@ -12634,69 +12634,69 @@ private extension NSWindow {
         return contentView.hitTest(pointInContent)
     }
 
-    private static func cmuxTopHitViewForEvent(in window: NSWindow, event: NSEvent) -> NSView? {
-        if let hitInThemeFrame = cmuxHitViewInThemeFrame(in: window, event: event) {
+    private static func phatmuxTopHitViewForEvent(in window: NSWindow, event: NSEvent) -> NSView? {
+        if let hitInThemeFrame = phatmuxHitViewInThemeFrame(in: window, event: event) {
             return hitInThemeFrame
         }
-        return cmuxHitViewInContentView(in: window, event: event)
+        return phatmuxHitViewInContentView(in: window, event: event)
     }
 
-    private static func cmuxHitViewForEventDispatch(in window: NSWindow, event: NSEvent) -> NSView? {
+    private static func phatmuxHitViewForEventDispatch(in window: NSWindow, event: NSEvent) -> NSView? {
         if event.windowNumber != 0, event.windowNumber != window.windowNumber {
             return nil
         }
         if let eventWindow = event.window, eventWindow !== window {
             return nil
         }
-        return cmuxTopHitViewForEvent(in: window, event: event)
+        return phatmuxTopHitViewForEvent(in: window, event: event)
     }
 
-    private static func cmuxHitViewForCurrentEvent(in window: NSWindow, event: NSEvent) -> NSView? {
+    private static func phatmuxHitViewForCurrentEvent(in window: NSWindow, event: NSEvent) -> NSView? {
 #if DEBUG
-        if let override = cmuxFirstResponderGuardHitViewOverride {
+        if let override = phatmuxFirstResponderGuardHitViewOverride {
             return override
         }
 #endif
-        if cmuxFirstResponderGuardContextWindowNumber == window.windowNumber,
-           let contextHitView = cmuxFirstResponderGuardHitViewContext {
+        if phatmuxFirstResponderGuardContextWindowNumber == window.windowNumber,
+           let contextHitView = phatmuxFirstResponderGuardHitViewContext {
             return contextHitView
         }
-        return cmuxTopHitViewForEvent(in: window, event: event)
+        return phatmuxTopHitViewForEvent(in: window, event: event)
     }
 
-    private static func cmuxTrackFieldEditor(_ fieldEditor: NSTextView, owningWebView webView: CmuxWebView?) {
+    private static func phatmuxTrackFieldEditor(_ fieldEditor: NSTextView, owningWebView webView: CmuxWebView?) {
         if let webView {
             objc_setAssociatedObject(
                 fieldEditor,
-                &cmuxFieldEditorOwningWebViewAssociationKey,
+                &phatmuxFieldEditorOwningWebViewAssociationKey,
                 CmuxFieldEditorOwningWebViewBox(webView: webView),
                 .OBJC_ASSOCIATION_RETAIN_NONATOMIC
             )
         } else {
             objc_setAssociatedObject(
                 fieldEditor,
-                &cmuxFieldEditorOwningWebViewAssociationKey,
+                &phatmuxFieldEditorOwningWebViewAssociationKey,
                 nil,
                 .OBJC_ASSOCIATION_RETAIN_NONATOMIC
             )
         }
     }
 
-    private static func cmuxTrackedOwningWebView(for fieldEditor: NSTextView) -> CmuxWebView? {
+    private static func phatmuxTrackedOwningWebView(for fieldEditor: NSTextView) -> CmuxWebView? {
         guard let box = objc_getAssociatedObject(
             fieldEditor,
-            &cmuxFieldEditorOwningWebViewAssociationKey
+            &phatmuxFieldEditorOwningWebViewAssociationKey
         ) as? CmuxFieldEditorOwningWebViewBox else {
             return nil
         }
         guard let webView = box.webView else {
-            cmuxTrackFieldEditor(fieldEditor, owningWebView: nil)
+            phatmuxTrackFieldEditor(fieldEditor, owningWebView: nil)
             return nil
         }
         return webView
     }
 
-    private static func cmuxIsPointerDownEvent(_ event: NSEvent) -> Bool {
+    private static func phatmuxIsPointerDownEvent(_ event: NSEvent) -> Bool {
         switch event.type {
         case .leftMouseDown, .rightMouseDown, .otherMouseDown:
             return true
@@ -12705,8 +12705,8 @@ private extension NSWindow {
         }
     }
 
-    private static func cmuxPointerHitWebView(in window: NSWindow, event: NSEvent) -> CmuxWebView? {
-        guard cmuxIsPointerDownEvent(event) else { return nil }
+    private static func phatmuxPointerHitWebView(in window: NSWindow, event: NSEvent) -> CmuxWebView? {
+        guard phatmuxIsPointerDownEvent(event) else { return nil }
         if event.windowNumber != 0, event.windowNumber != window.windowNumber {
             return nil
         }
@@ -12719,19 +12719,19 @@ private extension NSWindow {
         ) as? CmuxWebView {
             return portalWebView
         }
-        guard let hitView = cmuxHitViewForCurrentEvent(in: window, event: event) else {
+        guard let hitView = phatmuxHitViewForCurrentEvent(in: window, event: event) else {
             return nil
         }
-        return cmuxOwningWebView(for: hitView)
+        return phatmuxOwningWebView(for: hitView)
     }
 
-    private static func cmuxShouldAllowPointerInitiatedWebViewFocus(
+    private static func phatmuxShouldAllowPointerInitiatedWebViewFocus(
         window: NSWindow,
         webView: CmuxWebView,
         event: NSEvent?
     ) -> Bool {
         guard let event,
-              let hitWebView = cmuxPointerHitWebView(in: window, event: event) else {
+              let hitWebView = phatmuxPointerHitWebView(in: window, event: event) else {
             return false
         }
         return hitWebView === webView

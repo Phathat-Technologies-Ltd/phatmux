@@ -5,8 +5,8 @@
       "layers" : [
         {
           "glass" : false,
-          "image-name" : "cmux-icon-chevron 2.png",
-          "name" : "cmux-icon-chevron 2",
+          "image-name" : "phatmux-icon-chevron 2.png",
+          "name" : "phatmux-icon-chevron 2",
           "position" : {
             "scale" : 1,
             "translation-in-points" : [

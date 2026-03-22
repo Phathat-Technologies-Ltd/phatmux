@@ -74,7 +74,7 @@ export default function CommunityPage() {
           />
 
           <CommunityLink
-            href="https://github.com/manaflow-ai/cmux"
+            href="https://github.com/amitpaz/phatmux"
             name="GitHub"
             action={t("githubAction")}
             description={t("githubDesc")}

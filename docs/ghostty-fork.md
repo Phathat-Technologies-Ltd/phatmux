@@ -41,7 +41,7 @@ Fork rebased onto upstream `v1.3.0` plus newer `main` commits as of March 12, 20
   - `src/apprt/embedded.zig`
 - Summary:
   - Restores `ghostty_surface_select_cursor_cell` and `ghostty_surface_clear_selection`.
-  - Keeps cmux keyboard copy mode working against the refreshed Ghostty base.
+  - Keeps phatmux keyboard copy mode working against the refreshed Ghostty base.
 
 ### 4) macOS resize stale-frame mitigation
 
@@ -88,19 +88,19 @@ touch the same stale-frame mitigation path and tend to conflict in the same file
 
 The fork branch HEAD is now the section 6 zsh redraw follow-up commit.
 
-### 7) cmux theme picker helper hooks
+### 7) phatmux theme picker helper hooks
 
-- Commit: `0c52c987b` (Add cmux theme picker helper hooks)
+- Commit: `0c52c987b` (Add phatmux theme picker helper hooks)
 - Files:
   - `build.zig`
   - `src/cli/list_themes.zig`
   - `src/main_ghostty.zig`
 - Summary:
-  - Adds a `zig build cli-helper` step so cmux can bundle Ghostty's CLI helper binary on macOS.
-  - Lets `+list-themes` switch into a cmux-managed mode via env vars, writing the cmux theme override file and posting the existing cmux reload notification for live app-wide preview.
+  - Adds a `zig build cli-helper` step so phatmux can bundle Ghostty's CLI helper binary on macOS.
+  - Lets `+list-themes` switch into a phatmux-managed mode via env vars, writing the phatmux theme override file and posting the existing phatmux reload notification for live app-wide preview.
   - Fixes the helper-only `app-runtime=none` stdout path so the Ghostty CLI binary builds with the current Zig toolchain.
 
-The fork branch HEAD is now the section 7 cmux theme picker helper commit.
+The fork branch HEAD is now the section 7 phatmux theme picker helper commit.
 
 ## Upstreamed fork changes
 
@@ -126,8 +126,8 @@ These files change frequently upstream; be careful when rebasing the fork:
     prompt newlines should not get an extra explicit continuation marker after the hidden CR.
 
 - `src/cli/list_themes.zig`
-  - cmux now relies on the upstream picker UI plus local env-driven hooks for live preview and restore.
-    If upstream reorganizes the preview loop or key handling, re-check the cmux mode path and keep the
-    stock Ghostty behavior unchanged when the cmux env vars are absent.
+  - phatmux now relies on the upstream picker UI plus local env-driven hooks for live preview and restore.
+    If upstream reorganizes the preview loop or key handling, re-check the phatmux mode path and keep the
+    stock Ghostty behavior unchanged when the phatmux env vars are absent.
 
 If you resolve a conflict, update this doc with what changed.

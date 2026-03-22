@@ -1458,7 +1458,7 @@ final class CmuxWebView: WKWebView {
         NSPasteboard.PasteboardType("public.text"),
         NSPasteboard.PasteboardType("public.plain-text"),
         NSPasteboard.PasteboardType("com.splittabbar.tabtransfer"),
-        NSPasteboard.PasteboardType("com.cmux.sidebar-tab-reorder"),
+        NSPasteboard.PasteboardType("com.phatmux.sidebar-tab-reorder"),
     ]
 
     static func shouldRejectInternalPaneDrag(_ pasteboardTypes: [NSPasteboard.PasteboardType]?) -> Bool {

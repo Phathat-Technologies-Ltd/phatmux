@@ -13,7 +13,7 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
     title: t("metaTitle"),
     description: t("metaDescription"),
     keywords: [
-      "cmux", "Show HN", "Hacker News", "terminal", "macOS", "Ghostty",
+      "phatmux", "Show HN", "Hacker News", "terminal", "macOS", "Ghostty",
       "libghostty", "AI coding agents", "Claude Code", "Codex", "launch",
       "vertical tabs", "notification rings",
     ],
@@ -133,7 +133,7 @@ export default function ShowHNLaunchPage() {
       <p>
         {t.rich("cta", {
           link: (chunks) => (
-            <a href="https://github.com/manaflow-ai/cmux">{chunks}</a>
+            <a href="https://github.com/amitpaz/phatmux">{chunks}</a>
           ),
         })}
       </p>
@@ -141,7 +141,7 @@ export default function ShowHNLaunchPage() {
       <div className="my-6">
         <Image
           src={starHistory}
-          alt="cmux GitHub star history showing growth from near 0 to 900+ stars after the Show HN launch"
+          alt="phatmux GitHub star history showing growth from near 0 to 900+ stars after the Show HN launch"
           placeholder="blur"
           className="w-full rounded-xl"
         />

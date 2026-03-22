@@ -81,7 +81,7 @@ def _git_stub() -> str:
         fi
 
         if [ "$1" = "remote" ] && [ "$2" = "get-url" ] && [ "$3" = "origin" ]; then
-          printf 'https://github.com/manaflow-ai/cmux.git\\n'
+          printf 'https://github.com/amitpaz/phatmux.git\\n'
           exit 0
         fi
 
@@ -99,11 +99,11 @@ def _gh_stub() -> str:
     return textwrap.dedent(
         """\
         #!/bin/sh
-        args_log="${CMUX_TEST_GH_ARGS_LOG:?}"
-        count_file="${CMUX_TEST_GH_COUNT_FILE:?}"
-        pid_file="${CMUX_TEST_GH_PID_FILE:-}"
-        scenario="${CMUX_TEST_SCENARIO:?}"
-        head_file="${CMUX_TEST_HEAD_FILE:?}"
+        args_log="${PHATMUX_TEST_GH_ARGS_LOG:?}"
+        count_file="${PHATMUX_TEST_GH_COUNT_FILE:?}"
+        pid_file="${PHATMUX_TEST_GH_PID_FILE:-}"
+        scenario="${PHATMUX_TEST_SCENARIO:?}"
+        head_file="${PHATMUX_TEST_HEAD_FILE:?}"
 
         printf '%s\\n' "$*" >> "$args_log"
 
@@ -142,21 +142,21 @@ def _gh_stub() -> str:
 
         case "$scenario" in
           prompt_helper_idle)
-            printf '1138\\tOPEN\\thttps://github.com/manaflow-ai/cmux/pull/1138\\n'
+            printf '1138\\tOPEN\\thttps://github.com/amitpaz/phatmux/pull/1138\\n'
             ;;
           initial_prompt_preserves_pr_badge)
-            printf '1138\\tOPEN\\thttps://github.com/manaflow-ai/cmux/pull/1138\\n'
+            printf '1138\\tOPEN\\thttps://github.com/amitpaz/phatmux/pull/1138\\n'
             ;;
           transient_same_context)
             if [ "$count" -eq 1 ]; then
               printf 'rate limit exceeded\\n' >&2
               exit 1
             fi
-            printf '1138\\tOPEN\\thttps://github.com/manaflow-ai/cmux/pull/1138\\n'
+            printf '1138\\tOPEN\\thttps://github.com/amitpaz/phatmux/pull/1138\\n'
             ;;
           branch_switch_clear)
             if [ "$branch" = "feature/old" ]; then
-              printf '111\\tOPEN\\thttps://github.com/manaflow-ai/cmux/pull/111\\n'
+              printf '111\\tOPEN\\thttps://github.com/amitpaz/phatmux/pull/111\\n'
               exit 0
             fi
             if [ "$branch" = "feature/new" ]; then
@@ -171,10 +171,10 @@ def _gh_stub() -> str:
               if [ -n "$pid_file" ]; then
                 printf '%s\\n' "$$" > "$pid_file"
               fi
-              sleep "${CMUX_TEST_HANG_SECONDS:-4}"
+              sleep "${PHATMUX_TEST_HANG_SECONDS:-4}"
               exit 0
             fi
-            printf '1138\\tOPEN\\thttps://github.com/manaflow-ai/cmux/pull/1138\\n'
+            printf '1138\\tOPEN\\thttps://github.com/amitpaz/phatmux/pull/1138\\n'
             ;;
           explicit_branch_fallback)
             if [ -z "$requested_branch" ]; then
@@ -182,7 +182,7 @@ def _gh_stub() -> str:
               exit 1
             fi
             if [ "$requested_branch" = "$branch" ]; then
-              printf '1138\\tOPEN\\thttps://github.com/manaflow-ai/cmux/pull/1138\\n'
+              printf '1138\\tOPEN\\thttps://github.com/amitpaz/phatmux/pull/1138\\n'
               exit 0
             fi
             printf 'unexpected branch lookup: %s\\n' "$requested_branch" >&2
@@ -200,71 +200,71 @@ def _gh_stub() -> str:
 def _shell_command(kind: str, scenario: str) -> str:
     shared = {
         "prompt_helper_idle": (
-            'cd "$CMUX_TEST_REPO"\n'
-            '_CMUX_PR_POLL_INTERVAL=1\n'
-            '_cmux_prompt_entry\n'
+            'cd "$PHATMUX_TEST_REPO"\n'
+            '_PHATMUX_PR_POLL_INTERVAL=1\n'
+            '_phatmux_prompt_entry\n'
             ': "$(/bin/printf helper)"\n'
             'sleep 3\n'
-            '_cmux_cleanup\n'
+            '_phatmux_cleanup\n'
         ),
         "transient_same_context": (
-            'cd "$CMUX_TEST_REPO"\n'
-            '_CMUX_PR_POLL_INTERVAL=1\n'
-            '_cmux_prompt_entry\n'
+            'cd "$PHATMUX_TEST_REPO"\n'
+            '_PHATMUX_PR_POLL_INTERVAL=1\n'
+            '_phatmux_prompt_entry\n'
             'sleep 3\n'
-            '_cmux_cleanup\n'
+            '_phatmux_cleanup\n'
         ),
         "branch_switch_clear": (
-            'cd "$CMUX_TEST_REPO"\n'
-            '_CMUX_PR_POLL_INTERVAL=10\n'
-            '_cmux_prompt_entry\n'
+            'cd "$PHATMUX_TEST_REPO"\n'
+            '_PHATMUX_PR_POLL_INTERVAL=10\n'
+            '_phatmux_prompt_entry\n'
             'sleep 1\n'
-            'printf \'ref: refs/heads/feature/new\\n\' > "$CMUX_TEST_HEAD_FILE"\n'
-            '_cmux_prompt_entry\n'
+            'printf \'ref: refs/heads/feature/new\\n\' > "$PHATMUX_TEST_HEAD_FILE"\n'
+            '_phatmux_prompt_entry\n'
             'sleep 2\n'
-            '_cmux_cleanup\n'
+            '_phatmux_cleanup\n'
         ),
         "timeout_recovery": (
-            'cd "$CMUX_TEST_REPO"\n'
-            '_CMUX_PR_POLL_INTERVAL=1\n'
-            '_CMUX_ASYNC_JOB_TIMEOUT=1\n'
-            '_cmux_prompt_entry\n'
+            'cd "$PHATMUX_TEST_REPO"\n'
+            '_PHATMUX_PR_POLL_INTERVAL=1\n'
+            '_PHATMUX_ASYNC_JOB_TIMEOUT=1\n'
+            '_phatmux_prompt_entry\n'
             'sleep 4\n'
-            '_cmux_cleanup\n'
+            '_phatmux_cleanup\n'
         ),
         "explicit_branch_fallback": (
-            'cd "$CMUX_TEST_REPO"\n'
-            '_CMUX_PR_POLL_INTERVAL=10\n'
-            '_cmux_prompt_entry\n'
+            'cd "$PHATMUX_TEST_REPO"\n'
+            '_PHATMUX_PR_POLL_INTERVAL=10\n'
+            '_phatmux_prompt_entry\n'
             'sleep 2\n'
-            '_cmux_cleanup\n'
+            '_phatmux_cleanup\n'
         ),
         "initial_prompt_preserves_pr_badge": (
-            'cd "$CMUX_TEST_REPO"\n'
-            '_CMUX_PR_POLL_INTERVAL=10\n'
-            '_cmux_prompt_entry\n'
+            'cd "$PHATMUX_TEST_REPO"\n'
+            '_PHATMUX_PR_POLL_INTERVAL=10\n'
+            '_phatmux_prompt_entry\n'
             'sleep 2\n'
-            '_cmux_cleanup\n'
+            '_phatmux_cleanup\n'
         ),
     }[scenario]
 
     if kind == "zsh":
         return textwrap.dedent(
             f"""\
-            source "$CMUX_TEST_SCRIPT"
-            _cmux_send() {{ print -r -- "$1" >> "$CMUX_TEST_SEND_LOG"; }}
-            _cmux_prompt_entry() {{ _cmux_precmd; }}
-            _cmux_cleanup() {{ _cmux_zshexit; }}
+            source "$PHATMUX_TEST_SCRIPT"
+            _phatmux_send() {{ print -r -- "$1" >> "$PHATMUX_TEST_SEND_LOG"; }}
+            _phatmux_prompt_entry() {{ _phatmux_precmd; }}
+            _phatmux_cleanup() {{ _phatmux_zshexit; }}
             {shared}"""
         )
 
     if kind == "bash":
         return textwrap.dedent(
             f"""\
-            source "$CMUX_TEST_SCRIPT"
-            _cmux_send() {{ printf '%s\\n' "$1" >> "$CMUX_TEST_SEND_LOG"; }}
-            _cmux_prompt_entry() {{ _cmux_prompt_command; }}
-            _cmux_cleanup() {{ type _cmux_bash_cleanup >/dev/null 2>&1 && _cmux_bash_cleanup; }}
+            source "$PHATMUX_TEST_SCRIPT"
+            _phatmux_send() {{ printf '%s\\n' "$1" >> "$PHATMUX_TEST_SEND_LOG"; }}
+            _phatmux_prompt_entry() {{ _phatmux_prompt_command; }}
+            _phatmux_cleanup() {{ type _phatmux_bash_cleanup >/dev/null 2>&1 && _phatmux_bash_cleanup; }}
             {shared}"""
         )
 
@@ -279,7 +279,7 @@ def _read_lines(path: Path) -> list[str]:
 
 def _report_line(number: int) -> str:
     return (
-        f"report_pr {number} https://github.com/manaflow-ai/cmux/pull/{number} "
+        f"report_pr {number} https://github.com/amitpaz/phatmux/pull/{number} "
         "--state=open --tab=00000000-0000-0000-0000-000000000001 "
         "--panel=00000000-0000-0000-0000-000000000002"
     )
@@ -299,7 +299,7 @@ def _run_case(base: Path, *, shell: str, shell_args: list[str], script: Path, sc
     bindir = base / "bin"
     repo = base / "repo"
     repo_git = repo / ".git"
-    socket_path = base / "cmux.sock"
+    socket_path = base / "phatmux.sock"
     send_log = base / f"{shell}-{scenario}-send.log"
     gh_count_file = base / f"{shell}-{scenario}-gh-count.txt"
     gh_args_log = base / f"{shell}-{scenario}-gh-args.log"
@@ -315,18 +315,18 @@ def _run_case(base: Path, *, shell: str, shell_args: list[str], script: Path, sc
 
     env = dict(os.environ)
     env["PATH"] = f"{bindir}:{env.get('PATH', '')}"
-    env["CMUX_SOCKET_PATH"] = str(socket_path)
-    env["CMUX_TAB_ID"] = "00000000-0000-0000-0000-000000000001"
-    env["CMUX_PANEL_ID"] = "00000000-0000-0000-0000-000000000002"
-    env["CMUX_TEST_SCRIPT"] = str(script)
-    env["CMUX_TEST_REPO"] = str(repo)
-    env["CMUX_TEST_SEND_LOG"] = str(send_log)
-    env["CMUX_TEST_GH_COUNT_FILE"] = str(gh_count_file)
-    env["CMUX_TEST_GH_ARGS_LOG"] = str(gh_args_log)
-    env["CMUX_TEST_GH_PID_FILE"] = str(gh_pid_file)
-    env["CMUX_TEST_SCENARIO"] = scenario
-    env["CMUX_TEST_HEAD_FILE"] = str(head_file)
-    env["CMUX_TEST_HANG_SECONDS"] = "4"
+    env["PHATMUX_SOCKET_PATH"] = str(socket_path)
+    env["PHATMUX_TAB_ID"] = "00000000-0000-0000-0000-000000000001"
+    env["PHATMUX_PANEL_ID"] = "00000000-0000-0000-0000-000000000002"
+    env["PHATMUX_TEST_SCRIPT"] = str(script)
+    env["PHATMUX_TEST_REPO"] = str(repo)
+    env["PHATMUX_TEST_SEND_LOG"] = str(send_log)
+    env["PHATMUX_TEST_GH_COUNT_FILE"] = str(gh_count_file)
+    env["PHATMUX_TEST_GH_ARGS_LOG"] = str(gh_args_log)
+    env["PHATMUX_TEST_GH_PID_FILE"] = str(gh_pid_file)
+    env["PHATMUX_TEST_SCENARIO"] = scenario
+    env["PHATMUX_TEST_HEAD_FILE"] = str(head_file)
+    env["PHATMUX_TEST_HANG_SECONDS"] = "4"
 
     with BoundUnixSocket(socket_path):
         result = subprocess.run(
@@ -419,8 +419,8 @@ def _run_case(base: Path, *, shell: str, shell_args: list[str], script: Path, sc
 def main() -> int:
     root = Path(__file__).resolve().parents[1]
     cases = [
-        ("zsh", ["-f", "-c"], root / "Resources" / "shell-integration" / "cmux-zsh-integration.zsh"),
-        ("bash", ["--noprofile", "--norc", "-c"], root / "Resources" / "shell-integration" / "cmux-bash-integration.bash"),
+        ("zsh", ["-f", "-c"], root / "Resources" / "shell-integration" / "phatmux-zsh-integration.zsh"),
+        ("bash", ["--noprofile", "--norc", "-c"], root / "Resources" / "shell-integration" / "phatmux-bash-integration.bash"),
     ]
     scenarios = [
         "prompt_helper_idle",
@@ -431,7 +431,7 @@ def main() -> int:
         "initial_prompt_preserves_pr_badge",
     ]
 
-    base = Path("/tmp") / f"cmux_issue_1138_pr_poll_{os.getpid()}"
+    base = Path("/tmp") / f"phatmux_issue_1138_pr_poll_{os.getpid()}"
     try:
         shutil.rmtree(base, ignore_errors=True)
         base.mkdir(parents=True, exist_ok=True)

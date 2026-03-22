@@ -6,10 +6,10 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent))
-from cmux import cmux, cmuxError
+from phatmux import phatmux, phatmuxError
 
 
-SOCKET_PATH = os.environ.get("CMUX_SOCKET", "/tmp/cmux-debug.sock")
+SOCKET_PATH = os.environ.get("PHATMUX_SOCKET", "/tmp/phatmux-debug.sock")
 
 # Methods expected to be present in system.capabilities for the browser v2 surface.
 EXPECTED_BROWSER_METHODS = {
@@ -119,22 +119,22 @@ WKWEBVIEW_NOT_SUPPORTED = {
 
 def _must(cond: bool, msg: str) -> None:
     if not cond:
-        raise cmuxError(msg)
+        raise phatmuxError(msg)
 
 
-def _expect_not_supported(c: cmux, method: str, params: dict) -> None:
+def _expect_not_supported(c: phatmux, method: str, params: dict) -> None:
     try:
         c._call(method, params)
-    except cmuxError as exc:
+    except phatmuxError as exc:
         text = str(exc)
         if "not_supported" in text:
             return
-        raise cmuxError(f"Expected not_supported for {method}, got: {text}")
-    raise cmuxError(f"Expected not_supported for {method}, but call succeeded")
+        raise phatmuxError(f"Expected not_supported for {method}, got: {text}")
+    raise phatmuxError(f"Expected not_supported for {method}, but call succeeded")
 
 
 def main() -> int:
-    with cmux(SOCKET_PATH) as c:
+    with phatmux(SOCKET_PATH) as c:
         caps = c.capabilities() or {}
         methods = set(caps.get("methods") or [])
 

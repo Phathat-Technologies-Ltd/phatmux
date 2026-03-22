@@ -3,7 +3,7 @@ import SwiftUI
 
 /// Stores customizable keyboard shortcuts (definitions + persistence).
 enum KeyboardShortcutSettings {
-    static let didChangeNotification = Notification.Name("cmux.keyboardShortcutSettingsDidChange")
+    static let didChangeNotification = Notification.Name("phatmux.keyboardShortcutSettingsDidChange")
     static let actionUserInfoKey = "action"
 
     enum Action: String, CaseIterable, Identifiable {

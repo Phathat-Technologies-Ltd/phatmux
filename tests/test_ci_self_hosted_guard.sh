@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Regression test for https://github.com/manaflow-ai/cmux/issues/385.
+# Regression test for https://github.com/amitpaz/phatmux/issues/385.
 # Ensures paid/gated CI jobs are never run for fork pull requests.
 set -euo pipefail
 

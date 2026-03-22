@@ -1,9 +1,9 @@
-<h1 align="center">cmux</h1>
+<h1 align="center">phatmux</h1>
 <p align="center">Một terminal macOS dựa trên Ghostty với tab dọc và thông báo cho các agent lập trình AI</p>
 
 <p align="center">
-  <a href="https://github.com/manaflow-ai/cmux/releases/latest/download/cmux-macos.dmg">
-    <img src="./docs/assets/macos-badge.png" alt="Tải cmux cho macOS" width="180" />
+  <a href="https://github.com/amitpaz/phatmux/releases/latest/download/phatmux-macos.dmg">
+    <img src="./docs/assets/macos-badge.png" alt="Tải phatmux cho macOS" width="180" />
   </a>
 </p>
 
@@ -17,11 +17,11 @@
 </p>
 
 <p align="center">
-  <img src="./docs/assets/main-first-image.png" alt="Ảnh chụp màn hình cmux" width="900" />
+  <img src="./docs/assets/main-first-image.png" alt="Ảnh chụp màn hình phatmux" width="900" />
 </p>
 
 <p align="center">
-  <a href="https://www.youtube.com/watch?v=i-WxO5YUTOs">▶ Video demo</a> · <a href="https://cmux.com/blog/zen-of-cmux">Thiền của cmux</a>
+  <a href="https://www.youtube.com/watch?v=i-WxO5YUTOs">▶ Video demo</a> · <a href="https://phatmux.com/blog/zen-of-phatmux">Thiền của phatmux</a>
 </p>
 
 ## Tính năng
@@ -74,44 +74,44 @@ Sidebar hiển thị nhánh git, trạng thái/số PR liên kết, thư mục l
 
 ### DMG (khuyến nghị)
 
-<a href="https://github.com/manaflow-ai/cmux/releases/latest/download/cmux-macos.dmg">
-  <img src="./docs/assets/macos-badge.png" alt="Tải cmux cho macOS" width="180" />
+<a href="https://github.com/amitpaz/phatmux/releases/latest/download/phatmux-macos.dmg">
+  <img src="./docs/assets/macos-badge.png" alt="Tải phatmux cho macOS" width="180" />
 </a>
 
-Mở file `.dmg` và kéo cmux vào thư mục Applications. cmux tự cập nhật qua Sparkle, nên bạn chỉ cần tải một lần.
+Mở file `.dmg` và kéo phatmux vào thư mục Applications. phatmux tự cập nhật qua Sparkle, nên bạn chỉ cần tải một lần.
 
 ### Homebrew
 
 ```bash
-brew tap manaflow-ai/cmux
-brew install --cask cmux
+brew tap amitpaz/phatmux
+brew install --cask phatmux
 ```
 
 Cập nhật sau này:
 
 ```bash
-brew upgrade --cask cmux
+brew upgrade --cask phatmux
 ```
 
 Lần mở đầu tiên, macOS có thể yêu cầu bạn xác nhận mở app từ nhà phát triển được xác định. Nhấn **Open** để tiếp tục.
 
-## Vì sao cmux?
+## Vì sao phatmux?
 
 Tôi chạy rất nhiều phiên Claude Code và Codex song song. Tôi từng dùng Ghostty với nhiều pane chia, và dựa vào thông báo macOS gốc để biết khi nào một agent cần tôi. Nhưng nội dung thông báo của Claude Code luôn chỉ là "Claude is waiting for your input" mà không có ngữ cảnh, và khi mở đủ nhiều tab thì tôi thậm chí không đọc được tiêu đề nữa.
 
-Tôi đã thử vài trình điều phối lập trình nhưng phần lớn là app Electron/Tauri và hiệu năng làm tôi khó chịu. Tôi cũng thích terminal hơn vì các trình điều phối GUI buộc bạn theo workflow của họ. Vì vậy tôi xây cmux như một app macOS gốc bằng Swift/AppKit. Nó dùng libghostty để render terminal và đọc cấu hình Ghostty hiện có của bạn cho theme, font, và màu sắc.
+Tôi đã thử vài trình điều phối lập trình nhưng phần lớn là app Electron/Tauri và hiệu năng làm tôi khó chịu. Tôi cũng thích terminal hơn vì các trình điều phối GUI buộc bạn theo workflow của họ. Vì vậy tôi xây phatmux như một app macOS gốc bằng Swift/AppKit. Nó dùng libghostty để render terminal và đọc cấu hình Ghostty hiện có của bạn cho theme, font, và màu sắc.
 
-Những bổ sung chính là sidebar và hệ thống thông báo. Sidebar có các tab dọc hiển thị nhánh git, trạng thái/số PR liên kết, thư mục làm việc, các cổng đang lắng nghe, và dòng thông báo mới nhất cho từng workspace. Hệ thống thông báo bắt các chuỗi terminal (OSC 9/99/777) và có CLI (`cmux notify`) để bạn nối vào hook của agent cho Claude Code, OpenCode, v.v. Khi một agent đang chờ, pane của nó có vòng xanh và tab sáng lên ở sidebar, nên tôi có thể biết cái nào cần tôi giữa các split và tab. Cmd+Shift+U nhảy đến thông báo chưa đọc mới nhất.
+Những bổ sung chính là sidebar và hệ thống thông báo. Sidebar có các tab dọc hiển thị nhánh git, trạng thái/số PR liên kết, thư mục làm việc, các cổng đang lắng nghe, và dòng thông báo mới nhất cho từng workspace. Hệ thống thông báo bắt các chuỗi terminal (OSC 9/99/777) và có CLI (`phatmux notify`) để bạn nối vào hook của agent cho Claude Code, OpenCode, v.v. Khi một agent đang chờ, pane của nó có vòng xanh và tab sáng lên ở sidebar, nên tôi có thể biết cái nào cần tôi giữa các split và tab. Cmd+Shift+U nhảy đến thông báo chưa đọc mới nhất.
 
 Trình duyệt trong app có API script được chuyển từ [agent-browser](https://github.com/vercel-labs/agent-browser). Agent có thể chụp cây accessibility, lấy tham chiếu phần tử, click, điền form, và chạy JS. Bạn có thể chia một pane trình duyệt cạnh terminal và để Claude Code tương tác trực tiếp với dev server của bạn.
 
 Mọi thứ đều có thể script thông qua CLI và socket API — tạo workspace/tab, chia pane, gửi phím, mở URL trong trình duyệt.
 
-## Thiền của cmux
+## Thiền của phatmux
 
-cmux không áp đặt cách developer sử dụng công cụ. Nó là một terminal và trình duyệt có CLI, và phần còn lại là do bạn quyết định.
+phatmux không áp đặt cách developer sử dụng công cụ. Nó là một terminal và trình duyệt có CLI, và phần còn lại là do bạn quyết định.
 
-cmux là một nguyên thủy, không phải giải pháp. Nó cung cấp terminal, trình duyệt, thông báo, workspace, split, tab, và một CLI để điều khiển tất cả. cmux không ép bạn theo một cách dùng agent lập trình đầy định kiến. Bạn xây gì từ những nguyên thủy đó là của bạn.
+phatmux là một nguyên thủy, không phải giải pháp. Nó cung cấp terminal, trình duyệt, thông báo, workspace, split, tab, và một CLI để điều khiển tất cả. phatmux không ép bạn theo một cách dùng agent lập trình đầy định kiến. Bạn xây gì từ những nguyên thủy đó là của bạn.
 
 Những developer giỏi nhất luôn tự xây công cụ của mình. Chưa ai tìm ra cách tốt nhất để làm việc với agent, và các đội ngũ xây sản phẩm đóng chắc chắn cũng chưa. Những developer gần codebase của họ nhất sẽ tìm ra trước.
 
@@ -119,7 +119,7 @@ Trao cho một triệu developer những nguyên thủy có thể ghép, và h�
 
 ## Tài liệu
 
-Để biết thêm về cách cấu hình cmux, [xem tài liệu của chúng tôi](https://cmux.com/docs/getting-started?utm_source=readme).
+Để biết thêm về cách cấu hình phatmux, [xem tài liệu của chúng tôi](https://phatmux.com/docs/getting-started?utm_source=readme).
 
 ## Phím tắt
 
@@ -209,29 +209,29 @@ Phím tắt công cụ developer của trình duyệt theo mặc định Safari 
 
 ## Bản dựng Nightly
 
-[Tải cmux NIGHTLY](https://github.com/manaflow-ai/cmux/releases/download/nightly/cmux-nightly-macos.dmg)
+[Tải phatmux NIGHTLY](https://github.com/amitpaz/phatmux/releases/download/nightly/phatmux-nightly-macos.dmg)
 
-cmux NIGHTLY là một app riêng với bundle ID riêng, nên có thể chạy song song với bản ổn định. Được build tự động từ commit `main` mới nhất và tự cập nhật qua feed Sparkle riêng.
+phatmux NIGHTLY là một app riêng với bundle ID riêng, nên có thể chạy song song với bản ổn định. Được build tự động từ commit `main` mới nhất và tự cập nhật qua feed Sparkle riêng.
 
-Báo lỗi nightly trên [GitHub Issues](https://github.com/manaflow-ai/cmux/issues) hoặc trong [#nightly-bugs trên Discord](https://discord.gg/xsgFEVrWCZ).
+Báo lỗi nightly trên [GitHub Issues](https://github.com/amitpaz/phatmux/issues) hoặc trong [#nightly-bugs trên Discord](https://discord.gg/xsgFEVrWCZ).
 
 ## Khôi phục phiên (hành vi hiện tại)
 
-Khi mở lại, cmux hiện chỉ khôi phục bố cục app và metadata:
+Khi mở lại, phatmux hiện chỉ khôi phục bố cục app và metadata:
 - Bố cục cửa sổ/workspace/pane
 - Thư mục làm việc
 - Scrollback của terminal (cố gắng hết mức)
 - URL và lịch sử điều hướng của trình duyệt
 
-cmux **không** khôi phục trạng thái tiến trình đang chạy bên trong terminal. Ví dụ, các phiên Claude Code/tmux/vim đang hoạt động chưa được khôi phục sau khi restart.
+phatmux **không** khôi phục trạng thái tiến trình đang chạy bên trong terminal. Ví dụ, các phiên Claude Code/tmux/vim đang hoạt động chưa được khôi phục sau khi restart.
 
 ## Lịch sử sao
 
-<a href="https://star-history.com/#manaflow-ai/cmux&Date">
+<a href="https://star-history.com/#amitpaz/phatmux&Date">
  <picture>
-   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=manaflow-ai/cmux&type=Date&theme=dark" />
-   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=manaflow-ai/cmux&type=Date" />
-   <img alt="Biểu đồ lịch sử sao" src="https://api.star-history.com/svg?repos=manaflow-ai/cmux&type=Date" width="600" />
+   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=amitpaz/phatmux&type=Date&theme=dark" />
+   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=amitpaz/phatmux&type=Date" />
+   <img alt="Biểu đồ lịch sử sao" src="https://api.star-history.com/svg?repos=amitpaz/phatmux&type=Date" width="600" />
  </picture>
 </a>
 
@@ -241,26 +241,26 @@ Cách tham gia:
 
 - Theo dõi chúng tôi trên X để cập nhật [@manaflowai](https://x.com/manaflowai), [@lawrencecchen](https://x.com/lawrencecchen), và [@austinywang](https://x.com/austinywang)
 - Tham gia trò chuyện trên [Discord](https://discord.gg/xsgFEVrWCZ)
-- Tạo và tham gia [GitHub issues](https://github.com/manaflow-ai/cmux/issues) và [discussions](https://github.com/manaflow-ai/cmux/discussions)
-- Cho chúng tôi biết bạn đang xây gì với cmux
+- Tạo và tham gia [GitHub issues](https://github.com/amitpaz/phatmux/issues) và [discussions](https://github.com/amitpaz/phatmux/discussions)
+- Cho chúng tôi biết bạn đang xây gì với phatmux
 
 ## Cộng đồng
 
 - [Discord](https://discord.gg/xsgFEVrWCZ)
-- [GitHub](https://github.com/manaflow-ai/cmux)
+- [GitHub](https://github.com/amitpaz/phatmux)
 - [X / Twitter](https://twitter.com/manaflowai)
 - [YouTube](https://www.youtube.com/channel/UCAa89_j-TWkrXfk9A3CbASw)
 - [LinkedIn](https://www.linkedin.com/company/manaflow-ai/)
-- [Reddit](https://www.reddit.com/r/cmux/)
+- [Reddit](https://www.reddit.com/r/phatmux/)
 
 ## Founder's Edition
 
-cmux miễn phí, mã nguồn mở, và sẽ luôn như vậy. Nếu bạn muốn hỗ trợ phát triển và có quyền truy cập sớm vào những thứ sắp tới:
+phatmux miễn phí, mã nguồn mở, và sẽ luôn như vậy. Nếu bạn muốn hỗ trợ phát triển và có quyền truy cập sớm vào những thứ sắp tới:
 
 **[Lấy Founder's Edition](https://buy.stripe.com/3cI00j2Ld0it5OU33r5EY0q)**
 
 - **Ưu tiên yêu cầu tính năng/sửa lỗi**
-- **Truy cập sớm: cmux AI cung cấp ngữ cảnh cho mọi workspace, tab và panel**
+- **Truy cập sớm: phatmux AI cung cấp ngữ cảnh cho mọi workspace, tab và panel**
 - **Truy cập sớm: ứng dụng iOS với terminal đồng bộ giữa desktop và điện thoại**
 - **Truy cập sớm: Cloud VM**
 - **Truy cập sớm: Voice mode**

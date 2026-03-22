@@ -1,11 +1,11 @@
 > この翻訳は Claude によって生成されました。改善の提案がある場合は、PR を作成してください。
 
-<h1 align="center">cmux</h1>
+<h1 align="center">phatmux</h1>
 <p align="center">AIコーディングエージェント向けの縦タブと通知機能を備えたGhosttyベースのmacOSターミナル</p>
 
 <p align="center">
-  <a href="https://github.com/manaflow-ai/cmux/releases/latest/download/cmux-macos.dmg">
-    <img src="./docs/assets/macos-badge.png" alt="macOS版cmuxをダウンロード" width="180" />
+  <a href="https://github.com/amitpaz/phatmux/releases/latest/download/phatmux-macos.dmg">
+    <img src="./docs/assets/macos-badge.png" alt="macOS版phatmuxをダウンロード" width="180" />
   </a>
 </p>
 
@@ -19,11 +19,11 @@
 </p>
 
 <p align="center">
-  <img src="./docs/assets/main-first-image.png" alt="cmuxスクリーンショット" width="900" />
+  <img src="./docs/assets/main-first-image.png" alt="phatmuxスクリーンショット" width="900" />
 </p>
 
 <p align="center">
-  <a href="https://www.youtube.com/watch?v=i-WxO5YUTOs">▶ デモ動画</a> · <a href="https://cmux.com/blog/zen-of-cmux">The Zen of cmux</a>
+  <a href="https://www.youtube.com/watch?v=i-WxO5YUTOs">▶ デモ動画</a> · <a href="https://phatmux.com/blog/zen-of-phatmux">The Zen of phatmux</a>
 </p>
 
 ## 機能
@@ -76,44 +76,44 @@
 
 ### DMG（推奨）
 
-<a href="https://github.com/manaflow-ai/cmux/releases/latest/download/cmux-macos.dmg">
-  <img src="./docs/assets/macos-badge.png" alt="macOS版cmuxをダウンロード" width="180" />
+<a href="https://github.com/amitpaz/phatmux/releases/latest/download/phatmux-macos.dmg">
+  <img src="./docs/assets/macos-badge.png" alt="macOS版phatmuxをダウンロード" width="180" />
 </a>
 
-`.dmg`ファイルを開き、cmuxをアプリケーションフォルダにドラッグしてください。cmuxはSparkle経由で自動更新されるため、ダウンロードは一度だけで済みます。
+`.dmg`ファイルを開き、phatmuxをアプリケーションフォルダにドラッグしてください。phatmuxはSparkle経由で自動更新されるため、ダウンロードは一度だけで済みます。
 
 ### Homebrew
 
 ```bash
-brew tap manaflow-ai/cmux
-brew install --cask cmux
+brew tap amitpaz/phatmux
+brew install --cask phatmux
 ```
 
 後で更新する場合：
 
 ```bash
-brew upgrade --cask cmux
+brew upgrade --cask phatmux
 ```
 
 初回起動時、macOSが確認済みの開発者からのアプリを開くことの確認を求める場合があります。**開く**をクリックして続行してください。
 
-## なぜcmux？
+## なぜphatmux？
 
 私はClaude CodeとCodexのセッションを多数並列で実行しています。Ghosttyで大量の分割ペインを使い、エージェントが私を必要としているときを知るためにmacOSのネイティブ通知に頼っていました。しかし、Claude Codeの通知本文はいつも「Claude is waiting for your input」というコンテキストのないものばかりで、タブを十分に開くとタイトルすら読めなくなっていました。
 
-いくつかのコーディングオーケストレーターを試しましたが、そのほとんどがElectron/Tauriアプリで、パフォーマンスが気になりました。また、GUIオーケストレーターはそのワークフローに縛られるため、単純にターミナルのほうが好みです。そこで、cmuxをSwift/AppKitのネイティブmacOSアプリとして構築しました。ターミナルレンダリングにはlibghosttyを使用し、テーマ、フォント、カラーは既存のGhostty設定を読み込みます。
+いくつかのコーディングオーケストレーターを試しましたが、そのほとんどがElectron/Tauriアプリで、パフォーマンスが気になりました。また、GUIオーケストレーターはそのワークフローに縛られるため、単純にターミナルのほうが好みです。そこで、phatmuxをSwift/AppKitのネイティブmacOSアプリとして構築しました。ターミナルレンダリングにはlibghosttyを使用し、テーマ、フォント、カラーは既存のGhostty設定を読み込みます。
 
-主な追加機能はサイドバーと通知システムです。サイドバーには、各ワークスペースのgitブランチ、リンクされたPRのステータス/番号、作業ディレクトリ、リッスン中のポート、最新の通知テキストを表示する縦タブがあります。通知システムはターミナルシーケンス（OSC 9/99/777）を検出し、Claude Code、OpenCodeなどのエージェントフックに接続できるCLI（`cmux notify`）を備えています。エージェントが待機中のとき、そのペインに青いリングが表示され、サイドバーのタブが点灯するので、分割やタブをまたいでどれが私を必要としているかがわかります。Cmd+Shift+Uで最新の未読にジャンプします。
+主な追加機能はサイドバーと通知システムです。サイドバーには、各ワークスペースのgitブランチ、リンクされたPRのステータス/番号、作業ディレクトリ、リッスン中のポート、最新の通知テキストを表示する縦タブがあります。通知システムはターミナルシーケンス（OSC 9/99/777）を検出し、Claude Code、OpenCodeなどのエージェントフックに接続できるCLI（`phatmux notify`）を備えています。エージェントが待機中のとき、そのペインに青いリングが表示され、サイドバーのタブが点灯するので、分割やタブをまたいでどれが私を必要としているかがわかります。Cmd+Shift+Uで最新の未読にジャンプします。
 
 アプリ内ブラウザには[agent-browser](https://github.com/vercel-labs/agent-browser)から移植されたスクリプタブルなAPIがあります。エージェントはアクセシビリティツリーのスナップショットを取得し、要素参照を取得し、クリック、フォーム入力、JSの評価が可能です。ターミナルの横にブラウザペインを分割し、Claude Codeに開発サーバーと直接やり取りさせることができます。
 
 すべてがCLIとsocket APIを通じてスクリプタブルです — ワークスペース/タブの作成、ペインの分割、キーストロークの送信、ブラウザでのURL表示。
 
-## The Zen of cmux
+## The Zen of phatmux
 
-cmuxは開発者のツールの使い方を規定しません。ターミナルとブラウザにCLIがあり、あとはあなた次第です。
+phatmuxは開発者のツールの使い方を規定しません。ターミナルとブラウザにCLIがあり、あとはあなた次第です。
 
-cmuxはソリューションではなくプリミティブです。ターミナル、ブラウザ、通知、ワークスペース、分割、タブ、そしてそのすべてを制御するCLIを提供します。cmuxはコーディングエージェントの使い方を強制しません。プリミティブで何を構築するかはあなた次第です。
+phatmuxはソリューションではなくプリミティブです。ターミナル、ブラウザ、通知、ワークスペース、分割、タブ、そしてそのすべてを制御するCLIを提供します。phatmuxはコーディングエージェントの使い方を強制しません。プリミティブで何を構築するかはあなた次第です。
 
 優れた開発者は常に自分のツールを構築してきました。エージェントとの最適な作業方法はまだ誰も見つけていませんし、クローズドな製品を作っているチームも見つけていません。自分のコードベースに最も近い開発者が最初に見つけるでしょう。
 
@@ -121,7 +121,7 @@ cmuxはソリューションではなくプリミティブです。ターミナ�
 
 ## ドキュメント
 
-cmuxの設定方法の詳細は、[ドキュメントをご覧ください](https://cmux.com/docs/getting-started?utm_source=readme)。
+phatmuxの設定方法の詳細は、[ドキュメントをご覧ください](https://phatmux.com/docs/getting-started?utm_source=readme)。
 
 ## キーボードショートカット
 
@@ -211,27 +211,27 @@ cmuxの設定方法の詳細は、[ドキュメントをご覧ください](http
 
 ## ナイトリービルド
 
-[cmux NIGHTLYをダウンロード](https://github.com/manaflow-ai/cmux/releases/download/nightly/cmux-nightly-macos.dmg)
+[phatmux NIGHTLYをダウンロード](https://github.com/amitpaz/phatmux/releases/download/nightly/phatmux-nightly-macos.dmg)
 
-cmux NIGHTLYは独自のバンドルIDを持つ別のアプリなので、安定版と並行して実行できます。最新の`main`コミットから自動的にビルドされ、独自のSparkleフィード経由で自動更新されます。
+phatmux NIGHTLYは独自のバンドルIDを持つ別のアプリなので、安定版と並行して実行できます。最新の`main`コミットから自動的にビルドされ、独自のSparkleフィード経由で自動更新されます。
 
 ## セッション復元（現在の動作）
 
-再起動時、cmuxは現在アプリのレイアウトとメタデータのみを復元します：
+再起動時、phatmuxは現在アプリのレイアウトとメタデータのみを復元します：
 - ウィンドウ/ワークスペース/ペインのレイアウト
 - 作業ディレクトリ
 - ターミナルのスクロールバック（ベストエフォート）
 - ブラウザのURLとナビゲーション履歴
 
-cmuxはターミナルアプリ内のライブプロセスの状態を復元**しません**。例えば、アクティブなClaude Code/tmux/vimセッションは再起動後にまだ再開されません。
+phatmuxはターミナルアプリ内のライブプロセスの状態を復元**しません**。例えば、アクティブなClaude Code/tmux/vimセッションは再起動後にまだ再開されません。
 
 ## Star History
 
-<a href="https://star-history.com/#manaflow-ai/cmux&Date">
+<a href="https://star-history.com/#amitpaz/phatmux&Date">
  <picture>
-   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=manaflow-ai/cmux&type=Date&theme=dark" />
-   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=manaflow-ai/cmux&type=Date" />
-   <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=manaflow-ai/cmux&type=Date" width="600" />
+   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=amitpaz/phatmux&type=Date&theme=dark" />
+   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=amitpaz/phatmux&type=Date" />
+   <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=amitpaz/phatmux&type=Date" width="600" />
  </picture>
 </a>
 
@@ -241,26 +241,26 @@ cmuxはターミナルアプリ内のライブプロセスの状態を復元**�
 
 - Xでフォロー：[@manaflowai](https://x.com/manaflowai)、[@lawrencecchen](https://x.com/lawrencecchen)、[@austinywang](https://x.com/austinywang)
 - [Discord](https://discord.gg/xsgFEVrWCZ)で会話に参加
-- [GitHubのIssues](https://github.com/manaflow-ai/cmux/issues)や[ディスカッション](https://github.com/manaflow-ai/cmux/discussions)に参加
-- cmuxで何を構築しているか教えてください
+- [GitHubのIssues](https://github.com/amitpaz/phatmux/issues)や[ディスカッション](https://github.com/amitpaz/phatmux/discussions)に参加
+- phatmuxで何を構築しているか教えてください
 
 ## コミュニティ
 
 - [Discord](https://discord.gg/xsgFEVrWCZ)
-- [GitHub](https://github.com/manaflow-ai/cmux)
+- [GitHub](https://github.com/amitpaz/phatmux)
 - [X / Twitter](https://twitter.com/manaflowai)
 - [YouTube](https://www.youtube.com/channel/UCAa89_j-TWkrXfk9A3CbASw)
 - [LinkedIn](https://www.linkedin.com/company/manaflow-ai/)
-- [Reddit](https://www.reddit.com/r/cmux/)
+- [Reddit](https://www.reddit.com/r/phatmux/)
 
 ## Founder's Edition
 
-cmuxは無料でオープンソースであり、今後もそうあり続けます。開発をサポートし、次に来る機能への早期アクセスを得たい方へ：
+phatmuxは無料でオープンソースであり、今後もそうあり続けます。開発をサポートし、次に来る機能への早期アクセスを得たい方へ：
 
 **[Founder's Editionを入手](https://buy.stripe.com/3cI00j2Ld0it5OU33r5EY0q)**
 
 - **機能リクエスト/バグ修正の優先対応**
-- **早期アクセス：すべてのワークスペース、タブ、パネルのコンテキストを提供するcmux AI**
+- **早期アクセス：すべてのワークスペース、タブ、パネルのコンテキストを提供するphatmux AI**
 - **早期アクセス：デスクトップと携帯電話間でターミナルを同期するiOSアプリ**
 - **早期アクセス：クラウドVM**
 - **早期アクセス：ボイスモード**

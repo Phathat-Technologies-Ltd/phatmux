@@ -10,15 +10,15 @@ import time
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent))
-from cmux import cmux, cmuxError
+from phatmux import phatmux, phatmuxError
 
 
-SOCKET_PATH = os.environ.get("CMUX_SOCKET", "/tmp/cmux-debug.sock")
+SOCKET_PATH = os.environ.get("PHATMUX_SOCKET", "/tmp/phatmux-debug.sock")
 
 
 def _must(cond: bool, msg: str) -> None:
     if not cond:
-        raise cmuxError(msg)
+        raise phatmuxError(msg)
 
 
 def _send_v1(command: str, *, expect_ok: bool = True) -> str:
@@ -38,19 +38,19 @@ def _send_v1(command: str, *, expect_ok: bool = True) -> str:
             sock.settimeout(0.1)
     payload = b"".join(chunks).decode("utf-8", errors="replace").strip()
     if expect_ok and not payload.startswith("OK"):
-        raise cmuxError(f"{command!r} failed: {payload!r}")
+        raise phatmuxError(f"{command!r} failed: {payload!r}")
     return payload
 
 
-def _focused_surface_id(client: cmux, workspace_id: str) -> str:
+def _focused_surface_id(client: phatmux, workspace_id: str) -> str:
     surfaces = client.list_surfaces(workspace=workspace_id)
     for _, surface_id, focused in surfaces:
         if focused:
             return surface_id
-    raise cmuxError(f"no focused surface in workspace {workspace_id}: {surfaces}")
+    raise phatmuxError(f"no focused surface in workspace {workspace_id}: {surfaces}")
 
 
-def _surface_ids(client: cmux, workspace_id: str) -> set[str]:
+def _surface_ids(client: phatmux, workspace_id: str) -> set[str]:
     return {surface_id for _, surface_id, _ in client.list_surfaces(workspace=workspace_id)}
 
 
@@ -63,13 +63,13 @@ def _created_surface_id(response: str) -> str:
 def _sidebar_state(workspace_id: str) -> str:
     payload = _send_v1(f"sidebar_state --tab={workspace_id}", expect_ok=False)
     if payload.startswith("ERROR"):
-        raise cmuxError(f"sidebar_state failed: {payload!r}")
+        raise phatmuxError(f"sidebar_state failed: {payload!r}")
     return payload
 
 
 def main() -> int:
     created_workspaces: list[str] = []
-    with cmux(SOCKET_PATH) as client:
+    with phatmux(SOCKET_PATH) as client:
         try:
             created_workspace = client.new_workspace()
             created_workspaces.append(created_workspace)
@@ -120,7 +120,7 @@ def main() -> int:
             client.select_workspace(background_workspace)
             time.sleep(0.2)
 
-            target_directory = f"/tmp/cmux-v1-report-pwd-{int(time.time() * 1000)}"
+            target_directory = f"/tmp/phatmux-v1-report-pwd-{int(time.time() * 1000)}"
             _send_v1(
                 f"report_pwd {target_directory} --tab={created_workspace} --panel={baseline_focused_surface}"
             )
