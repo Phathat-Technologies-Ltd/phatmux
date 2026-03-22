@@ -1,0 +1,22 @@
+{
+    "configurations": [
+        {
+            "type": "lldb",
+            "request": "launch",
+            "args": [],
+            "cwd": "${workspaceFolder:cmux}",
+            "name": "Debug cmux",
+            "program": "${workspaceFolder:cmux}/.build/debug/cmux",
+            "preLaunchTask": "swift: Build Debug cmux"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "args": [],
+            "cwd": "${workspaceFolder:cmux}",
+            "name": "Release cmux",
+            "program": "${workspaceFolder:cmux}/.build/release/cmux",
+            "preLaunchTask": "swift: Build Release cmux"
+        }
+    ]
+}

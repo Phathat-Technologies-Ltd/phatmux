@@ -2155,6 +2155,11 @@ class TabManager: ObservableObject {
         }
     }
 
+    func updateSurfaceAltScreen(tabId: UUID, surfaceId: UUID, entered: Bool) {
+        guard let tab = tabs.first(where: { $0.id == tabId }) else { return }
+        tab.updatePanelAltScreen(panelId: surfaceId, entered: entered)
+    }
+
     func updateSurfaceGitBranch(
         tabId: UUID,
         surfaceId: UUID,

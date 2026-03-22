@@ -450,6 +450,11 @@ typedef struct {
   const char* initial_input;
   bool wait_after_command;
   ghostty_surface_context_e context;
+  int io_mode;
+  void* io_write_cb;
+  void* io_write_userdata;
+  void (*io_output_cb)(void*, const char*, uintptr_t);
+  void* io_output_userdata;
 } ghostty_surface_config_s;
 
 typedef struct {
@@ -910,6 +915,8 @@ typedef enum {
   GHOSTTY_ACTION_SEARCH_TOTAL,
   GHOSTTY_ACTION_SEARCH_SELECTED,
   GHOSTTY_ACTION_READONLY,
+  GHOSTTY_ACTION_COPY_TITLE_TO_CLIPBOARD,
+  GHOSTTY_ACTION_ALT_SCREEN,
 } ghostty_action_tag_e;
 
 typedef union {
@@ -950,6 +957,7 @@ typedef union {
   ghostty_action_search_total_s search_total;
   ghostty_action_search_selected_s search_selected;
   ghostty_action_readonly_e readonly;
+  bool alt_screen;
 } ghostty_action_u;
 
 typedef struct {

@@ -28,6 +28,7 @@ enum KeyboardShortcutSettings {
         case closeWorkspace
         case newSurface
         case toggleTerminalCopyMode
+        case historySearch
 
         // Panes / splits
         case focusLeft
@@ -67,6 +68,7 @@ enum KeyboardShortcutSettings {
             case .closeWorkspace: return String(localized: "shortcut.closeWorkspace.label", defaultValue: "Close Workspace")
             case .newSurface: return String(localized: "shortcut.newSurface.label", defaultValue: "New Surface")
             case .toggleTerminalCopyMode: return String(localized: "shortcut.toggleTerminalCopyMode.label", defaultValue: "Toggle Terminal Copy Mode")
+            case .historySearch: return String(localized: "shortcut.historySearch.label", defaultValue: "History Search")
             case .focusLeft: return String(localized: "shortcut.focusPaneLeft.label", defaultValue: "Focus Pane Left")
             case .focusRight: return String(localized: "shortcut.focusPaneRight.label", defaultValue: "Focus Pane Right")
             case .focusUp: return String(localized: "shortcut.focusPaneUp.label", defaultValue: "Focus Pane Up")
@@ -111,6 +113,7 @@ enum KeyboardShortcutSettings {
             case .prevSurface: return "shortcut.prevSurface"
             case .newSurface: return "shortcut.newSurface"
             case .toggleTerminalCopyMode: return "shortcut.toggleTerminalCopyMode"
+            case .historySearch: return "shortcut.historySearch"
             case .openBrowser: return "shortcut.openBrowser"
             case .toggleBrowserDeveloperTools: return "shortcut.toggleBrowserDeveloperTools"
             case .showBrowserJavaScriptConsole: return "shortcut.showBrowserJavaScriptConsole"
@@ -147,6 +150,8 @@ enum KeyboardShortcutSettings {
                 return StoredShortcut(key: "r", command: true, shift: true, option: false, control: false)
             case .closeWorkspace:
                 return StoredShortcut(key: "w", command: true, shift: true, option: false, control: false)
+            case .historySearch:
+                return StoredShortcut(key: "r", command: false, shift: false, option: false, control: true)
             case .focusLeft:
                 return StoredShortcut(key: "←", command: true, shift: false, option: true, control: false)
             case .focusRight:

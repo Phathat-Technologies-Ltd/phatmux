@@ -16,6 +16,7 @@ struct WorkspaceContentView: View {
         _ notificationPayloadHex: String?
     ) -> Void)?
     @State private var config = WorkspaceContentView.resolveGhosttyAppearanceConfig(reason: "stateInit")
+    @AppStorage("warpblocks.panelVisible") private var blockPanelVisible = true
     @AppStorage(WorkspacePresentationModeSettings.modeKey)
     private var workspacePresentationMode = WorkspacePresentationModeSettings.defaultMode.rawValue
     @Environment(\.colorScheme) private var colorScheme
@@ -75,6 +76,7 @@ struct WorkspaceContentView: View {
                 )
                 PanelContentView(
                     panel: panel,
+                    workspace: workspace,
                     paneId: paneId,
                     isFocused: isFocused,
                     isSelectedInPane: isSelectedInPane,
@@ -154,13 +156,16 @@ struct WorkspaceContentView: View {
             )
         }
 
-        Group {
-            if isMinimalMode {
-                bonsplitView
-                    .ignoresSafeArea(.container, edges: .top)
-            } else {
-                bonsplitView
+        VStack(spacing: 0) {
+            Group {
+                if isMinimalMode {
+                    bonsplitView
+                        .ignoresSafeArea(.container, edges: .top)
+                } else {
+                    bonsplitView
+                }
             }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
     }
 

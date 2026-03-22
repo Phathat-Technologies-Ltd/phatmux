@@ -881,6 +881,23 @@ private final class GhosttySurfaceCallbackContext {
     }
 }
 
+/// C callback invoked from Zig's termio read thread with raw PTY output bytes.
+/// CRITICAL: This runs on a background thread. Do NOT access @MainActor objects here.
+/// Copy the bytes immediately and dispatch to main for all Swift object access.
+private func ghosttyIoOutputCallback(
+    _ userdata: UnsafeMutableRawPointer?,
+    _ ptr: UnsafePointer<CChar>?,
+    _ len: UInt
+) {
+    guard let userdata, let ptr, len > 0 else { return }
+    let data = Data(bytes: ptr, count: Int(len))
+    let ctx = Unmanaged<GhosttySurfaceCallbackContext>.fromOpaque(userdata).takeUnretainedValue()
+    DispatchQueue.main.async {
+        guard let handler = ctx.terminalSurface?.onPtyOutput else { return }
+        handler(data)
+    }
+}
+
 // Minimal Ghostty wrapper for terminal rendering
 // This uses libghostty (GhosttyKit.xcframework) for actual terminal emulation
 
@@ -2334,6 +2351,18 @@ class GhosttyApp {
                 )
             }
             return true
+        case GHOSTTY_ACTION_ALT_SCREEN:
+            guard let tabId = surfaceView.tabId,
+                  let surfaceId = surfaceView.terminalSurface?.id else { return true }
+            let entered = action.action.alt_screen
+            DispatchQueue.main.async {
+                AppDelegate.shared?.tabManager?.updateSurfaceAltScreen(
+                    tabId: tabId,
+                    surfaceId: surfaceId,
+                    entered: entered
+                )
+            }
+            return true
         case GHOSTTY_ACTION_DESKTOP_NOTIFICATION:
             guard let tabId = surfaceView.tabId else { return true }
             let surfaceId = surfaceView.terminalSurface?.id
@@ -2719,6 +2748,9 @@ final class TerminalSurface: Identifiable, ObservableObject {
     private let maxPendingTextBytes = 1_048_576
     private var backgroundSurfaceStartQueued = false
     private var surfaceCallbackContext: Unmanaged<GhosttySurfaceCallbackContext>?
+    /// Callback invoked with raw PTY output bytes from the Ghostty terminal.
+    /// Called from a background thread — callers must dispatch to main if needed.
+    var onPtyOutput: ((Data) -> Void)?
     /// Tracks the last focus state to avoid sending redundant focus events.
     /// This prevents prompt redraw issues with zsh themes like Powerlevel10k.
     private var lastFocusState: Bool = false
@@ -3277,6 +3309,10 @@ final class TerminalSurface: Identifiable, ObservableObject {
         surfaceCallbackContext = callbackContext
         surfaceConfig.scale_factor = scaleFactors.layer
         surfaceConfig.context = surfaceContext
+        if onPtyOutput != nil {
+            surfaceConfig.io_output_cb = ghosttyIoOutputCallback
+            surfaceConfig.io_output_userdata = callbackContext.toOpaque()
+        }
 #if DEBUG
         let templateFontText = String(format: "%.2f", surfaceConfig.font_size)
         dlog(

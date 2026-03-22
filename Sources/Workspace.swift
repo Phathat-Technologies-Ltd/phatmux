@@ -5141,6 +5141,8 @@ final class Workspace: Identifiable, ObservableObject {
     /// The bonsplit controller managing the split panes for this workspace
     let bonsplitController: BonsplitController
 
+    let blockSessionManager: BlockSessionManager
+
     /// Mapping from bonsplit TabID to our Panel instances
     @Published private(set) var panels: [UUID: any Panel] = [:]
 
@@ -5184,6 +5186,25 @@ final class Workspace: Identifiable, ObservableObject {
             return nil
         }
         return panel
+    }
+
+    var activeBlockSessionManager: BlockSessionManager {
+        focusedTerminalPanel?.blockSessionManager ?? blockSessionManager
+    }
+
+    /// Finds the BSM with an active history search overlay, searching all
+    /// terminal panels before falling back to the workspace-level BSM.
+    var historySearchActiveSessionManager: BlockSessionManager? {
+        for (_, panel) in panels {
+            if let terminal = panel as? TerminalPanel,
+               terminal.blockSessionManager.isHistorySearchVisible {
+                return terminal.blockSessionManager
+            }
+        }
+        if blockSessionManager.isHistorySearchVisible {
+            return blockSessionManager
+        }
+        return nil
     }
 
     func effectiveSelectedPanelId(inPane paneId: PaneID) -> UUID? {
@@ -5422,6 +5443,7 @@ final class Workspace: Identifiable, ObservableObject {
             appearance: appearance
         )
         self.bonsplitController = BonsplitController(configuration: config)
+        self.blockSessionManager = BlockSessionManager(useMockBlocks: false)
         bonsplitController.contextMenuShortcuts = Self.buildContextMenuShortcuts()
 
         // Remove the default "Welcome" tab that bonsplit creates
@@ -5440,6 +5462,7 @@ final class Workspace: Identifiable, ObservableObject {
         panels[terminalPanel.id] = terminalPanel
         panelTitles[terminalPanel.id] = terminalPanel.displayTitle
         seedTerminalInheritanceFontPoints(panelId: terminalPanel.id, configTemplate: configTemplate)
+        installTerminalPanelBlockSessionSubscription(terminalPanel)
 
         // Create initial tab in bonsplit and store the mapping
         var initialTabId: TabID?
@@ -5486,6 +5509,22 @@ final class Workspace: Identifiable, ObservableObject {
                 bonsplitController.focusPane(paneToFocus)
             }
             bonsplitController.selectTab(initialTabId)
+        }
+
+        blockSessionManager.onPasteToTerminal = { [weak self] text in
+            self?.focusedTerminalPanel?.surface.sendText(text)
+        }
+        blockSessionManager.workingDirectoryProvider = { [weak self] in
+            guard let self else {
+                return FileManager.default.homeDirectoryForCurrentUser.path
+            }
+            if let id = self.focusedPanelId,
+               let dir = self.panelDirectories[id]?.trimmingCharacters(in: .whitespacesAndNewlines),
+               !dir.isEmpty {
+                return dir
+            }
+            let trimmed = self.currentDirectory.trimmingCharacters(in: .whitespacesAndNewlines)
+            return trimmed.isEmpty ? FileManager.default.homeDirectoryForCurrentUser.path : trimmed
         }
     }
 
@@ -5608,6 +5647,17 @@ final class Workspace: Identifiable, ObservableObject {
         surfaceIdToPanelId.first { $0.value == panelId }?.key
     }
 
+
+    private func installTerminalPanelBlockSessionSubscription(_ terminalPanel: TerminalPanel) {
+        let panelId = terminalPanel.id
+        let subscription = terminalPanel.blockSessionManager.$currentWorkingDirectory
+            .removeDuplicates()
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] path in
+                self?.updatePanelDirectory(panelId: panelId, directory: path)
+            }
+        panelSubscriptions[panelId] = subscription
+    }
 
     private func installBrowserPanelSubscription(_ browserPanel: BrowserPanel) {
         let subscription = Publishers.CombineLatest3(
@@ -5997,10 +6047,14 @@ final class Workspace: Identifiable, ObservableObject {
         if panelDirectories[panelId] != trimmed {
             panelDirectories[panelId] = trimmed
         }
-        // Update current directory if this is the focused panel
         if panelId == focusedPanelId, currentDirectory != trimmed {
             currentDirectory = trimmed
         }
+    }
+
+    func updatePanelAltScreen(panelId: UUID, entered: Bool) {
+        guard let panel = panels[panelId] as? TerminalPanel else { return }
+        panel.isBlockFullScreen = entered
     }
 
     func updatePanelShellActivityState(panelId: UUID, state: PanelShellActivityState) {
@@ -6990,6 +7044,7 @@ final class Workspace: Identifiable, ObservableObject {
             trackRemoteTerminalSurface(newPanel.id)
         }
         seedTerminalInheritanceFontPoints(panelId: newPanel.id, configTemplate: inheritedConfig)
+        installTerminalPanelBlockSessionSubscription(newPanel)
 
         // Pre-generate the bonsplit tab ID so we can install the panel mapping before bonsplit
         // mutates layout state (avoids transient "Empty Panel" flashes during split).
@@ -7014,6 +7069,7 @@ final class Workspace: Identifiable, ObservableObject {
             panels.removeValue(forKey: newPanel.id)
             panelTitles.removeValue(forKey: newPanel.id)
             surfaceIdToPanelId.removeValue(forKey: newTab.id)
+            panelSubscriptions.removeValue(forKey: newPanel.id)
             if remoteTerminalStartupCommand != nil {
                 untrackRemoteTerminalSurface(newPanel.id)
             }
@@ -7079,6 +7135,7 @@ final class Workspace: Identifiable, ObservableObject {
             trackRemoteTerminalSurface(newPanel.id)
         }
         seedTerminalInheritanceFontPoints(panelId: newPanel.id, configTemplate: inheritedConfig)
+        installTerminalPanelBlockSessionSubscription(newPanel)
 
         // Create tab in bonsplit
         guard let newTabId = bonsplitController.createTab(
@@ -7091,6 +7148,7 @@ final class Workspace: Identifiable, ObservableObject {
         ) else {
             panels.removeValue(forKey: newPanel.id)
             panelTitles.removeValue(forKey: newPanel.id)
+            panelSubscriptions.removeValue(forKey: newPanel.id)
             if remoteTerminalStartupCommand != nil {
                 untrackRemoteTerminalSurface(newPanel.id)
             }
@@ -8369,6 +8427,7 @@ final class Workspace: Identifiable, ObservableObject {
         panels[newPanel.id] = newPanel
         panelTitles[newPanel.id] = newPanel.displayTitle
         seedTerminalInheritanceFontPoints(panelId: newPanel.id, configTemplate: inheritedConfig)
+        installTerminalPanelBlockSessionSubscription(newPanel)
 
         // Create tab in bonsplit
         if let newTabId = bonsplitController.createTab(
@@ -10071,6 +10130,7 @@ extension Workspace: BonsplitDelegate {
                     panels[replacementPanel.id] = replacementPanel
                     panelTitles[replacementPanel.id] = replacementPanel.displayTitle
                     seedTerminalInheritanceFontPoints(panelId: replacementPanel.id, configTemplate: inheritedConfig)
+                    installTerminalPanelBlockSessionSubscription(replacementPanel)
                     surfaceIdToPanelId[replacementTab.id] = replacementPanel.id
 
                     bonsplitController.updateTab(
@@ -10137,6 +10197,7 @@ extension Workspace: BonsplitDelegate {
         panels[newPanel.id] = newPanel
         panelTitles[newPanel.id] = newPanel.displayTitle
         seedTerminalInheritanceFontPoints(panelId: newPanel.id, configTemplate: inheritedConfig)
+        installTerminalPanelBlockSessionSubscription(newPanel)
 
         guard let newTabId = bonsplitController.createTab(
             title: newPanel.displayTitle,
@@ -10148,6 +10209,7 @@ extension Workspace: BonsplitDelegate {
         ) else {
             panels.removeValue(forKey: newPanel.id)
             panelTitles.removeValue(forKey: newPanel.id)
+            panelSubscriptions.removeValue(forKey: newPanel.id)
             terminalInheritanceFontPointsByPanelId.removeValue(forKey: newPanel.id)
             return
         }

@@ -3,6 +3,14 @@ import Combine
 import AppKit
 import Bonsplit
 
+/// NSWindow subclass that never becomes key or main, used to host
+/// offscreen Ghostty surfaces so they can initialize without
+/// stealing keyboard focus from the block terminal input.
+private class OffscreenSurfaceWindow: NSWindow {
+    override var canBecomeKey: Bool { false }
+    override var canBecomeMain: Bool { false }
+}
+
 /// TerminalPanel wraps an existing TerminalSurface and conforms to the Panel protocol.
 /// This allows TerminalSurface to be used within the bonsplit-based layout system.
 @MainActor
@@ -22,6 +30,9 @@ final class TerminalPanel: Panel, ObservableObject {
     /// Published directory from the terminal
     @Published private(set) var directory: String = ""
 
+    /// Persistent PTY-backed session for block-style rendering
+    let blockSessionManager: BlockSessionManager
+
     /// Search state for find functionality
     @Published var searchState: TerminalSurface.SearchState? {
         didSet {
@@ -35,6 +46,8 @@ final class TerminalPanel: Panel, ObservableObject {
     /// Without this, certain pane-close sequences can leave terminal views detached
     /// (hostedView.window == nil) until the user switches workspaces.
     @Published var viewReattachToken: UInt64 = 0
+
+    @Published var isBlockFullScreen = false
 
     private var cancellables = Set<AnyCancellable>()
 
@@ -71,6 +84,35 @@ final class TerminalPanel: Panel, ObservableObject {
         self.id = surface.id
         self.workspaceId = workspaceId
         self.surface = surface
+        self.blockSessionManager = BlockSessionManager(useMockBlocks: false)
+
+        // Wire up block session callbacks
+        blockSessionManager.onPasteToTerminal = { [weak self] text in
+            self?.surface.sendText(text)
+        }
+        blockSessionManager.workingDirectoryProvider = { [weak self] in
+            self?.directory ?? FileManager.default.homeDirectoryForCurrentUser.path
+        }
+        blockSessionManager.onFullScreenTransition = { [weak self] entered in
+            self?.isBlockFullScreen = entered
+        }
+        blockSessionManager.onSendEnterKey = { [weak self] in
+            guard let surface = self?.surface.surface else { return }
+            var key = ghostty_input_key_s()
+            key.action = GHOSTTY_ACTION_PRESS
+            key.mods = GHOSTTY_MODS_NONE
+            key.keycode = 36
+            key.composing = false
+            key.text = nil
+            key.unshifted_codepoint = 0x0D
+            _ = ghostty_surface_key(surface, key)
+            key.action = GHOSTTY_ACTION_RELEASE
+            _ = ghostty_surface_key(surface, key)
+        }
+
+        surface.onPtyOutput = { [weak self] data in
+            self?.blockSessionManager.handleGhosttyOutput(data)
+        }
 
         // Subscribe to surface's search state changes
         surface.$searchState
@@ -174,6 +216,33 @@ final class TerminalPanel: Panel, ObservableObject {
 
     func requestViewReattach() {
         viewReattachToken &+= 1
+    }
+
+    private var offscreenWindow: NSWindow?
+
+    /// Starts the Ghostty surface without mounting it in the visible view hierarchy.
+    /// The surface needs a window to initialize, so we use a hidden offscreen window.
+    func ensureGhosttySurfaceStarted() {
+        guard surface.surface == nil else { return }
+        if offscreenWindow != nil { return }
+        let window = OffscreenSurfaceWindow(
+            contentRect: NSRect(x: -10000, y: -10000, width: 800, height: 600),
+            styleMask: [.borderless],
+            backing: .buffered,
+            defer: false
+        )
+        window.isReleasedWhenClosed = false
+        window.contentView = hostedView
+        window.orderBack(nil)
+        offscreenWindow = window
+    }
+
+    func reclaimHostedViewFromOffscreen() {
+        if let window = offscreenWindow {
+            hostedView.removeFromSuperview()
+            window.contentView = nil
+            offscreenWindow = nil
+        }
     }
 
     // MARK: - Terminal-specific methods

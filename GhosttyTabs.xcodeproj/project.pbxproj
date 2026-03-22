@@ -67,7 +67,28 @@
 		A5001209 /* WindowToolbarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5001219 /* WindowToolbarController.swift */; };
 		A5001240 /* WindowDecorationsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5001241 /* WindowDecorationsController.swift */; };
 		A5001610 /* SessionPersistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5001611 /* SessionPersistence.swift */; };
-		A5001640 /* RemoteRelayZshBootstrap.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5001641 /* RemoteRelayZshBootstrap.swift */; };
+			A5001640 /* RemoteRelayZshBootstrap.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5001641 /* RemoteRelayZshBootstrap.swift */; };
+			A5B1D001 /* Block.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5B1C001 /* Block.swift */; };
+			A5B1D002 /* SessionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5B1C002 /* SessionManager.swift */; };
+		A5B2D001 /* PTYSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5B2C001 /* PTYSession.swift */; };
+
+			A5B1D004 /* BlockTerminalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5B1C004 /* BlockTerminalView.swift */; };
+			A5B1D005 /* AIBlockView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5B1C005 /* AIBlockView.swift */; };
+			A5B1D006 /* CommandSnippetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5B1C006 /* CommandSnippetView.swift */; };
+			A5B1D007 /* ThinkingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5B1C007 /* ThinkingView.swift */; };
+			A5B1D008 /* BlockFooterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5B1C008 /* BlockFooterView.swift */; };
+			A5B1D009 /* InputBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5B1C009 /* InputBarView.swift */; };
+			A5H1D001 /* HistorySearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5H1C001 /* HistorySearchView.swift */; };
+			A5H1D002 /* AtuinHistoryReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5H1C002 /* AtuinHistoryReader.swift */; };
+			A5H1D003 /* InputSuggestionProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5H1C003 /* InputSuggestionProvider.swift */; };
+			A5B1D010 /* ANSIParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5B1C010 /* ANSIParser.swift */; };
+			A5B1D011 /* CommandBlockView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5B1C011 /* CommandBlockView.swift */; };
+			A5B3D001 /* RawTerminalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5B3C001 /* RawTerminalView.swift */; };
+			A5B3D002 /* SelectableANSIOutputTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5B3C002 /* SelectableANSIOutputTextView.swift */; };
+			A5B1D012 /* AIProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5B1C012 /* AIProvider.swift */; };
+			A5B1D013 /* OllamaProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5B1C013 /* OllamaProvider.swift */; };
+			A5B1D014 /* LlamaProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5B1C014 /* LlamaProvider.swift */; };
+			A5B1D015 /* LlamaSwift in Frameworks */ = {isa = PBXBuildFile; productRef = A5B1C015 /* LlamaSwift */; };
 		A5001100 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A5001101 /* Assets.xcassets */; };
 		A5001230 /* Sparkle in Frameworks */ = {isa = PBXBuildFile; productRef = A5001231 /* Sparkle */; };
 		B9000002A1B2C3D4E5F60719 /* cmux.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9000001A1B2C3D4E5F60719 /* cmux.swift */; };
@@ -238,6 +259,26 @@
 		A5001241 /* WindowDecorationsController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindowDecorationsController.swift; sourceTree = "<group>"; };
 		A5001611 /* SessionPersistence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionPersistence.swift; sourceTree = "<group>"; };
 		A5001641 /* RemoteRelayZshBootstrap.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteRelayZshBootstrap.swift; sourceTree = "<group>"; };
+		A5B1C001 /* Block.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Block.swift; sourceTree = "<group>"; };
+		A5B1C002 /* SessionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionManager.swift; sourceTree = "<group>"; };
+		A5B2C001 /* PTYSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PTYSession.swift; sourceTree = "<group>"; };
+
+		A5B1C004 /* BlockTerminalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlockTerminalView.swift; sourceTree = "<group>"; };
+		A5B1C005 /* AIBlockView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIBlockView.swift; sourceTree = "<group>"; };
+		A5B1C006 /* CommandSnippetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommandSnippetView.swift; sourceTree = "<group>"; };
+		A5B1C007 /* ThinkingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThinkingView.swift; sourceTree = "<group>"; };
+		A5B1C008 /* BlockFooterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlockFooterView.swift; sourceTree = "<group>"; };
+		A5B1C009 /* InputBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputBarView.swift; sourceTree = "<group>"; };
+		A5H1C001 /* HistorySearchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistorySearchView.swift; sourceTree = "<group>"; };
+		A5H1C002 /* AtuinHistoryReader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AtuinHistoryReader.swift; sourceTree = "<group>"; };
+		A5H1C003 /* InputSuggestionProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputSuggestionProvider.swift; sourceTree = "<group>"; };
+		A5B1C010 /* ANSIParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ANSIParser.swift; sourceTree = "<group>"; };
+		A5B1C011 /* CommandBlockView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommandBlockView.swift; sourceTree = "<group>"; };
+		A5B3C001 /* RawTerminalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RawTerminalView.swift; sourceTree = "<group>"; };
+		A5B3C002 /* SelectableANSIOutputTextView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectableANSIOutputTextView.swift; sourceTree = "<group>"; };
+		A5B1C012 /* AIProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIProvider.swift; sourceTree = "<group>"; };
+		A5B1C013 /* OllamaProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OllamaProvider.swift; sourceTree = "<group>"; };
+		A5B1C014 /* LlamaProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LlamaProvider.swift; sourceTree = "<group>"; };
 		818DBCD4AB69EB72573E8138 /* SidebarResizeUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SidebarResizeUITests.swift; sourceTree = "<group>"; };
 		B8F266256A1A3D9A45BD840F /* SidebarHelpMenuUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SidebarHelpMenuUITests.swift; sourceTree = "<group>"; };
 		B8F266276A1A3D9A45BD840F /* DisplayResolutionRegressionUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DisplayResolutionRegressionUITests.swift; sourceTree = "<group>"; };
@@ -304,6 +345,7 @@
 					A5001250 /* Sentry in Frameworks */,
 					A5001270 /* PostHog in Frameworks */,
 					A5001290 /* MarkdownUI in Frameworks */,
+					A5B1D015 /* LlamaSwift in Frameworks */,
 				);
 				runOnlyForDeploymentPostprocessing = 0;
 			};
@@ -458,8 +500,91 @@
 				A5001222 /* WindowAccessor.swift */,
 				A5001611 /* SessionPersistence.swift */,
 				A5001641 /* RemoteRelayZshBootstrap.swift */,
+				A5B1C016 /* WarpBlocks */,
 			);
 			path = Sources;
+			sourceTree = "<group>";
+		};
+		A5B1C016 /* WarpBlocks */ = {
+			isa = PBXGroup;
+			children = (
+				A5B1C017 /* Models */,
+				A5B1C018 /* Views */,
+				A5B1C01F /* Shell */,
+				A5B1C019 /* Utilities */,
+				A5B1C01A /* AI */,
+				A5H1C010 /* History */,
+				A5H1C011 /* Completion */,
+			);
+			path = WarpBlocks;
+			sourceTree = "<group>";
+		};
+		A5B1C017 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				A5B1C001 /* Block.swift */,
+				A5B1C002 /* SessionManager.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		A5B1C018 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				A5B1C004 /* BlockTerminalView.swift */,
+				A5B1C005 /* AIBlockView.swift */,
+				A5B1C006 /* CommandSnippetView.swift */,
+				A5B1C011 /* CommandBlockView.swift */,
+				A5B3C001 /* RawTerminalView.swift */,
+				A5B3C002 /* SelectableANSIOutputTextView.swift */,
+				A5B1C007 /* ThinkingView.swift */,
+				A5B1C008 /* BlockFooterView.swift */,
+				A5B1C009 /* InputBarView.swift */,
+				A5H1C001 /* HistorySearchView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		A5B1C019 /* Utilities */ = {
+			isa = PBXGroup;
+			children = (
+				A5B1C010 /* ANSIParser.swift */,
+			);
+			path = Utilities;
+			sourceTree = "<group>";
+		};
+		A5B1C01A /* AI */ = {
+			isa = PBXGroup;
+			children = (
+				A5B1C012 /* AIProvider.swift */,
+				A5B1C013 /* OllamaProvider.swift */,
+				A5B1C014 /* LlamaProvider.swift */,
+			);
+			path = AI;
+			sourceTree = "<group>";
+		};
+		A5H1C010 /* History */ = {
+			isa = PBXGroup;
+			children = (
+				A5H1C002 /* AtuinHistoryReader.swift */,
+			);
+			path = History;
+			sourceTree = "<group>";
+		};
+		A5H1C011 /* Completion */ = {
+			isa = PBXGroup;
+			children = (
+				A5H1C003 /* InputSuggestionProvider.swift */,
+			);
+			path = Completion;
+			sourceTree = "<group>";
+		};
+		A5B1C01F /* Shell */ = {
+			isa = PBXGroup;
+			children = (
+				A5B2C001 /* PTYSession.swift */,
+			);
+			path = Shell;
 			sourceTree = "<group>";
 		};
 		B9000003A1B2C3D4E5F60719 /* CLI */ = {
@@ -576,6 +701,7 @@
 					A5001271 /* PostHog */,
 					A5001261 /* Bonsplit */,
 					A5001291 /* MarkdownUI */,
+					A5B1C015 /* LlamaSwift */,
 				);
 			name = GhosttyTabs;
 			productName = GhosttyTabs;
@@ -679,6 +805,7 @@
 					A5001272 /* XCRemoteSwiftPackageReference "posthog-ios" */,
 					A5001292 /* XCRemoteSwiftPackageReference "swift-markdown-ui" */,
 					A5001260 /* XCLocalSwiftPackageReference "bonsplit" */,
+					A5B1C01B /* XCRemoteSwiftPackageReference "llama.swift" */,
 				);
 			productRefGroup = A5001042 /* Products */;
 			projectDirPath = "";
@@ -753,6 +880,25 @@
 				A500120C /* WindowAccessor.swift in Sources */,
 				A5001610 /* SessionPersistence.swift in Sources */,
 				A5001640 /* RemoteRelayZshBootstrap.swift in Sources */,
+					A5B1D001 /* Block.swift in Sources */,
+					A5B1D002 /* SessionManager.swift in Sources */,
+					A5B1D004 /* BlockTerminalView.swift in Sources */,
+					A5B1D005 /* AIBlockView.swift in Sources */,
+					A5B1D006 /* CommandSnippetView.swift in Sources */,
+					A5B2D001 /* PTYSession.swift in Sources */,
+					A5B1D007 /* ThinkingView.swift in Sources */,
+					A5B1D008 /* BlockFooterView.swift in Sources */,
+					A5B1D009 /* InputBarView.swift in Sources */,
+					A5H1D001 /* HistorySearchView.swift in Sources */,
+					A5H1D002 /* AtuinHistoryReader.swift in Sources */,
+					A5H1D003 /* InputSuggestionProvider.swift in Sources */,
+					A5B1D010 /* ANSIParser.swift in Sources */,
+					A5B1D011 /* CommandBlockView.swift in Sources */,
+					A5B3D001 /* RawTerminalView.swift in Sources */,
+					A5B3D002 /* SelectableANSIOutputTextView.swift in Sources */,
+					A5B1D012 /* AIProvider.swift in Sources */,
+					A5B1D013 /* OllamaProvider.swift in Sources */,
+					A5B1D014 /* LlamaProvider.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1132,6 +1278,14 @@
 				isa = XCLocalSwiftPackageReference;
 				relativePath = vendor/bonsplit;
 			};
+			A5B1C01B /* XCRemoteSwiftPackageReference "llama.swift" */ = {
+				isa = XCRemoteSwiftPackageReference;
+				repositoryURL = "https://github.com/mattt/llama.swift";
+				requirement = {
+					kind = upToNextMajorVersion;
+					minimumVersion = 2.8467.0;
+				};
+			};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -1159,6 +1313,11 @@
 				isa = XCSwiftPackageProductDependency;
 				package = A5001292 /* XCRemoteSwiftPackageReference "swift-markdown-ui" */;
 				productName = MarkdownUI;
+			};
+			A5B1C015 /* LlamaSwift */ = {
+				isa = XCSwiftPackageProductDependency;
+				package = A5B1C01B /* XCRemoteSwiftPackageReference "llama.swift" */;
+				productName = LlamaSwift;
 			};
 /* End XCSwiftPackageProductDependency section */
 

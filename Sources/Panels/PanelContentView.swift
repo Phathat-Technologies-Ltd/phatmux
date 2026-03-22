@@ -5,6 +5,7 @@ import Bonsplit
 /// View that renders the appropriate panel view based on panel type
 struct PanelContentView: View {
     let panel: any Panel
+    @ObservedObject var workspace: Workspace
     let paneId: PaneID
     let isFocused: Bool
     let isSelectedInPane: Bool
@@ -23,6 +24,7 @@ struct PanelContentView: View {
             if let terminalPanel = panel as? TerminalPanel {
                 TerminalPanelView(
                     panel: terminalPanel,
+                    workspace: workspace,
                     paneId: paneId,
                     isFocused: isFocused,
                     isVisibleInUI: isVisibleInUI,

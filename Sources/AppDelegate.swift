@@ -8628,6 +8628,36 @@ final class AppDelegate: NSObject, NSApplicationDelegate, UNUserNotificationCent
                 preludeMs = (ProcessInfo.processInfo.systemUptime - preludeStart) * 1000.0
                 let shortcutTimingStart = CmuxTypingTiming.start()
 #endif
+                if let workspace = self.tabManager?.selectedTab,
+                   let bsm = workspace.historySearchActiveSessionManager {
+                    switch event.keyCode {
+                    case 53:
+                        bsm.closeHistorySearch()
+                    case 36:
+                        bsm.historySearchSelectEntry()
+                    case 126:
+                        bsm.historySearchMoveSelection(by: -1)
+                    case 125:
+                        bsm.historySearchMoveSelection(by: 1)
+                    case 51:
+                        if !bsm.historySearchQuery.isEmpty {
+                            bsm.historySearchQuery.removeLast()
+                            bsm.refreshHistorySearch()
+                        }
+                    default:
+                        let significantMods = event.modifierFlags
+                            .intersection(.deviceIndependentFlagsMask)
+                            .subtracting([.shift, .capsLock, .numericPad, .function])
+                        if significantMods.isEmpty,
+                           let chars = event.characters,
+                           !chars.isEmpty {
+                            bsm.historySearchQuery += chars
+                            bsm.refreshHistorySearch()
+                        }
+                    }
+                    return nil
+                }
+
                 let shortcutStart = ProcessInfo.processInfo.systemUptime
                 let handledByShortcut = self.handleCustomShortcut(event: event)
 #if DEBUG
@@ -9464,9 +9494,25 @@ final class AppDelegate: NSObject, NSApplicationDelegate, UNUserNotificationCent
             return true
         }
 
+        if matchShortcut(event: event, shortcut: KeyboardShortcutSettings.shortcut(for: .historySearch)) {
+            if let manager = tabManager,
+               let workspace = manager.selectedTab {
+                let bsm = workspace.activeBlockSessionManager
+                if !bsm.isFullScreenMode {
+                    bsm.openHistorySearch()
+                    return true
+                }
+            }
+        }
+
         if matchShortcut(event: event, shortcut: KeyboardShortcutSettings.shortcut(for: .renameTab)) {
             // Keep Cmd+R browser reload behavior when a browser panel is focused.
             if tabManager?.focusedBrowserPanel != nil {
+                return false
+            }
+            // WarpBlocks uses Cmd+R for history search (handled above).
+            if let workspace = tabManager?.selectedTab,
+               !workspace.activeBlockSessionManager.isFullScreenMode {
                 return false
             }
             let targetWindow = commandPaletteTargetWindow ?? event.window ?? NSApp.keyWindow ?? NSApp.mainWindow

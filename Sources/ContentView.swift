@@ -1676,6 +1676,7 @@ struct ContentView: View {
         static let panelName = "panel.name"
         static let panelIsBrowser = "panel.isBrowser"
         static let panelIsTerminal = "panel.isTerminal"
+        static let panelIsWarpBlocks = "panel.isWarpBlocks"
         static let panelHasCustomName = "panel.hasCustomName"
         static let panelShouldPin = "panel.shouldPin"
         static let panelHasUnread = "panel.hasUnread"
@@ -2166,10 +2167,12 @@ struct ContentView: View {
     }
 
     private var terminalContentWithSidebarDropOverlay: some View {
-        terminalContent
-            .overlay {
-                SidebarExternalDropOverlay(draggedTabId: sidebarDraggedTabId)
-            }
+        VStack(spacing: 0) {
+            terminalContent
+                .overlay {
+                    SidebarExternalDropOverlay(draggedTabId: sidebarDraggedTabId)
+                }
+        }
     }
 
     @AppStorage("sidebarBlendMode") private var sidebarBlendMode = SidebarBlendModeOption.withinWindow.rawValue
@@ -4864,6 +4867,8 @@ struct ContentView: View {
             return .showNotifications
         case "palette.jumpUnread":
             return .jumpToUnread
+        case "palette.historySearch":
+            return .historySearch
         case "palette.renameTab":
             return .renameTab
         case "palette.renameWorkspace":
@@ -4985,6 +4990,11 @@ struct ContentView: View {
             )
             snapshot.setBool(CommandPaletteContextKeys.panelIsBrowser, panelContext.panel.panelType == .browser)
             snapshot.setBool(CommandPaletteContextKeys.panelIsTerminal, panelIsTerminal)
+            if panelIsTerminal, let terminal = panelContext.panel as? TerminalPanel {
+                snapshot.setBool(CommandPaletteContextKeys.panelIsWarpBlocks, !terminal.blockSessionManager.isFullScreenMode)
+            } else {
+                snapshot.setBool(CommandPaletteContextKeys.panelIsWarpBlocks, false)
+            }
             snapshot.setBool(CommandPaletteContextKeys.panelHasCustomName, workspace.panelCustomTitles[panelId] != nil)
             snapshot.setBool(CommandPaletteContextKeys.panelShouldPin, !workspace.isPanelPinned(panelId))
             let hasUnread = workspace.manualUnreadPanelIds.contains(panelId)
@@ -5361,6 +5371,17 @@ struct ContentView: View {
                 keywords: ["workspace", "unread", "notification", "inbox"],
                 when: { $0.bool(CommandPaletteContextKeys.hasWorkspace) },
                 enablement: { $0.bool(CommandPaletteContextKeys.workspaceHasRead) }
+            )
+        )
+
+        contributions.append(
+            CommandPaletteCommandContribution(
+                commandId: "palette.historySearch",
+                title: constant(String(localized: "command.historySearch.title", defaultValue: "History Search")),
+                subtitle: panelSubtitle,
+                keywords: ["history", "search", "atuin", "command"],
+                dismissOnRun: true,
+                when: { $0.bool(CommandPaletteContextKeys.panelIsWarpBlocks) }
             )
         )
 
@@ -5884,6 +5905,15 @@ struct ContentView: View {
                 return
             }
             notificationStore.markUnread(forTabId: workspaceId)
+        }
+
+        registry.register(commandId: "palette.historySearch") {
+            guard let panelContext = focusedPanelContext,
+                  let terminal = panelContext.panel as? TerminalPanel else {
+                NSSound.beep()
+                return
+            }
+            terminal.blockSessionManager.openHistorySearch()
         }
 
         registry.register(commandId: "palette.renameTab") {
@@ -11236,6 +11266,11 @@ private struct TabItemView: View, Equatable {
         .onTapGesture {
             updateSelection()
         }
+        .simultaneousGesture(
+            TapGesture(count: 2).onEnded {
+                promptRename()
+            }
+        )
         .onHover { hovering in
             isHovering = hovering
         }
