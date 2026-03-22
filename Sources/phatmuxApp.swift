@@ -2779,7 +2779,7 @@ private final class SidebarDebugWindowController: NSWindowController, NSWindowDe
 private struct AboutPanelView: View {
     @Environment(\.openURL) private var openURL
 
-    private let githubURL = URL(string: "https://github.com/amitpaz/phatmux")
+    private let githubURL = URL(string: "https://github.com/Phathat-Technologies-Ltd/phatmux")
     private let docsURL = URL(string: "https://phatmux.com/docs")
 
     private var version: String? { Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String }
@@ -2824,7 +2824,7 @@ private struct AboutPanelView: View {
                     }
                     let commitText = commit ?? "—"
                     let commitURL = commit.flatMap { hash in
-                        URL(string: "https://github.com/amitpaz/phatmux/commit/\(hash)")
+                        URL(string: "https://github.com/Phathat-Technologies-Ltd/phatmux/commit/\(hash)")
                     }
                     AboutPropertyRow(label: String(localized: "about.commit", defaultValue: "Commit"), text: commitText, url: commitURL)
                 }

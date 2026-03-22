@@ -44,7 +44,7 @@ if ! grep -Fq 'com.phatmux.app.nightly.universal' "$WORKFLOW_FILE"; then
   exit 1
 fi
 
-if ! grep -Fq 'https://github.com/amitpaz/phatmux/releases/download/nightly/appcast-universal.xml' "$WORKFLOW_FILE"; then
+if ! grep -Fq 'https://github.com/Phathat-Technologies-Ltd/phatmux/releases/download/nightly/appcast-universal.xml' "$WORKFLOW_FILE"; then
   echo "FAIL: nightly workflow must publish a separate universal appcast feed"
   exit 1
 fi

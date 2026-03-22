@@ -10,7 +10,7 @@
 
 1. Clone the repository with submodules:
    ```bash
-   git clone --recursive https://github.com/amitpaz/phatmux.git
+   git clone --recursive https://github.com/Phathat-Technologies-Ltd/phatmux.git
    cd phatmux
    ```
 

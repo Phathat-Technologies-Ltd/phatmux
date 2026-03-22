@@ -123,15 +123,15 @@ final class TabManagerPullRequestProbeTests: XCTestCase {
         let output = """
         origin https://github.com/austinwang/phatmux.git (fetch)
         origin https://github.com/austinwang/phatmux.git (push)
-        upstream git@github.com:amitpaz/phatmux.git (fetch)
-        upstream git@github.com:amitpaz/phatmux.git (push)
-        backup ssh://git@github.com/amitpaz/phatmux.git (fetch)
-        mirror https://gitlab.com/amitpaz/phatmux.git (fetch)
+        upstream git@github.com:Phathat-Technologies-Ltd/phatmux.git (fetch)
+        upstream git@github.com:Phathat-Technologies-Ltd/phatmux.git (push)
+        backup ssh://git@github.com/Phathat-Technologies-Ltd/phatmux.git (fetch)
+        mirror https://gitlab.com/Phathat-Technologies-Ltd/phatmux.git (fetch)
         """
 
         XCTAssertEqual(
             TabManager.githubRepositorySlugs(fromGitRemoteVOutput: output),
-            ["amitpaz/phatmux", "austinwang/phatmux"]
+            ["Phathat-Technologies-Ltd/phatmux", "austinwang/phatmux"]
         )
     }
 
@@ -140,19 +140,19 @@ final class TabManagerPullRequestProbeTests: XCTestCase {
             TabManager.GitHubPullRequestProbeItem(
                 number: 1889,
                 state: "MERGED",
-                url: "https://github.com/amitpaz/phatmux/pull/1889",
+                url: "https://github.com/Phathat-Technologies-Ltd/phatmux/pull/1889",
                 updatedAt: "2026-03-20T18:00:00Z"
             ),
             TabManager.GitHubPullRequestProbeItem(
                 number: 1891,
                 state: "OPEN",
-                url: "https://github.com/amitpaz/phatmux/pull/1891",
+                url: "https://github.com/Phathat-Technologies-Ltd/phatmux/pull/1891",
                 updatedAt: "2026-03-19T18:00:00Z"
             ),
             TabManager.GitHubPullRequestProbeItem(
                 number: 1800,
                 state: "CLOSED",
-                url: "https://github.com/amitpaz/phatmux/pull/1800",
+                url: "https://github.com/Phathat-Technologies-Ltd/phatmux/pull/1800",
                 updatedAt: "2026-03-21T18:00:00Z"
             ),
         ]
@@ -167,13 +167,13 @@ final class TabManagerPullRequestProbeTests: XCTestCase {
         let olderOpen = TabManager.GitHubPullRequestProbeItem(
             number: 1880,
             state: "OPEN",
-            url: "https://github.com/amitpaz/phatmux/pull/1880",
+            url: "https://github.com/Phathat-Technologies-Ltd/phatmux/pull/1880",
             updatedAt: "2026-03-18T18:00:00Z"
         )
         let newerOpen = TabManager.GitHubPullRequestProbeItem(
             number: 1890,
             state: "OPEN",
-            url: "https://github.com/amitpaz/phatmux/pull/1890",
+            url: "https://github.com/Phathat-Technologies-Ltd/phatmux/pull/1890",
             updatedAt: "2026-03-20T18:00:00Z"
         )
 
@@ -187,7 +187,7 @@ final class TabManagerPullRequestProbeTests: XCTestCase {
         let valid = TabManager.GitHubPullRequestProbeItem(
             number: 1888,
             state: "OPEN",
-            url: "https://github.com/amitpaz/phatmux/pull/1888",
+            url: "https://github.com/Phathat-Technologies-Ltd/phatmux/pull/1888",
             updatedAt: "2026-03-20T18:00:00Z"
         )
 
@@ -196,7 +196,7 @@ final class TabManagerPullRequestProbeTests: XCTestCase {
                 TabManager.GitHubPullRequestProbeItem(
                     number: 9999,
                     state: "WHATEVER",
-                    url: "https://github.com/amitpaz/phatmux/pull/9999",
+                    url: "https://github.com/Phathat-Technologies-Ltd/phatmux/pull/9999",
                     updatedAt: "2026-03-21T18:00:00Z"
                 ),
                 TabManager.GitHubPullRequestProbeItem(

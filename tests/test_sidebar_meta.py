@@ -55,7 +55,7 @@ def main() -> int:
     if not tag:
         print("Tip: set PHATMUX_TAG=<tag> when running this test to avoid socket conflicts.")
 
-    pr_url = "https://github.com/amitpaz/phatmux/pull/337"
+    pr_url = "https://github.com/Phathat-Technologies-Ltd/phatmux/pull/337"
 
     try:
         with phatmux() as client:

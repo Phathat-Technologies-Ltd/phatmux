@@ -4,7 +4,7 @@
 <p align="center">macOS terminal baziran na Ghostty sa vertikalnim tabovima i obavještenjima za AI agente za programiranje</p>
 
 <p align="center">
-  <a href="https://github.com/amitpaz/phatmux/releases/latest/download/phatmux-macos.dmg">
+  <a href="https://github.com/Phathat-Technologies-Ltd/phatmux/releases/latest/download/phatmux-macos.dmg">
     <img src="./docs/assets/macos-badge.png" alt="Preuzmi phatmux za macOS" width="180" />
   </a>
 </p>
@@ -76,7 +76,7 @@ Bočna traka prikazuje git granu, status/broj povezanog PR-a, radni direktorij, 
 
 ### DMG (preporučeno)
 
-<a href="https://github.com/amitpaz/phatmux/releases/latest/download/phatmux-macos.dmg">
+<a href="https://github.com/Phathat-Technologies-Ltd/phatmux/releases/latest/download/phatmux-macos.dmg">
   <img src="./docs/assets/macos-badge.png" alt="Preuzmi phatmux za macOS" width="180" />
 </a>
 
@@ -85,7 +85,7 @@ Otvorite `.dmg` datoteku i prevucite phatmux u folder Aplikacije. phatmux se aut
 ### Homebrew
 
 ```bash
-brew tap amitpaz/phatmux
+brew tap Phathat-Technologies-Ltd/phatmux
 brew install --cask phatmux
 ```
 
@@ -211,7 +211,7 @@ Prečice razvojnih alata preglednika prate Safari zadane postavke i mogu se pril
 
 ## Noćne verzije
 
-[Preuzmi phatmux NIGHTLY](https://github.com/amitpaz/phatmux/releases/download/nightly/phatmux-nightly-macos.dmg)
+[Preuzmi phatmux NIGHTLY](https://github.com/Phathat-Technologies-Ltd/phatmux/releases/download/nightly/phatmux-nightly-macos.dmg)
 
 phatmux NIGHTLY je zasebna aplikacija sa vlastitim bundle ID-om, tako da radi uporedo sa stabilnom verzijom. Automatski se gradi iz najnovijeg `main` commita i ažurira se putem vlastitog Sparkle feeda.
 
@@ -227,11 +227,11 @@ phatmux **ne** vraća stanje živih procesa unutar terminalnih aplikacija. Na pr
 
 ## Historija zvjezdica
 
-<a href="https://star-history.com/#amitpaz/phatmux&Date">
+<a href="https://star-history.com/#Phathat-Technologies-Ltd/phatmux&Date">
  <picture>
-   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=amitpaz/phatmux&type=Date&theme=dark" />
-   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=amitpaz/phatmux&type=Date" />
-   <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=amitpaz/phatmux&type=Date" width="600" />
+   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=Phathat-Technologies-Ltd/phatmux&type=Date&theme=dark" />
+   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=Phathat-Technologies-Ltd/phatmux&type=Date" />
+   <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=Phathat-Technologies-Ltd/phatmux&type=Date" width="600" />
  </picture>
 </a>
 
@@ -241,13 +241,13 @@ Načini da se uključite:
 
 - Pratite nas na X za ažuriranja [@manaflowai](https://x.com/manaflowai), [@lawrencecchen](https://x.com/lawrencecchen) i [@austinywang](https://x.com/austinywang)
 - Pridružite se razgovoru na [Discordu](https://discord.gg/xsgFEVrWCZ)
-- Kreirajte i učestvujte u [GitHub issues](https://github.com/amitpaz/phatmux/issues) i [diskusijama](https://github.com/amitpaz/phatmux/discussions)
+- Kreirajte i učestvujte u [GitHub issues](https://github.com/Phathat-Technologies-Ltd/phatmux/issues) i [diskusijama](https://github.com/Phathat-Technologies-Ltd/phatmux/discussions)
 - Javite nam šta gradite sa phatmux
 
 ## Zajednica
 
 - [Discord](https://discord.gg/xsgFEVrWCZ)
-- [GitHub](https://github.com/amitpaz/phatmux)
+- [GitHub](https://github.com/Phathat-Technologies-Ltd/phatmux)
 - [X / Twitter](https://twitter.com/manaflowai)
 - [YouTube](https://www.youtube.com/channel/UCAa89_j-TWkrXfk9A3CbASw)
 - [LinkedIn](https://www.linkedin.com/company/manaflow-ai/)

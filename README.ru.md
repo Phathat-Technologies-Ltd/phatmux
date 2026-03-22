@@ -4,7 +4,7 @@
 <p align="center">Терминал macOS на базе Ghostty с вертикальными вкладками и уведомлениями для AI-агентов программирования</p>
 
 <p align="center">
-  <a href="https://github.com/amitpaz/phatmux/releases/latest/download/phatmux-macos.dmg">
+  <a href="https://github.com/Phathat-Technologies-Ltd/phatmux/releases/latest/download/phatmux-macos.dmg">
     <img src="./docs/assets/macos-badge.png" alt="Скачать phatmux для macOS" width="180" />
   </a>
 </p>
@@ -76,7 +76,7 @@
 
 ### DMG (рекомендуется)
 
-<a href="https://github.com/amitpaz/phatmux/releases/latest/download/phatmux-macos.dmg">
+<a href="https://github.com/Phathat-Technologies-Ltd/phatmux/releases/latest/download/phatmux-macos.dmg">
   <img src="./docs/assets/macos-badge.png" alt="Скачать phatmux для macOS" width="180" />
 </a>
 
@@ -85,7 +85,7 @@
 ### Homebrew
 
 ```bash
-brew tap amitpaz/phatmux
+brew tap Phathat-Technologies-Ltd/phatmux
 brew install --cask phatmux
 ```
 
@@ -211,7 +211,7 @@ phatmux — это примитив, а не решение. Он даёт ва�
 
 ## Ночные сборки
 
-[Скачать phatmux NIGHTLY](https://github.com/amitpaz/phatmux/releases/download/nightly/phatmux-nightly-macos.dmg)
+[Скачать phatmux NIGHTLY](https://github.com/Phathat-Technologies-Ltd/phatmux/releases/download/nightly/phatmux-nightly-macos.dmg)
 
 phatmux NIGHTLY — это отдельное приложение с собственным идентификатором пакета, поэтому оно работает параллельно со стабильной версией. Собирается автоматически из последнего коммита `main` и обновляется через собственный канал Sparkle.
 
@@ -227,11 +227,11 @@ phatmux **не** восстанавливает состояние живых п
 
 ## История звёзд
 
-<a href="https://star-history.com/#amitpaz/phatmux&Date">
+<a href="https://star-history.com/#Phathat-Technologies-Ltd/phatmux&Date">
  <picture>
-   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=amitpaz/phatmux&type=Date&theme=dark" />
-   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=amitpaz/phatmux&type=Date" />
-   <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=amitpaz/phatmux&type=Date" width="600" />
+   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=Phathat-Technologies-Ltd/phatmux&type=Date&theme=dark" />
+   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=Phathat-Technologies-Ltd/phatmux&type=Date" />
+   <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=Phathat-Technologies-Ltd/phatmux&type=Date" width="600" />
  </picture>
 </a>
 
@@ -241,13 +241,13 @@ phatmux **не** восстанавливает состояние живых п
 
 - Подписывайтесь на нас в X для получения обновлений [@manaflowai](https://x.com/manaflowai), [@lawrencecchen](https://x.com/lawrencecchen) и [@austinywang](https://x.com/austinywang)
 - Присоединяйтесь к обсуждению в [Discord](https://discord.gg/xsgFEVrWCZ)
-- Создавайте и участвуйте в [GitHub issues](https://github.com/amitpaz/phatmux/issues) и [обсуждениях](https://github.com/amitpaz/phatmux/discussions)
+- Создавайте и участвуйте в [GitHub issues](https://github.com/Phathat-Technologies-Ltd/phatmux/issues) и [обсуждениях](https://github.com/Phathat-Technologies-Ltd/phatmux/discussions)
 - Расскажите нам, что вы создаёте с помощью phatmux
 
 ## Сообщество
 
 - [Discord](https://discord.gg/xsgFEVrWCZ)
-- [GitHub](https://github.com/amitpaz/phatmux)
+- [GitHub](https://github.com/Phathat-Technologies-Ltd/phatmux)
 - [X / Twitter](https://twitter.com/manaflowai)
 - [YouTube](https://www.youtube.com/channel/UCAa89_j-TWkrXfk9A3CbASw)
 - [LinkedIn](https://www.linkedin.com/company/manaflow-ai/)

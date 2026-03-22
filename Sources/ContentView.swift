@@ -9999,8 +9999,8 @@ enum FeedbackComposerBridge {
 private struct SidebarHelpMenuButton: View {
     private let docsURL = URL(string: "https://phatmux.com/docs")
     private let changelogURL = URL(string: "https://phatmux.com/docs/changelog")
-    private let githubURL = URL(string: "https://github.com/amitpaz/phatmux")
-    private let githubIssuesURL = URL(string: "https://github.com/amitpaz/phatmux/issues")
+    private let githubURL = URL(string: "https://github.com/Phathat-Technologies-Ltd/phatmux")
+    private let githubIssuesURL = URL(string: "https://github.com/Phathat-Technologies-Ltd/phatmux/issues")
     private let discordURL = URL(string: "https://discord.gg/xsgFEVrWCZ")
     private let helpTitle = String(localized: "sidebar.help.button", defaultValue: "Help")
     private let buttonSize: CGFloat = 22

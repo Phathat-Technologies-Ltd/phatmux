@@ -81,7 +81,7 @@ def _git_stub() -> str:
         fi
 
         if [ "$1" = "remote" ] && [ "$2" = "get-url" ] && [ "$3" = "origin" ]; then
-          printf 'https://github.com/amitpaz/phatmux.git\\n'
+          printf 'https://github.com/Phathat-Technologies-Ltd/phatmux.git\\n'
           exit 0
         fi
 
@@ -142,21 +142,21 @@ def _gh_stub() -> str:
 
         case "$scenario" in
           prompt_helper_idle)
-            printf '1138\\tOPEN\\thttps://github.com/amitpaz/phatmux/pull/1138\\n'
+            printf '1138\\tOPEN\\thttps://github.com/Phathat-Technologies-Ltd/phatmux/pull/1138\\n'
             ;;
           initial_prompt_preserves_pr_badge)
-            printf '1138\\tOPEN\\thttps://github.com/amitpaz/phatmux/pull/1138\\n'
+            printf '1138\\tOPEN\\thttps://github.com/Phathat-Technologies-Ltd/phatmux/pull/1138\\n'
             ;;
           transient_same_context)
             if [ "$count" -eq 1 ]; then
               printf 'rate limit exceeded\\n' >&2
               exit 1
             fi
-            printf '1138\\tOPEN\\thttps://github.com/amitpaz/phatmux/pull/1138\\n'
+            printf '1138\\tOPEN\\thttps://github.com/Phathat-Technologies-Ltd/phatmux/pull/1138\\n'
             ;;
           branch_switch_clear)
             if [ "$branch" = "feature/old" ]; then
-              printf '111\\tOPEN\\thttps://github.com/amitpaz/phatmux/pull/111\\n'
+              printf '111\\tOPEN\\thttps://github.com/Phathat-Technologies-Ltd/phatmux/pull/111\\n'
               exit 0
             fi
             if [ "$branch" = "feature/new" ]; then
@@ -174,7 +174,7 @@ def _gh_stub() -> str:
               sleep "${PHATMUX_TEST_HANG_SECONDS:-4}"
               exit 0
             fi
-            printf '1138\\tOPEN\\thttps://github.com/amitpaz/phatmux/pull/1138\\n'
+            printf '1138\\tOPEN\\thttps://github.com/Phathat-Technologies-Ltd/phatmux/pull/1138\\n'
             ;;
           explicit_branch_fallback)
             if [ -z "$requested_branch" ]; then
@@ -182,7 +182,7 @@ def _gh_stub() -> str:
               exit 1
             fi
             if [ "$requested_branch" = "$branch" ]; then
-              printf '1138\\tOPEN\\thttps://github.com/amitpaz/phatmux/pull/1138\\n'
+              printf '1138\\tOPEN\\thttps://github.com/Phathat-Technologies-Ltd/phatmux/pull/1138\\n'
               exit 0
             fi
             printf 'unexpected branch lookup: %s\\n' "$requested_branch" >&2
@@ -279,7 +279,7 @@ def _read_lines(path: Path) -> list[str]:
 
 def _report_line(number: int) -> str:
     return (
-        f"report_pr {number} https://github.com/amitpaz/phatmux/pull/{number} "
+        f"report_pr {number} https://github.com/Phathat-Technologies-Ltd/phatmux/pull/{number} "
         "--state=open --tab=00000000-0000-0000-0000-000000000001 "
         "--panel=00000000-0000-0000-0000-000000000002"
     )

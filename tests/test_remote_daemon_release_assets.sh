@@ -8,7 +8,7 @@ trap 'rm -rf "$OUTPUT_DIR"' EXIT
 "$ROOT_DIR/scripts/build_remote_daemon_release_assets.sh" \
   --version "0.62.0-test" \
   --release-tag "v0.62.0-test" \
-  --repo "amitpaz/phatmux" \
+  --repo "Phathat-Technologies-Ltd/phatmux" \
   --output-dir "$OUTPUT_DIR" >/dev/null
 
 for asset in \

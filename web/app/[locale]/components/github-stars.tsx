@@ -45,7 +45,7 @@ export function GitHubStarsBadge({
 
   return (
     <a
-      href="https://github.com/amitpaz/phatmux"
+      href="https://github.com/Phathat-Technologies-Ltd/phatmux"
       target="_blank"
       rel="noopener noreferrer"
       onClick={() =>

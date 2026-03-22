@@ -1579,7 +1579,7 @@ final class WorkspacePanelGitBranchTests: XCTestCase {
             panelId: secondPanel.id,
             number: 1629,
             label: "PR",
-            url: URL(string: "https://github.com/amitpaz/phatmux/pull/1629")!,
+            url: URL(string: "https://github.com/Phathat-Technologies-Ltd/phatmux/pull/1629")!,
             status: .open
         )
 
@@ -1754,7 +1754,7 @@ final class WorkspacePanelGitBranchTests: XCTestCase {
             panelId: leftFirstPanelId,
             number: 101,
             label: "PR",
-            url: URL(string: "https://github.com/amitpaz/phatmux/pull/101")!,
+            url: URL(string: "https://github.com/Phathat-Technologies-Ltd/phatmux/pull/101")!,
             status: .open
         )
         workspace.updatePanelPullRequest(

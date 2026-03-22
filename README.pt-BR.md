@@ -4,7 +4,7 @@
 <p align="center">Um terminal macOS baseado em Ghostty com abas verticais e notificações para agentes de programação com IA</p>
 
 <p align="center">
-  <a href="https://github.com/amitpaz/phatmux/releases/latest/download/phatmux-macos.dmg">
+  <a href="https://github.com/Phathat-Technologies-Ltd/phatmux/releases/latest/download/phatmux-macos.dmg">
     <img src="./docs/assets/macos-badge.png" alt="Baixar phatmux para macOS" width="180" />
   </a>
 </p>
@@ -76,7 +76,7 @@ A barra lateral mostra o branch do git, status/número do PR vinculado, diretór
 
 ### DMG (recomendado)
 
-<a href="https://github.com/amitpaz/phatmux/releases/latest/download/phatmux-macos.dmg">
+<a href="https://github.com/Phathat-Technologies-Ltd/phatmux/releases/latest/download/phatmux-macos.dmg">
   <img src="./docs/assets/macos-badge.png" alt="Baixar phatmux para macOS" width="180" />
 </a>
 
@@ -85,7 +85,7 @@ Abra o `.dmg` e arraste o phatmux para a pasta Aplicativos. O phatmux se atualiz
 ### Homebrew
 
 ```bash
-brew tap amitpaz/phatmux
+brew tap Phathat-Technologies-Ltd/phatmux
 brew install --cask phatmux
 ```
 
@@ -211,7 +211,7 @@ Os atalhos de ferramentas do desenvolvedor do navegador seguem os padrões do Sa
 
 ## Builds Noturnos
 
-[Baixar phatmux NIGHTLY](https://github.com/amitpaz/phatmux/releases/download/nightly/phatmux-nightly-macos.dmg)
+[Baixar phatmux NIGHTLY](https://github.com/Phathat-Technologies-Ltd/phatmux/releases/download/nightly/phatmux-nightly-macos.dmg)
 
 O phatmux NIGHTLY é um app separado com seu próprio bundle ID, então roda ao lado da versão estável. Construído automaticamente a partir do último commit em `main` e se atualiza automaticamente via seu próprio feed Sparkle.
 
@@ -227,11 +227,11 @@ O phatmux **não** restaura o estado de processos ativos dentro de apps de termi
 
 ## Histórico de Estrelas
 
-<a href="https://star-history.com/#amitpaz/phatmux&Date">
+<a href="https://star-history.com/#Phathat-Technologies-Ltd/phatmux&Date">
  <picture>
-   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=amitpaz/phatmux&type=Date&theme=dark" />
-   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=amitpaz/phatmux&type=Date" />
-   <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=amitpaz/phatmux&type=Date" width="600" />
+   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=Phathat-Technologies-Ltd/phatmux&type=Date&theme=dark" />
+   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=Phathat-Technologies-Ltd/phatmux&type=Date" />
+   <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=Phathat-Technologies-Ltd/phatmux&type=Date" width="600" />
  </picture>
 </a>
 
@@ -241,13 +241,13 @@ Formas de participar:
 
 - Siga-nos no X para atualizações [@manaflowai](https://x.com/manaflowai), [@lawrencecchen](https://x.com/lawrencecchen), e [@austinywang](https://x.com/austinywang)
 - Participe da conversa no [Discord](https://discord.gg/xsgFEVrWCZ)
-- Crie e participe de [issues no GitHub](https://github.com/amitpaz/phatmux/issues) e [discussões](https://github.com/amitpaz/phatmux/discussions)
+- Crie e participe de [issues no GitHub](https://github.com/Phathat-Technologies-Ltd/phatmux/issues) e [discussões](https://github.com/Phathat-Technologies-Ltd/phatmux/discussions)
 - Nos conte o que você está construindo com o phatmux
 
 ## Comunidade
 
 - [Discord](https://discord.gg/xsgFEVrWCZ)
-- [GitHub](https://github.com/amitpaz/phatmux)
+- [GitHub](https://github.com/Phathat-Technologies-Ltd/phatmux)
 - [X / Twitter](https://twitter.com/manaflowai)
 - [YouTube](https://www.youtube.com/channel/UCAa89_j-TWkrXfk9A3CbASw)
 - [LinkedIn](https://www.linkedin.com/company/manaflow-ai/)

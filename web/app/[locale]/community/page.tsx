@@ -74,7 +74,7 @@ export default function CommunityPage() {
           />
 
           <CommunityLink
-            href="https://github.com/amitpaz/phatmux"
+            href="https://github.com/Phathat-Technologies-Ltd/phatmux"
             name="GitHub"
             action={t("githubAction")}
             description={t("githubDesc")}

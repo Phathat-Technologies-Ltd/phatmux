@@ -230,7 +230,7 @@ Manual release steps (if not using the command):
 ```bash
 git tag vX.Y.Z
 git push origin vX.Y.Z
-gh run watch --repo amitpaz/phatmux
+gh run watch --repo Phathat-Technologies-Ltd/phatmux
 ```
 
 Notes:

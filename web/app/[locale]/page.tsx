@@ -209,7 +209,7 @@ function HomeContent() {
                 {t.rich("faqFreeA", {
                   link: (chunks) => (
                     <a
-                      href="https://github.com/amitpaz/phatmux"
+                      href="https://github.com/Phathat-Technologies-Ltd/phatmux"
                       className={linkClass}
                     >
                       {chunks}

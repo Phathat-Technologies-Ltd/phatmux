@@ -30,7 +30,7 @@ export default function GettingStartedPage() {
       <p>{t("dmgDesc")}</p>
 
       <h3>{t("homebrew")}</h3>
-      <CodeBlock lang="bash">{`brew tap amitpaz/phatmux
+      <CodeBlock lang="bash">{`brew tap Phathat-Technologies-Ltd/phatmux
 brew install --cask phatmux`}</CodeBlock>
       <p>{t("updateLater")}</p>
       <CodeBlock lang="bash">{`brew upgrade --cask phatmux`}</CodeBlock>

@@ -304,7 +304,7 @@ jobs:
           prepare_variant \
             "$APP_DIR" \
             "com.phatmux.app.nightly" \
-            "https://github.com/amitpaz/phatmux/releases/download/nightly/appcast.xml"
+            "https://github.com/Phathat-Technologies-Ltd/phatmux/releases/download/nightly/appcast.xml"
 
           echo "Nightly app name: phatmux NIGHTLY"
           echo "Nightly bundle ID: com.phatmux.app.nightly"
@@ -320,7 +320,7 @@ jobs:
           ./scripts/build_remote_daemon_release_assets.sh \
             --version "$NIGHTLY_REMOTE_DAEMON_VERSION" \
             --release-tag "nightly" \
-            --repo "amitpaz/phatmux" \
+            --repo "Phathat-Technologies-Ltd/phatmux" \
             --output-dir "remote-daemon-assets"
           MANIFEST_JSON="$(python3 -c 'import json,sys; print(json.dumps(json.load(open(sys.argv[1], encoding="utf-8")), separators=(",",":")))' remote-daemon-assets/phatmuxd-remote-manifest.json)"
           APP_PLIST="build-universal/Build/Products/Release/phatmux NIGHTLY.app/Contents/Info.plist"
@@ -528,7 +528,7 @@ jobs:
             - feed `appcast.xml`
             - compatibility feed `appcast-universal.xml` for older universal nightlies
 
-            [Download phatmux-nightly-macos.dmg](https://github.com/amitpaz/phatmux/releases/download/nightly/phatmux-nightly-macos.dmg)
+            [Download phatmux-nightly-macos.dmg](https://github.com/Phathat-Technologies-Ltd/phatmux/releases/download/nightly/phatmux-nightly-macos.dmg)
           files: |
             phatmux-nightly-macos-${{ github.run_id }}*.dmg
             phatmux-nightly-macos.dmg

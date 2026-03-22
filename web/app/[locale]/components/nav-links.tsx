@@ -33,7 +33,7 @@ export function NavLinks() {
         {t("community")}
       </Link>
       <a
-        href="https://github.com/amitpaz/phatmux"
+        href="https://github.com/Phathat-Technologies-Ltd/phatmux"
         target="_blank"
         rel="noopener noreferrer"
         onClick={() => posthog.capture("phatmux_github_clicked", { location: "navbar" })}

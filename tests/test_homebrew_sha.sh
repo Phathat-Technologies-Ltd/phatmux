@@ -1,6 +1,6 @@
 #!/bin/bash
 # Regression test: verify the homebrew cask SHA256 matches the actual release DMG.
-# Catches issues like https://github.com/amitpaz/phatmux/issues/110 where a race
+# Catches issues like https://github.com/Phathat-Technologies-Ltd/phatmux/issues/110 where a race
 # condition caused the cask to contain the SHA of a 404 page instead of the DMG.
 set -euo pipefail
 
@@ -22,7 +22,7 @@ fi
 echo "Cask version: $VERSION"
 echo "Cask SHA256:  $CASK_SHA"
 
-URL="https://github.com/amitpaz/phatmux/releases/download/v${VERSION}/phatmux-macos.dmg"
+URL="https://github.com/Phathat-Technologies-Ltd/phatmux/releases/download/v${VERSION}/phatmux-macos.dmg"
 TMPFILE=$(mktemp)
 trap 'rm -f "$TMPFILE"' EXIT
 

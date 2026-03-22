@@ -2,7 +2,7 @@ import Sparkle
 import Cocoa
 
 enum UpdateFeedResolver {
-    static let fallbackFeedURL = "https://github.com/amitpaz/phatmux/releases/latest/download/appcast.xml"
+    static let fallbackFeedURL = "https://github.com/Phathat-Technologies-Ltd/phatmux/releases/latest/download/appcast.xml"
 
     static func resolvedFeedURLString(infoFeedURL: String?) -> (url: String, isNightly: Bool, usedFallback: Bool) {
         guard let infoFeedURL, !infoFeedURL.isEmpty else {

@@ -151,7 +151,7 @@
 	<key>SUEnableAutomaticChecks</key>
 	<true/>
 	<key>SUFeedURL</key>
-	<string>https://github.com/amitpaz/phatmux/releases/latest/download/appcast.xml</string>
+	<string>https://github.com/Phathat-Technologies-Ltd/phatmux/releases/latest/download/appcast.xml</string>
 	<key>SUScheduledCheckInterval</key>
 	<integer>86400</integer>
 	<key>SUSendProfileInfo</key>

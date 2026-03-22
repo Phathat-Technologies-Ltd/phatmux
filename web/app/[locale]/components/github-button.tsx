@@ -7,7 +7,7 @@ export function GitHubButton({ location = "hero" }: { location?: string }) {
   const t = useTranslations("common");
   return (
     <a
-      href="https://github.com/amitpaz/phatmux"
+      href="https://github.com/Phathat-Technologies-Ltd/phatmux"
       target="_blank"
       rel="noopener noreferrer"
       onClick={() => posthog.capture("phatmux_github_clicked", { location })}

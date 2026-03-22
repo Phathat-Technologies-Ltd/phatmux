@@ -4,7 +4,7 @@
 <p align="center">基於 Ghostty 的 macOS 終端機，具備垂直分頁和為 AI 程式設計代理設計的通知系統</p>
 
 <p align="center">
-  <a href="https://github.com/amitpaz/phatmux/releases/latest/download/phatmux-macos.dmg">
+  <a href="https://github.com/Phathat-Technologies-Ltd/phatmux/releases/latest/download/phatmux-macos.dmg">
     <img src="./docs/assets/macos-badge.png" alt="下載 phatmux macOS 版" width="180" />
   </a>
 </p>
@@ -76,7 +76,7 @@
 
 ### DMG（建議）
 
-<a href="https://github.com/amitpaz/phatmux/releases/latest/download/phatmux-macos.dmg">
+<a href="https://github.com/Phathat-Technologies-Ltd/phatmux/releases/latest/download/phatmux-macos.dmg">
   <img src="./docs/assets/macos-badge.png" alt="下載 phatmux macOS 版" width="180" />
 </a>
 
@@ -85,7 +85,7 @@
 ### Homebrew
 
 ```bash
-brew tap amitpaz/phatmux
+brew tap Phathat-Technologies-Ltd/phatmux
 brew install --cask phatmux
 ```
 
@@ -211,7 +211,7 @@ phatmux 是一個基礎元件，而非完整方案。它提供終端機、瀏覽
 
 ## 每夜建構
 
-[下載 phatmux NIGHTLY](https://github.com/amitpaz/phatmux/releases/download/nightly/phatmux-nightly-macos.dmg)
+[下載 phatmux NIGHTLY](https://github.com/Phathat-Technologies-Ltd/phatmux/releases/download/nightly/phatmux-nightly-macos.dmg)
 
 phatmux NIGHTLY 是一個獨立的應用程式，擁有自己的 bundle ID，因此可以與穩定版並行執行。每次從最新的 `main` 提交自動建構，並透過自己的 Sparkle 來源自動更新。
 
@@ -227,11 +227,11 @@ phatmux **不會**還原終端機應用程式內的即時程序狀態。例如�
 
 ## Star 歷史
 
-<a href="https://star-history.com/#amitpaz/phatmux&Date">
+<a href="https://star-history.com/#Phathat-Technologies-Ltd/phatmux&Date">
  <picture>
-   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=amitpaz/phatmux&type=Date&theme=dark" />
-   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=amitpaz/phatmux&type=Date" />
-   <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=amitpaz/phatmux&type=Date" width="600" />
+   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=Phathat-Technologies-Ltd/phatmux&type=Date&theme=dark" />
+   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=Phathat-Technologies-Ltd/phatmux&type=Date" />
+   <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=Phathat-Technologies-Ltd/phatmux&type=Date" width="600" />
  </picture>
 </a>
 
@@ -241,13 +241,13 @@ phatmux **不會**還原終端機應用程式內的即時程序狀態。例如�
 
 - 在 X 上追蹤我們獲取最新動態 [@manaflowai](https://x.com/manaflowai)、[@lawrencecchen](https://x.com/lawrencecchen) 和 [@austinywang](https://x.com/austinywang)
 - 加入 [Discord](https://discord.gg/xsgFEVrWCZ) 上的討論
-- 建立和參與 [GitHub issues](https://github.com/amitpaz/phatmux/issues) 和 [discussions](https://github.com/amitpaz/phatmux/discussions)
+- 建立和參與 [GitHub issues](https://github.com/Phathat-Technologies-Ltd/phatmux/issues) 和 [discussions](https://github.com/Phathat-Technologies-Ltd/phatmux/discussions)
 - 讓我們知道您正在用 phatmux 打造什麼
 
 ## 社群
 
 - [Discord](https://discord.gg/xsgFEVrWCZ)
-- [GitHub](https://github.com/amitpaz/phatmux)
+- [GitHub](https://github.com/Phathat-Technologies-Ltd/phatmux)
 - [X / Twitter](https://twitter.com/manaflowai)
 - [YouTube](https://www.youtube.com/channel/UCAa89_j-TWkrXfk9A3CbASw)
 - [LinkedIn](https://www.linkedin.com/company/manaflow-ai/)

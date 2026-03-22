@@ -18,11 +18,11 @@ Prepare a new release for phatmux. This command updates the changelog, bumps the
    - Categorize changes into: Added, Changed, Fixed, Removed
    - **Collect contributors:** For each PR referenced in the commits, get the author:
      ```bash
-     gh pr view <N> --repo amitpaz/phatmux --json author --jq '.author.login'
+     gh pr view <N> --repo Phathat-Technologies-Ltd/phatmux --json author --jq '.author.login'
      ```
    - Also check for linked issue reporters (the person who filed the bug):
      ```bash
-     gh issue view <N> --repo amitpaz/phatmux --json author --jq '.author.login'
+     gh issue view <N> --repo Phathat-Technologies-Ltd/phatmux --json author --jq '.author.login'
      ```
    - Build a deduplicated list of all contributor `@handle`s for the release
 
@@ -61,8 +61,8 @@ Prepare a new release for phatmux. This command updates the changelog, bumps the
     - Push tag: `git push origin vX.Y.Z`
 
 11. **Monitor the release workflow**
-    - Watch: `gh run watch --repo amitpaz/phatmux`
-    - Verify the release appears at: https://github.com/amitpaz/phatmux/releases
+    - Watch: `gh run watch --repo Phathat-Technologies-Ltd/phatmux`
+    - Verify the release appears at: https://github.com/Phathat-Technologies-Ltd/phatmux/releases
     - Check that the DMG is attached to the release
 
 12. **Verify homebrew cask update**
@@ -127,14 +127,14 @@ Credit the people who made each release happen. This builds community and encour
 ## [0.13.0] - 2025-01-30
 
 ### Added
-- New keyboard shortcut for quick tab switching ([#42](https://github.com/amitpaz/phatmux/pull/42)) — thanks @contributor!
+- New keyboard shortcut for quick tab switching ([#42](https://github.com/Phathat-Technologies-Ltd/phatmux/pull/42)) — thanks @contributor!
 
 ### Fixed
-- Memory leak when closing split panes ([#38](https://github.com/amitpaz/phatmux/pull/38)) — thanks @fixer!
-- Notification badges not clearing properly ([#35](https://github.com/amitpaz/phatmux/pull/35)) — thanks @reporter for the report!
+- Memory leak when closing split panes ([#38](https://github.com/Phathat-Technologies-Ltd/phatmux/pull/38)) — thanks @fixer!
+- Notification badges not clearing properly ([#35](https://github.com/Phathat-Technologies-Ltd/phatmux/pull/35)) — thanks @reporter for the report!
 
 ### Changed
-- Improved terminal rendering performance ([#40](https://github.com/amitpaz/phatmux/pull/40))
+- Improved terminal rendering performance ([#40](https://github.com/Phathat-Technologies-Ltd/phatmux/pull/40))
 
 ### Thanks to 4 contributors!
 

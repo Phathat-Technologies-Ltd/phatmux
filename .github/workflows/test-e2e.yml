@@ -397,7 +397,7 @@ jobs:
           fi
 
           ISSUE_URL=$(gh issue create \
-            --repo amitpaz/phatmux-dev-artifacts \
+            --repo Phathat-Technologies-Ltd/phatmux-dev-artifacts \
             --title "[$STATUS_EMOJI] $TEST_FILTER @ ${COMMIT_SHA:0:7} ($REF_DISPLAY)" \
             --body "$BODY" \
             --label "$LABEL")

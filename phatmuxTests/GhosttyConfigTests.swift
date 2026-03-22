@@ -780,15 +780,15 @@ final class WorkspaceRemoteDaemonManifestTests: XCTestCase {
           "schemaVersion": 1,
           "appVersion": "0.62.0",
           "releaseTag": "v0.62.0",
-          "releaseURL": "https://github.com/amitpaz/phatmux/releases/tag/v0.62.0",
+          "releaseURL": "https://github.com/Phathat-Technologies-Ltd/phatmux/releases/tag/v0.62.0",
           "checksumsAssetName": "phatmuxd-remote-checksums.txt",
-          "checksumsURL": "https://github.com/amitpaz/phatmux/releases/download/v0.62.0/phatmuxd-remote-checksums.txt",
+          "checksumsURL": "https://github.com/Phathat-Technologies-Ltd/phatmux/releases/download/v0.62.0/phatmuxd-remote-checksums.txt",
           "entries": [
             {
               "goOS": "linux",
               "goArch": "amd64",
               "assetName": "phatmuxd-remote-linux-amd64",
-              "downloadURL": "https://github.com/amitpaz/phatmux/releases/download/v0.62.0/phatmuxd-remote-linux-amd64",
+              "downloadURL": "https://github.com/Phathat-Technologies-Ltd/phatmux/releases/download/v0.62.0/phatmuxd-remote-linux-amd64",
               "sha256": "abc123"
             }
           ]

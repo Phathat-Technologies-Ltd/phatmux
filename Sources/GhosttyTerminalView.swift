@@ -1379,7 +1379,7 @@ class GhosttyApp {
     /// is installed. This injects a sensible default based on the system's
     /// preferred languages.
     ///
-    /// See: https://github.com/amitpaz/phatmux/pull/1017
+    /// See: https://github.com/Phathat-Technologies-Ltd/phatmux/pull/1017
     private func loadCJKFontFallbackIfNeeded(_ config: ghostty_config_t) {
         if Self.userConfigContainsCJKCodepointMap() { return }
 

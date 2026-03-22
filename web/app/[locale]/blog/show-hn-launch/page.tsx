@@ -133,7 +133,7 @@ export default function ShowHNLaunchPage() {
       <p>
         {t.rich("cta", {
           link: (chunks) => (
-            <a href="https://github.com/amitpaz/phatmux">{chunks}</a>
+            <a href="https://github.com/Phathat-Technologies-Ltd/phatmux">{chunks}</a>
           ),
         })}
       </p>

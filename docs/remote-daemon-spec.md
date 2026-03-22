@@ -1,9 +1,9 @@
 # Remote SSH Living Spec
 
 Last updated: March 12, 2026
-Tracking issue: https://github.com/amitpaz/phatmux/issues/151
-Primary PR: https://github.com/amitpaz/phatmux/pull/1296
-CLI relay PR: https://github.com/amitpaz/phatmux/pull/374
+Tracking issue: https://github.com/Phathat-Technologies-Ltd/phatmux/issues/151
+Primary PR: https://github.com/Phathat-Technologies-Ltd/phatmux/pull/1296
+CLI relay PR: https://github.com/Phathat-Technologies-Ltd/phatmux/pull/374
 
 This document is the working source of truth for:
 1. what is implemented now

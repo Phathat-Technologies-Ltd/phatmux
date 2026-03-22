@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Regression test for https://github.com/amitpaz/phatmux/issues/387.
+# Regression test for https://github.com/Phathat-Technologies-Ltd/phatmux/issues/387.
 # Ensures release workflows pin create-dmg to an explicit version.
 set -euo pipefail
 

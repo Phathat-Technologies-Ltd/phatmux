@@ -2,7 +2,7 @@
 <p align="center">Một terminal macOS dựa trên Ghostty với tab dọc và thông báo cho các agent lập trình AI</p>
 
 <p align="center">
-  <a href="https://github.com/amitpaz/phatmux/releases/latest/download/phatmux-macos.dmg">
+  <a href="https://github.com/Phathat-Technologies-Ltd/phatmux/releases/latest/download/phatmux-macos.dmg">
     <img src="./docs/assets/macos-badge.png" alt="Tải phatmux cho macOS" width="180" />
   </a>
 </p>
@@ -74,7 +74,7 @@ Sidebar hiển thị nhánh git, trạng thái/số PR liên kết, thư mục l
 
 ### DMG (khuyến nghị)
 
-<a href="https://github.com/amitpaz/phatmux/releases/latest/download/phatmux-macos.dmg">
+<a href="https://github.com/Phathat-Technologies-Ltd/phatmux/releases/latest/download/phatmux-macos.dmg">
   <img src="./docs/assets/macos-badge.png" alt="Tải phatmux cho macOS" width="180" />
 </a>
 
@@ -83,7 +83,7 @@ Mở file `.dmg` và kéo phatmux vào thư mục Applications. phatmux tự c�
 ### Homebrew
 
 ```bash
-brew tap amitpaz/phatmux
+brew tap Phathat-Technologies-Ltd/phatmux
 brew install --cask phatmux
 ```
 
@@ -209,11 +209,11 @@ Phím tắt công cụ developer của trình duyệt theo mặc định Safari 
 
 ## Bản dựng Nightly
 
-[Tải phatmux NIGHTLY](https://github.com/amitpaz/phatmux/releases/download/nightly/phatmux-nightly-macos.dmg)
+[Tải phatmux NIGHTLY](https://github.com/Phathat-Technologies-Ltd/phatmux/releases/download/nightly/phatmux-nightly-macos.dmg)
 
 phatmux NIGHTLY là một app riêng với bundle ID riêng, nên có thể chạy song song với bản ổn định. Được build tự động từ commit `main` mới nhất và tự cập nhật qua feed Sparkle riêng.
 
-Báo lỗi nightly trên [GitHub Issues](https://github.com/amitpaz/phatmux/issues) hoặc trong [#nightly-bugs trên Discord](https://discord.gg/xsgFEVrWCZ).
+Báo lỗi nightly trên [GitHub Issues](https://github.com/Phathat-Technologies-Ltd/phatmux/issues) hoặc trong [#nightly-bugs trên Discord](https://discord.gg/xsgFEVrWCZ).
 
 ## Khôi phục phiên (hành vi hiện tại)
 
@@ -227,11 +227,11 @@ phatmux **không** khôi phục trạng thái tiến trình đang chạy bên tr
 
 ## Lịch sử sao
 
-<a href="https://star-history.com/#amitpaz/phatmux&Date">
+<a href="https://star-history.com/#Phathat-Technologies-Ltd/phatmux&Date">
  <picture>
-   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=amitpaz/phatmux&type=Date&theme=dark" />
-   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=amitpaz/phatmux&type=Date" />
-   <img alt="Biểu đồ lịch sử sao" src="https://api.star-history.com/svg?repos=amitpaz/phatmux&type=Date" width="600" />
+   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=Phathat-Technologies-Ltd/phatmux&type=Date&theme=dark" />
+   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=Phathat-Technologies-Ltd/phatmux&type=Date" />
+   <img alt="Biểu đồ lịch sử sao" src="https://api.star-history.com/svg?repos=Phathat-Technologies-Ltd/phatmux&type=Date" width="600" />
  </picture>
 </a>
 
@@ -241,13 +241,13 @@ Cách tham gia:
 
 - Theo dõi chúng tôi trên X để cập nhật [@manaflowai](https://x.com/manaflowai), [@lawrencecchen](https://x.com/lawrencecchen), và [@austinywang](https://x.com/austinywang)
 - Tham gia trò chuyện trên [Discord](https://discord.gg/xsgFEVrWCZ)
-- Tạo và tham gia [GitHub issues](https://github.com/amitpaz/phatmux/issues) và [discussions](https://github.com/amitpaz/phatmux/discussions)
+- Tạo và tham gia [GitHub issues](https://github.com/Phathat-Technologies-Ltd/phatmux/issues) và [discussions](https://github.com/Phathat-Technologies-Ltd/phatmux/discussions)
 - Cho chúng tôi biết bạn đang xây gì với phatmux
 
 ## Cộng đồng
 
 - [Discord](https://discord.gg/xsgFEVrWCZ)
-- [GitHub](https://github.com/amitpaz/phatmux)
+- [GitHub](https://github.com/Phathat-Technologies-Ltd/phatmux)
 - [X / Twitter](https://twitter.com/manaflowai)
 - [YouTube](https://www.youtube.com/channel/UCAa89_j-TWkrXfk9A3CbASw)
 - [LinkedIn](https://www.linkedin.com/company/manaflow-ai/)

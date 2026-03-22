@@ -337,7 +337,7 @@ final class SidebarBranchOrderingTests: XCTestCase {
                 first: pullRequestState(
                     number: 337,
                     label: "PR",
-                    url: "https://github.com/amitpaz/phatmux/pull/337",
+                    url: "https://github.com/Phathat-Technologies-Ltd/phatmux/pull/337",
                     status: .open
                 ),
                 second: pullRequestState(
@@ -349,7 +349,7 @@ final class SidebarBranchOrderingTests: XCTestCase {
                 third: pullRequestState(
                     number: 337,
                     label: "PR",
-                    url: "https://github.com/amitpaz/phatmux/pull/337",
+                    url: "https://github.com/Phathat-Technologies-Ltd/phatmux/pull/337",
                     status: .merged
                 ),
                 fourth: pullRequestState(
@@ -387,7 +387,7 @@ final class SidebarBranchOrderingTests: XCTestCase {
                 first: pullRequestState(
                     number: 42,
                     label: "PR",
-                    url: "https://github.com/amitpaz/phatmux/pull/42",
+                    url: "https://github.com/Phathat-Technologies-Ltd/phatmux/pull/42",
                     status: .open
                 ),
                 second: pullRequestState(
@@ -416,7 +416,7 @@ final class SidebarBranchOrderingTests: XCTestCase {
                 first: pullRequestState(
                     number: 42,
                     label: "PR",
-                    url: "https://github.com/amitpaz/phatmux/pull/42",
+                    url: "https://github.com/Phathat-Technologies-Ltd/phatmux/pull/42",
                     status: .open
                 ),
                 second: pullRequestState(
@@ -432,7 +432,7 @@ final class SidebarBranchOrderingTests: XCTestCase {
         XCTAssertEqual(
             pullRequests.map(\.url.absoluteString),
             [
-                "https://github.com/amitpaz/phatmux/pull/42",
+                "https://github.com/Phathat-Technologies-Ltd/phatmux/pull/42",
                 "https://github.com/manaflow-ai/other-repo/pull/42"
             ]
         )
@@ -448,13 +448,13 @@ final class SidebarBranchOrderingTests: XCTestCase {
                 first: pullRequestState(
                     number: 42,
                     label: "PR",
-                    url: "https://github.com/amitpaz/phatmux/pull/42",
+                    url: "https://github.com/Phathat-Technologies-Ltd/phatmux/pull/42",
                     status: .open
                 ),
                 second: pullRequestState(
                     number: 42,
                     label: "PR",
-                    url: "https://github.com/amitpaz/phatmux/pull/42",
+                    url: "https://github.com/Phathat-Technologies-Ltd/phatmux/pull/42",
                     status: .open,
                     checks: .pass
                 )
@@ -478,7 +478,7 @@ final class SidebarBranchOrderingTests: XCTestCase {
             panelId: panelId,
             number: 42,
             label: "PR",
-            url: URL(string: "https://github.com/amitpaz/phatmux/pull/42")!,
+            url: URL(string: "https://github.com/Phathat-Technologies-Ltd/phatmux/pull/42")!,
             status: .open,
             checks: .pass
         )
@@ -486,7 +486,7 @@ final class SidebarBranchOrderingTests: XCTestCase {
             panelId: panelId,
             number: 42,
             label: "PR",
-            url: URL(string: "https://github.com/amitpaz/phatmux/pull/42")!,
+            url: URL(string: "https://github.com/Phathat-Technologies-Ltd/phatmux/pull/42")!,
             status: .open
         )
 
@@ -498,7 +498,7 @@ final class SidebarBranchOrderingTests: XCTestCase {
         let fallback = pullRequestState(
             number: 11,
             label: "PR",
-            url: "https://github.com/amitpaz/phatmux/pull/11",
+            url: "https://github.com/Phathat-Technologies-Ltd/phatmux/pull/11",
             status: .open
         )
         let pullRequests = SidebarBranchOrdering.orderedUniquePullRequests(
@@ -523,7 +523,7 @@ final class SidebarBranchOrderingTests: XCTestCase {
             panelId: panelId,
             number: 1629,
             label: "PR",
-            url: URL(string: "https://github.com/amitpaz/phatmux/pull/1629")!,
+            url: URL(string: "https://github.com/Phathat-Technologies-Ltd/phatmux/pull/1629")!,
             status: .open
         )
 
@@ -547,7 +547,7 @@ final class SidebarBranchOrderingTests: XCTestCase {
             panelId: panelId,
             number: 1629,
             label: "PR",
-            url: URL(string: "https://github.com/amitpaz/phatmux/pull/1629")!,
+            url: URL(string: "https://github.com/Phathat-Technologies-Ltd/phatmux/pull/1629")!,
             status: .open,
             branch: "feature/sidebar-pr"
         )

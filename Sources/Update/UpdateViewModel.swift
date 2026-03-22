@@ -492,7 +492,7 @@ enum UpdateState: Equatable {
 
             if let semver = Self.extractSemanticVersion(from: version) {
                 let tag = semver.hasPrefix("v") ? semver : "v\(semver)"
-                if let url = URL(string: "https://github.com/amitpaz/phatmux/releases/tag/\(tag)") {
+                if let url = URL(string: "https://github.com/Phathat-Technologies-Ltd/phatmux/releases/tag/\(tag)") {
                     self = .tagged(url)
                     return
                 }
@@ -502,7 +502,7 @@ enum UpdateState: Equatable {
                 return nil
             }
 
-            if let url = URL(string: "https://github.com/amitpaz/phatmux/commit/\(newHash)") {
+            if let url = URL(string: "https://github.com/Phathat-Technologies-Ltd/phatmux/commit/\(newHash)") {
                 self = .commit(url)
             } else {
                 return nil

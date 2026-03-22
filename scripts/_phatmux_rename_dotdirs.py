@@ -23,7 +23,7 @@ REPLACEMENTS = [
     ("com.cmuxterm.app", "com.phatmux.app"),
     ("com.cmuxterm", "com.phatmux"),
     ("ai.manaflow.cmuxterm.plist", "ai.phatmux.plist"),
-    ("manaflow-ai/cmux", "amitpaz/phatmux"),
+    ("manaflow-ai/cmux", "Phathat-Technologies-Ltd/phatmux"),
     ("cmuxterm_github", "phatmux_github"),
     ("cmuxterm_download", "phatmux_download"),
     ("cmuxterm", "phatmux"),
