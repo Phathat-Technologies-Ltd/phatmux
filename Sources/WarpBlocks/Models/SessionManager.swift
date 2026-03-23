@@ -606,10 +606,11 @@ extension BlockSessionManager {
             suppressingEcho = false
 
         case "B":
-            commandStartDate = Date()
+            break
 
         case "C":
             suppressingEcho = false
+            commandStartDate = Date()
 
         case "D":
             suppressingEcho = false

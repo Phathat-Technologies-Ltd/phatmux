@@ -90,17 +90,20 @@ struct CommandBlockView: View {
 
     private func finishedFooter(_ commandBlock: CommandBlock) -> some View {
         HStack {
-            Text(commandBlock.cwd)
-                .font(captionFont)
-                .foregroundStyle(.secondary)
-                .lineLimit(1)
-                .truncationMode(.middle)
-            Spacer()
             if let duration = commandBlock.duration {
-                Text(Self.formatDuration(duration))
+                Text("\(commandBlock.cwd) (\(Self.formatDuration(duration)))")
                     .font(captionFont)
-                    .foregroundStyle(.tertiary)
+                    .foregroundStyle(.secondary)
+                    .lineLimit(1)
+                    .truncationMode(.middle)
+            } else {
+                Text(commandBlock.cwd)
+                    .font(captionFont)
+                    .foregroundStyle(.secondary)
+                    .lineLimit(1)
+                    .truncationMode(.middle)
             }
+            Spacer()
         }
     }
 
