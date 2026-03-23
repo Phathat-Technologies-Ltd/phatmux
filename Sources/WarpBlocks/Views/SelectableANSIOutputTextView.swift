@@ -196,13 +196,14 @@ final class ANSIOutputTextView: NSTextView {
         isRichText = true
         drawsBackground = false
         isVerticallyResizable = true
-        isHorizontallyResizable = true
+        isHorizontallyResizable = false
         maxSize = NSSize(width: CGFloat.greatestFiniteMagnitude, height: CGFloat.greatestFiniteMagnitude)
         minSize = NSSize(width: 0, height: 0)
         textContainerInset = .zero
         textContainer?.lineFragmentPadding = 0
         textContainer?.widthTracksTextView = false
-        textContainer?.lineBreakMode = .byWordWrapping
+        textContainer?.lineBreakMode = .byCharWrapping
+        autoresizingMask = [.width]
         usesFontPanel = false
         allowsUndo = false
         isAutomaticQuoteSubstitutionEnabled = false
@@ -255,6 +256,10 @@ final class ANSIOutputTextView: NSTextView {
         applyViewportWidth(viewport)
     }
 
+    func viewportDidChange(to newWidth: CGFloat) {
+        applyViewportWidth(newWidth)
+    }
+
     private func recomputeContentSize() -> NSSize {
         guard let layoutManager = layoutManager,
               let textContainer = textContainer,
@@ -290,21 +295,8 @@ final class ANSIOutputTextView: NSTextView {
             }
             return
         }
-        let fullRange = NSRange(location: 0, length: textStorage.length)
-        textContainer.containerSize = NSSize(width: 100_000, height: CGFloat.greatestFiniteMagnitude)
-        layoutManager.ensureLayout(forCharacterRange: fullRange)
-        let glyphRange = layoutManager.glyphRange(forCharacterRange: fullRange, actualCharacterRange: nil)
-        let measured = layoutManager.boundingRect(forGlyphRange: glyphRange, in: textContainer)
-        let longest = ceil(measured.width)
         let inset = textContainerInset.width * 2
-        let clip = max(0, viewportWidth - inset)
-        let containerW = max(longest, clip, 1)
-
-        let height = ceil(measured.height) + textContainerInset.height * 2
-        let newFrame = NSRect(x: 0, y: 0, width: containerW, height: height)
-        if self.frame != newFrame {
-            self.frame = newFrame
-        }
+        let containerW = max(viewportWidth - inset, 1)
 
         if abs(containerW - lastAppliedContainerWidth) < 0.5,
            abs(viewportWidth - lastViewportWidth) < 0.5,
@@ -318,8 +310,18 @@ final class ANSIOutputTextView: NSTextView {
         }
         lastViewportWidth = viewportWidth
         lastAppliedContainerWidth = containerW
+
+        let fullRange = NSRange(location: 0, length: textStorage.length)
         textContainer.containerSize = NSSize(width: containerW, height: CGFloat.greatestFiniteMagnitude)
         layoutManager.ensureLayout(forCharacterRange: fullRange)
+
+        let glyphRange = layoutManager.glyphRange(forCharacterRange: fullRange, actualCharacterRange: nil)
+        let rect = layoutManager.boundingRect(forGlyphRange: glyphRange, in: textContainer)
+        let height = ceil(rect.height) + textContainerInset.height * 2
+        let newFrame = NSRect(x: 0, y: 0, width: containerW, height: height)
+        if self.frame != newFrame {
+            self.frame = newFrame
+        }
 
         let newSize = recomputeContentSize()
         if cachedContentSize != newSize {
@@ -346,14 +348,33 @@ final class ANSIOutputTextView: NSTextView {
 /// collapse the scroll view to zero height.
 private final class HorizontalANSIOutputScrollView: NSScrollView {
     private var cachedSize: NSSize = NSSize(width: NSView.noIntrinsicMetric, height: NSView.noIntrinsicMetric)
+    private var lastKnownContentWidth: CGFloat = -1
 
     /// Pure getter — no layout work, no side effects.
     override var intrinsicContentSize: NSSize {
         return cachedSize
     }
 
+    override func setFrameSize(_ newSize: NSSize) {
+        super.setFrameSize(newSize)
+        let newWidth = contentView.bounds.width
+        if abs(newWidth - lastKnownContentWidth) > 0.5 {
+            lastKnownContentWidth = newWidth
+            if let textView = documentView as? ANSIOutputTextView {
+                textView.viewportDidChange(to: newWidth)
+            }
+        }
+    }
+
     override func layout() {
         super.layout()
+        let newWidth = contentView.bounds.width
+        if abs(newWidth - lastKnownContentWidth) > 0.5 {
+            lastKnownContentWidth = newWidth
+            if let textView = documentView as? ANSIOutputTextView {
+                textView.viewportDidChange(to: newWidth)
+            }
+        }
         guard let doc = documentView else { return }
         let s = doc.intrinsicContentSize
         let newSize: NSSize
@@ -382,9 +403,10 @@ struct SelectableANSIOutputTextView: NSViewRepresentable {
         scrollView.drawsBackground = false
         scrollView.borderType = .noBorder
         scrollView.hasVerticalScroller = false
-        scrollView.hasHorizontalScroller = true
+        scrollView.hasHorizontalScroller = false
         scrollView.autohidesScrollers = true
         scrollView.scrollerStyle = .overlay
+        scrollView.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
 
         let textView = ANSIOutputTextView(frame: .zero, textContainer: nil)
         textView.blockIndex = blockIndex

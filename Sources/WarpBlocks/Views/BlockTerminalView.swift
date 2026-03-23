@@ -14,7 +14,7 @@ struct BlockTerminalView: View {
         GeometryReader { geometry in
             ZStack(alignment: .bottom) {
                 VStack(spacing: 0) {
-                    blockScrollArea
+                    blockScrollArea(width: geometry.size.width)
                     InputBarView(session: session, workspace: workspace, panelId: panelId)
                 }
                 .background(Color(nsColor: .windowBackgroundColor))
@@ -28,7 +28,7 @@ struct BlockTerminalView: View {
         }
     }
 
-    private var blockScrollArea: some View {
+    private func blockScrollArea(width: CGFloat) -> some View {
         ScrollViewReader { proxy in
             ScrollView {
                 LazyVStack(alignment: .leading, spacing: 0) {
@@ -48,7 +48,7 @@ struct BlockTerminalView: View {
                                 AIBlockView(block: block, session: session)
                             }
                         }
-                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .frame(width: width, alignment: .leading)
                         .background(blockTint(at: index))
                         .id(block.id)
                     }
