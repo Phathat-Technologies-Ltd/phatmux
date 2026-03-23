@@ -166,6 +166,7 @@ final class ANSIOutputTextView: NSTextView {
             }
         }
     }
+    var onPaneFocus: (() -> Void)?
     private var lastViewportWidth: CGFloat = -1
     private var lastAppliedContainerWidth: CGFloat = -1
     private var isInLayout = false
@@ -219,6 +220,7 @@ final class ANSIOutputTextView: NSTextView {
     }
 
     override func mouseDown(with event: NSEvent) {
+        onPaneFocus?()
         if blockIndex >= 0, let coordinator = selectionCoordinator {
             if event.modifierFlags.contains(.shift) {
                 coordinator.handleShiftClick(at: blockIndex)
@@ -397,6 +399,7 @@ struct SelectableANSIOutputTextView: NSViewRepresentable {
     let attributedString: NSAttributedString
     var blockIndex: Int = -1
     var selectionCoordinator: BlockSelectionCoordinator?
+    var onPaneFocus: (() -> Void)?
 
     func makeNSView(context _: Context) -> NSScrollView {
         let scrollView = HorizontalANSIOutputScrollView()
@@ -411,6 +414,7 @@ struct SelectableANSIOutputTextView: NSViewRepresentable {
         let textView = ANSIOutputTextView(frame: .zero, textContainer: nil)
         textView.blockIndex = blockIndex
         textView.selectionCoordinator = selectionCoordinator
+        textView.onPaneFocus = onPaneFocus
         scrollView.documentView = textView
         textView.setOutputAttributedString(attributedString)
         scrollView.invalidateIntrinsicContentSize()
@@ -421,6 +425,7 @@ struct SelectableANSIOutputTextView: NSViewRepresentable {
         guard let textView = scrollView.documentView as? ANSIOutputTextView else { return }
         textView.blockIndex = blockIndex
         textView.selectionCoordinator = selectionCoordinator
+        textView.onPaneFocus = onPaneFocus
         if textView.textStorage?.string != attributedString.string || fontSizeMismatch(textView) {
             textView.setOutputAttributedString(attributedString)
             scrollView.invalidateIntrinsicContentSize()

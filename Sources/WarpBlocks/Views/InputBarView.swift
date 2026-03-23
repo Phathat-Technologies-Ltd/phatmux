@@ -39,19 +39,7 @@ struct InputBarView: View {
     }
 
     private var actionButtons: some View {
-        HStack(spacing: 4) {
-            Picker("", selection: Binding(
-                get: { session.aiKind },
-                set: { session.setAIKind($0) }
-            )) {
-                Text("Ollama").tag(WarpBlocksAIKind.ollama)
-                Text("Local").tag(WarpBlocksAIKind.localLlama)
-            }
-            .labelsHidden()
-            .pickerStyle(.segmented)
-            .frame(width: 110)
-            .controlSize(.mini)
-        }
+        EmptyView()
     }
 
     private var scaledInputFontSize: CGFloat {
@@ -85,7 +73,15 @@ struct InputBarView: View {
             },
             onZoomIn: { session.zoomIn() },
             onZoomOut: { session.zoomOut() },
-            onZoomReset: { session.resetZoom() }
+            onZoomReset: { session.resetZoom() },
+            onRegisterTextView: { textView in
+                session.inputTextView = textView
+                if session.consumePendingInputFocus() {
+                    DispatchQueue.main.async {
+                        textView.window?.makeFirstResponder(textView)
+                    }
+                }
+            }
         )
         .frame(minHeight: 16, maxHeight: 80)
         .padding(.horizontal, 8)
@@ -104,6 +100,7 @@ struct InputCellTextView: NSViewRepresentable {
     var onZoomIn: (() -> Void)?
     var onZoomOut: (() -> Void)?
     var onZoomReset: (() -> Void)?
+    var onRegisterTextView: ((NSTextView) -> Void)?
 
     func makeCoordinator() -> Coordinator {
         Coordinator(self)
@@ -144,6 +141,7 @@ struct InputCellTextView: NSViewRepresentable {
 
         scrollView.documentView = textView
         context.coordinator.textView = textView
+        onRegisterTextView?(textView)
         return scrollView
     }
 

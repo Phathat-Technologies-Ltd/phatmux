@@ -9559,6 +9559,13 @@ extension Workspace: BonsplitDelegate {
         reassertAppKitFocus: Bool
     ) {
         if let terminalPanel = panel as? TerminalPanel {
+            if !terminalPanel.isBlockFullScreen {
+                terminalPanel.hostedView.setActive(true)
+                if reassertAppKitFocus {
+                    terminalPanel.blockSessionManager.requestInputFocus()
+                }
+                return
+            }
             let shouldFocusTerminalSurface = shouldMoveTerminalSurfaceFocus(for: focusIntent)
             terminalPanel.surface.setFocus(shouldFocusTerminalSurface)
             terminalPanel.hostedView.setActive(true)

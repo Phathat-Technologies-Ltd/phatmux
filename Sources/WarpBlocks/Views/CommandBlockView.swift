@@ -6,6 +6,7 @@ struct CommandBlockView: View {
     let blockIndex: Int
     @ObservedObject var session: BlockSessionManager
     var selectionCoordinator: BlockSelectionCoordinator?
+    var onPaneFocus: (() -> Void)?
 
     var body: some View {
         if let commandBlock = block.commandBlock {
@@ -43,7 +44,8 @@ struct CommandBlockView: View {
             SelectableANSIOutputTextView(
                 attributedString: Self.commandOnlyAttributedString(commandBlock.command, fontSize: scaledFontSize),
                 blockIndex: blockIndex,
-                selectionCoordinator: selectionCoordinator
+                selectionCoordinator: selectionCoordinator,
+                onPaneFocus: onPaneFocus
             )
             .fixedSize(horizontal: false, vertical: true)
             .frame(maxWidth: .infinity, alignment: .leading)
@@ -55,7 +57,8 @@ struct CommandBlockView: View {
                     fontSize: scaledFontSize
                 ),
                 blockIndex: blockIndex,
-                selectionCoordinator: selectionCoordinator
+                selectionCoordinator: selectionCoordinator,
+                onPaneFocus: onPaneFocus
             )
             .fixedSize(horizontal: false, vertical: true)
             .frame(maxWidth: .infinity, alignment: .leading)

@@ -42,7 +42,8 @@ struct BlockTerminalView: View {
                                     block: block,
                                     blockIndex: index,
                                     session: session,
-                                    selectionCoordinator: selectionCoordinator
+                                    selectionCoordinator: selectionCoordinator,
+                                    onPaneFocus: { focusPane() }
                                 )
                             } else {
                                 AIBlockView(block: block, session: session)
@@ -104,6 +105,11 @@ struct BlockTerminalView: View {
         } else {
             Color.clear
         }
+    }
+
+    private func focusPane() {
+        workspace.bonsplitController.focusPane(paneId)
+        workspace.focusPanel(panelId)
     }
 
     private static func plainText(for block: Block) -> String? {

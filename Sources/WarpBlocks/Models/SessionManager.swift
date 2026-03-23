@@ -1,3 +1,4 @@
+import AppKit
 import Combine
 import Foundation
 
@@ -49,6 +50,23 @@ final class BlockSessionManager: ObservableObject {
     var onPasteToTerminal: ((String) -> Void)?
     var onSendEnterKey: (() -> Void)?
     var onFullScreenTransition: ((Bool) -> Void)?
+
+    weak var inputTextView: NSTextView?
+    private var pendingInputFocus = false
+
+    func requestInputFocus() {
+        if let textView = inputTextView, let window = textView.window {
+            window.makeFirstResponder(textView)
+        } else {
+            pendingInputFocus = true
+        }
+    }
+
+    func consumePendingInputFocus() -> Bool {
+        guard pendingInputFocus else { return false }
+        pendingInputFocus = false
+        return true
+    }
     var workingDirectoryProvider: () -> String = {
         FileManager.default.homeDirectoryForCurrentUser.path
     }
