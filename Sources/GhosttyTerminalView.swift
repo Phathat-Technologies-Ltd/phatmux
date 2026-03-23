@@ -6580,6 +6580,7 @@ final class GhosttySurfaceScrollView: NSView {
     private var activeImageTransferCancelHandler: (() -> Void)?
     private var lastSearchOverlayStateID: ObjectIdentifier?
     private var searchOverlayMutationGeneration: UInt64 = 0
+    var fullScreenMountGeneration: UInt64 = 0
     private var observers: [NSObjectProtocol] = []
     private var windowObservers: [NSObjectProtocol] = []
     private var isLiveScrolling = false

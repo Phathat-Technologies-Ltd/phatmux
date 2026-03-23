@@ -248,10 +248,8 @@ Ways to get involved:
 
 - [Discord](https://discord.gg/xsgFEVrWCZ)
 - [GitHub](https://github.com/Phathat-Technologies-Ltd/phatmux)
-- [X / Twitter](https://twitter.com/manaflowai)
-- [YouTube](https://www.youtube.com/channel/UCAa89_j-TWkrXfk9A3CbASw)
-- [LinkedIn](https://www.linkedin.com/company/manaflow-ai/)
-- [Reddit](https://www.reddit.com/r/phatmux/)
+- [LinkedIn](https://www.linkedin.com/company/phathat-technologies/?viewAsMember=true)
+
 
 ## Founder's Edition
 

@@ -58,20 +58,41 @@ private struct GhosttyFullScreenSurfaceView: NSViewRepresentable {
     func makeNSView(context: Context) -> NSView {
         panel.reclaimHostedViewFromOffscreen()
         let hosted = panel.hostedView
+        hosted.fullScreenMountGeneration &+= 1
+        hosted.isHidden = false
         hosted.setVisibleInUI(true)
         hosted.setActive(true)
         panel.surface.setFocus(true)
+        let expectedGen = hosted.fullScreenMountGeneration
+        DispatchQueue.main.async { [weak panel] in
+            guard let panel else { return }
+            let hosted = panel.hostedView
+            guard hosted.fullScreenMountGeneration == expectedGen else { return }
+            hosted.isHidden = false
+            hosted.setVisibleInUI(true)
+            hosted.setActive(true)
+            hosted.refreshSurfaceNow(reason: "blockFullScreen.remount")
+            panel.surface.forceRefresh(reason: "blockFullScreen.remount")
+        }
         return hosted
     }
 
-    func updateNSView(_ nsView: NSView, context: Context) {}
+    func updateNSView(_ nsView: NSView, context: Context) {
+        let hosted = panel.hostedView
+        if hosted.isHidden {
+            hosted.isHidden = false
+            hosted.setVisibleInUI(true)
+            hosted.setActive(true)
+            hosted.refreshSurfaceNow(reason: "blockFullScreen.updateNSView")
+            panel.surface.forceRefresh(reason: "blockFullScreen.updateNSView")
+        }
+    }
 
     static func dismantleNSView(_ nsView: NSView, coordinator: ()) {
-        // Defer removeFromSuperview to avoid triggering constraint invalidation
-        // during the display cycle, which causes _postWindowNeedsUpdateConstraints
-        // to exceed AppKit's per-cycle limit (see bd3ee68e).
-        DispatchQueue.main.async {
-            nsView.removeFromSuperview()
-        }
+        // Hide synchronously instead of deferring removeFromSuperview.
+        // Deferred removal races with makeNSView during rapid SwiftUI
+        // re-evaluations (split close, tab switch), causing the freshly
+        // mounted view to be ripped out of the window.
+        nsView.isHidden = true
     }
 }
